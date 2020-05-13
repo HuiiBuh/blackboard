@@ -1,0 +1,3 @@
+# Checkers game engine
+fastapi==0.54.1
+uvicorn==0.11.3
