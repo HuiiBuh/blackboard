@@ -25,6 +25,14 @@ a {
     color: #ea9397;
 }
 
-.pointer {
+.pointer, [routerLink] {
     cursor: pointer;
+}
+
+[routerLink]:hover {
+    text-decoration: underline;
+}
+
+.loading-indicator {
+    display: none;
 }

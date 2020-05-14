@@ -1,32 +1,3 @@
-class EventEmitter {
-    constructor() {
-        this.listeners = {};
-    }
-
-    addEventListener(type, callback) {
-        if (!(type in this.listeners)) {
-            this.listeners[type] = [];
-        }
-        this.listeners[type].push(callback);
-    };
-
-
-    dispatchEvent(eventType, eventInformation = undefined) {
-        if (!(eventType in this.listeners)) {
-            return true;
-        }
-
-        const stackList = this.listeners[eventType].slice();
-        for (let stack of stackList) {
-            stack.call(this, eventInformation);
-        }
-
-        return !eventType.defaultPrevented;
-    };
-
-}
-
-
 class URLChangeEmitter extends EventEmitter {
 
     /**
@@ -122,6 +93,14 @@ class URLChangeEmitter extends EventEmitter {
             title: title,
         };
 
-        this.dispatchEvent('locationchange', eventParameter);
+        if (/^\/blackboard\/[^\/]*$/.test(location.pathname)) {
+            this.dispatchEvent('one-blackboard', eventParameter);
+        } else if (location.pathname === "/") {
+            this.dispatchEvent('blackboard-overview', eventParameter);
+        } else {
+            eventParameter.title = '404';
+            this.dispatchEvent('not-found', eventParameter);
+        }
+
     }
 }

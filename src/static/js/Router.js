@@ -57,7 +57,7 @@ class Router {
 
             const route = linkElement.getAttribute('routerLink');
 
-            if (route === this.urlChangeEmitter.currentURL)
+            if (encodeURI(route) === this.urlChangeEmitter.currentURL)
                 return;
 
             history.pushState({}, '', route);

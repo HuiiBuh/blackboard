@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/table.css') }}">
 
     <!-- Material font -->
@@ -15,55 +16,35 @@
 
     {# Use the url_for method to get the static files (Everything in the static folder) #}
     {# Paths are relative to the static folder but have to be in the static folder #}
+    <script src="{{ url_for('static', path='/js/APIClient.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/EventEmitter.js') }}"></script>
     <script src="{{ url_for('static', path='/js/URLChangeEmitter.js') }}"></script>
     <script src="{{ url_for('static', path='/js/Router.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/pages/BasePage.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/pages/DashboardOverview.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/pages/OneBlackboard.js') }}"></script>
 
     <title>Blackboard</title>
 </head>
 
 <body>
 
-<h1 class="text-center">Select a blackboard</h1>
+<div class="navigation-bar">
+    <a class="active" routerLink="/">Home</a>
+    <input placeholder="search for blackboard">
+</div>
+
+<h1 class="text-center" id="page-title"></h1>
 
 <div class="container">
 
-    <table>
-
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Last Edited</th>
-            <th>Content</th>
-            <th>Delete</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-        <tr>
-            <td><a routerLink="/blackboard/first board">First board</a></td>
-            <td>12.01.2019</td>
-            <td><i class="material-icons">check</i></td>
-            <td><i class="material-icons warn pointer">delete</i></td>
-        </tr>
-
-        <tr>
-            <td id="no-link">Second board</td>
-            <td>12.04.2019</td>
-            <td><i class="material-icons">close</i></td>
-            <td><i class="material-icons warn pointer">delete</i></td>
-        </tr>
-
-        </tbody>
-
-    </table>
-
-    <button onclick="addThing()">Add thing</button>
-
-
-    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
 </div>
 
+<div class="loading-indicator">
+
+</div>
+
+<script src="{{ url_for('static', path='/js/main.js') }}"></script>
 </body>
 
 </html>
