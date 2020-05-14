@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/loading.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/navbar.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/table.css') }}">
 
     <!-- Material font -->
@@ -14,20 +16,10 @@
     <!-- Material icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    {# Use the url_for method to get the static files (Everything in the static folder) #}
-    {# Paths are relative to the static folder but have to be in the static folder #}
-    <script src="{{ url_for('static', path='/js/APIClient.js') }}"></script>
-    <script src="{{ url_for('static', path='/js/EventEmitter.js') }}"></script>
-    <script src="{{ url_for('static', path='/js/URLChangeEmitter.js') }}"></script>
-    <script src="{{ url_for('static', path='/js/Router.js') }}"></script>
-    <script src="{{ url_for('static', path='/js/pages/BasePage.js') }}"></script>
-    <script src="{{ url_for('static', path='/js/pages/DashboardOverview.js') }}"></script>
-    <script src="{{ url_for('static', path='/js/pages/OneBlackboard.js') }}"></script>
-
     <title>Blackboard</title>
 </head>
 
-<body>
+<body class="loading">
 
 <div class="navigation-bar">
     <a class="active" routerLink="/">Home</a>
@@ -42,8 +34,27 @@
 
 <div class="loading-indicator">
 
+    <div class="loading-card" style="overflow: hidden">
+        <div class="loading-bar loading-bar-2 loading first-loading-bar"></div>
+        {% for i in range(1, 20) %}
+            <div class="loading-bar loading-bar-3 loading "></div>
+            <div class="loading-bar loading-bar-1 loading "></div>
+            <div class="loading-bar loading-bar-2 loading "></div>
+            <div class="loading-bar loading-bar-1 loading "></div>
+        {% endfor %}
+    </div>
+
 </div>
 
+{# Use the url_for method to get the static files (Everything in the static folder) #}
+{# Paths are relative to the static folder but have to be in the static folder #}
+<script src="{{ url_for('static', path='/js/APIClient.js') }}"></script>
+<script src="{{ url_for('static', path='/js/EventEmitter.js') }}"></script>
+<script src="{{ url_for('static', path='/js/URLChangeEmitter.js') }}"></script>
+<script src="{{ url_for('static', path='/js/Router.js') }}"></script>
+<script src="{{ url_for('static', path='/js/pages/BasePage.js') }}"></script>
+<script src="{{ url_for('static', path='/js/pages/DashboardOverview.js') }}"></script>
+<script src="{{ url_for('static', path='/js/pages/OneBlackboard.js') }}"></script>
 <script src="{{ url_for('static', path='/js/main.js') }}"></script>
 </body>
 

@@ -1,8 +1,6 @@
 class DashboardOverview extends BasePage {
 
     async init() {
-        await super.init();
-
         this.root.innerHTML = await this.apiClient.get('overview.html').catch((reason => {
             throw Error(JSON.stringify(reason));
         }));
@@ -20,7 +18,7 @@ class DashboardOverview extends BasePage {
                 root.appendChild(this.buildDashboard(blackboard));
             }
         }
-
+        await super.init();
     }
 
     buildDashboard(blackboard) {

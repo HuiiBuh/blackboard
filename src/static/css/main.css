@@ -2,7 +2,6 @@ html, body {
     height: 100%;
 }
 
-
 body {
     margin: 0;
     font-family: Roboto, 'Helvetica Neue', sans-serif;
@@ -34,5 +33,15 @@ a {
 }
 
 .loading-indicator {
+    background: white;
     display: none;
+    position: fixed;
+    width: 100vw;
+    z-index: 5;
+    top: var(--navbar-height);
+    height: calc(100vw - var(--navbar-height));
+}
+
+body.loading .loading-indicator {
+    display: block;
 }
