@@ -1,0 +1,35 @@
+table {
+    width: 100%;
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table > tbody > tr:nth-child(2n+1) {
+    background-color: rgba(240, 240, 240, 0.5);
+}
+
+table > tbody > tr:hover {
+    background-color: rgba(200, 200, 200, 0.5);
+}
+
+thead {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+table, th, td {
+    border: none;
+}
+
+tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    transition: background-color ease-in-out .2s;
+}
+
+td, th {
+    padding: 15px 10px;
+    display: table-cell;
+    text-align: left;
+    vertical-align: middle;
+    border-radius: 2px;
+}

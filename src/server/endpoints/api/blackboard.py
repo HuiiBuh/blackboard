@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from .models import HelloResponseRepresentation, BodyExample
+from .models import BodyExample, HelloResponseRepresentation
 
 router = APIRouter()
 
@@ -43,6 +43,3 @@ async def body_example(the_body_data: BodyExample):
     return {
         "hello": the_body_data.name
     }
-
-    def some():
-        pass

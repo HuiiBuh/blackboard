@@ -1,0 +1,73 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/table.css') }}">
+
+    <!-- Material font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+
+    <!-- Material icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="{{ url_for('static', path='/js/URLChangeEmitter.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/Router.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+
+    <title>Blackboard</title>
+</head>
+
+<body>
+
+<h1 class="text-center">Select a blackboard</h1>
+
+<div class="container">
+
+    <table>
+
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Last Edited</th>
+            <th>Content</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr>
+            <td><a routerLink="blackboard/first-board" title="First board">First board</a></td>
+            <td>12.01.2019</td>
+            <td><i class="material-icons">check</i></td>
+            <td><i class="material-icons warn pointer">delete</i></td>
+        </tr>
+
+        <tr>
+            <td id="no-link">Second board</td>
+            <td>12.04.2019</td>
+            <td><i class="material-icons">close</i></td>
+            <td><i class="material-icons warn pointer">delete</i></td>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <button onclick="addThing()">Add thing</button>
+
+
+    <script>
+        function addThing() {
+            const link = document.getElementById('no-link');
+            link.setAttribute('routerLink', 'blackboard/test');
+            link.setAttribute('title', 'test');
+        }
+    </script>
+</div>
+
+</body>
+
+</html>

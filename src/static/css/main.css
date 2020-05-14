@@ -1,0 +1,30 @@
+html, body {
+    height: 100%;
+}
+
+
+body {
+    margin: 0;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+a {
+    color: black;
+}
+
+
+.text-center {
+    text-align: center;
+}
+
+.container {
+    margin: 0 5rem;
+}
+
+.warn {
+    color: #ea9397;
+}
+
+.pointer {
+    cursor: pointer;
+}
