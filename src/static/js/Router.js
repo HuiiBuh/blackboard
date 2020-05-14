@@ -11,8 +11,6 @@ class Router {
         this._observer = new MutationObserver(this._bodyChange.bind(this));
 
         this._config = observerConfig;
-        this._observer.observe(document.body, this._config);
-        this._bodyChange();
 
         this.urlChangeEmitter = new URLChangeEmitter();
     }
@@ -22,7 +20,10 @@ class Router {
      */
     startObservation() {
         this._observer.observe(document.body, this._config);
-        this.urlChangeEmitter.emitValues = true;
+        this._bodyChange();
+
+        this.urlChangeEmitter.active = true;
+        this.urlChangeEmitter.emitEvent();
     }
 
     /**
@@ -30,7 +31,7 @@ class Router {
      */
     endObservation() {
         this._observer.disconnect();
-        this.urlChangeEmitter.emitValues = false;
+        this.urlChangeEmitter.active = false;
     }
 
     /**
@@ -53,10 +54,13 @@ class Router {
      */
     _handleRedirect(linkElement) {
         return () => {
-            const route = linkElement.getAttribute('routerLink');
-            const title = linkElement.getAttribute('title');
 
-            window.history.pushState({}, title, route);
+            const route = linkElement.getAttribute('routerLink');
+
+            if (route === this.urlChangeEmitter.currentURL)
+                return;
+
+            history.pushState({}, '', route);
         };
     }
 }

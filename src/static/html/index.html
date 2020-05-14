@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/table.css') }}">
 
@@ -12,9 +13,10 @@
     <!-- Material icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+    {# Use the url_for method to get the static files (Everything in the static folder) #}
+    {# Paths are relative to the static folder but have to be in the static folder #}
     <script src="{{ url_for('static', path='/js/URLChangeEmitter.js') }}"></script>
     <script src="{{ url_for('static', path='/js/Router.js') }}"></script>
-    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
 
     <title>Blackboard</title>
 </head>
@@ -39,7 +41,7 @@
         <tbody>
 
         <tr>
-            <td><a routerLink="blackboard/first-board" title="First board">First board</a></td>
+            <td><a routerLink="/blackboard/first board">First board</a></td>
             <td>12.01.2019</td>
             <td><i class="material-icons">check</i></td>
             <td><i class="material-icons warn pointer">delete</i></td>
@@ -59,13 +61,7 @@
     <button onclick="addThing()">Add thing</button>
 
 
-    <script>
-        function addThing() {
-            const link = document.getElementById('no-link');
-            link.setAttribute('routerLink', 'blackboard/test');
-            link.setAttribute('title', 'test');
-        }
-    </script>
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
 </div>
 
 </body>

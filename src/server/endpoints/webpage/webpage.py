@@ -4,11 +4,15 @@ from fastapi.templating import Jinja2Templates
 
 router = APIRouter()
 
-templates = Jinja2Templates(directory="server/templates")
+# Get the html template directory
+templates = Jinja2Templates(directory="static/html")
 
 
-# Serve the html for every path except api
-@router.get("/{_:path}")
-def test(request: Request, _: str = None):
-    a = templates.TemplateResponse("index.html", {"request": request})
-    return a
+# Serve the html for every path except /api and /template
+@router.get("/{wildcard:path}", tags=["webpage"])
+def serve_webpage(request: Request, wildcard: str = None):
+    """
+    This serves the webpage to every possible url so we can start the js magic from there\n
+    The wildcard parameter is optional is symbolizes every possible path except `/api` and `/static`
+    """
+    return templates.TemplateResponse("index.html", {"request": request})
