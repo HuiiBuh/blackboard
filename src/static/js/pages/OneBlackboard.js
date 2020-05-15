@@ -9,8 +9,10 @@ class OneBlackboard extends BasePage {
             throw Error(JSON.stringify(reason));
         }));
 
-        content = Parser.replaceVariables(content, {
+        const parser = new Parser();
+        content = parser.parseDocument(content, {
             test: 'X',
+            fifty: Array.from(Array(1000).keys()),
             hello: {
                 test: 'Y',
                 kuchen: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
