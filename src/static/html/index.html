@@ -48,6 +48,7 @@
 
 {# Use the url_for method to get the static files (Everything in the static folder) #}
 {# Paths are relative to the static folder but have to be in the static folder #}
+<script src="{{ url_for('static', path='/js/Parser.js') }}"></script>
 <script src="{{ url_for('static', path='/js/APIClient.js') }}"></script>
 <script src="{{ url_for('static', path='/js/EventEmitter.js') }}"></script>
 <script src="{{ url_for('static', path='/js/URLChangeEmitter.js') }}"></script>
