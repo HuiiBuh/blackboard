@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/not_found.css') }}">
 
     <!-- Material font -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
@@ -23,6 +24,7 @@
 
 <div class="navigation-bar">
     <a class="active" routerLink="/">Home</a>
+
     <input placeholder="search for blackboard">
 </div>
 
@@ -48,14 +50,12 @@
 
 {# Use the url_for method to get the static files (Everything in the static folder) #}
 {# Paths are relative to the static folder but have to be in the static folder #}
-<script src="{{ url_for('static', path='/js/Parser.js') }}"></script>
+<script src="{{ url_for('static', path='/js/web_app/EventEmitter.js') }}"></script>
+<script src="{{ url_for('static', path='/js/web_app/URLChangeEmitter.js') }}"></script>
+<script src="{{ url_for('static', path='/js/web_app/Router.js') }}"></script>
+<script src="{{ url_for('static', path='/js/web_app/Parser.js') }}"></script>
+<script src="{{ url_for('static', path='/js/web_app/WebApp.js') }}"></script>
 <script src="{{ url_for('static', path='/js/APIClient.js') }}"></script>
-<script src="{{ url_for('static', path='/js/EventEmitter.js') }}"></script>
-<script src="{{ url_for('static', path='/js/URLChangeEmitter.js') }}"></script>
-<script src="{{ url_for('static', path='/js/Router.js') }}"></script>
-<script src="{{ url_for('static', path='/js/pages/BasePage.js') }}"></script>
-<script src="{{ url_for('static', path='/js/pages/DashboardOverview.js') }}"></script>
-<script src="{{ url_for('static', path='/js/pages/OneBlackboard.js') }}"></script>
 <script src="{{ url_for('static', path='/js/main.js') }}"></script>
 </body>
 

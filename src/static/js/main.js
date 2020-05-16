@@ -1,26 +1,64 @@
-function main() {
-    const router = new Router();
+async function main() {
 
-    router.urlChangeEmitter.addEventListener('blackboard-overview', async (event) => {
-        document.title = event.title;
-        const overview = new DashboardOverview('Select blackboard');
-        await overview.init();
-    });
-    router.urlChangeEmitter.addEventListener('one-blackboard', async (event) => {
-        document.title = event.title;
-        const oneBlackboard = new OneBlackboard(event.title);
-        await oneBlackboard.init();
-    });
-    router.urlChangeEmitter.addEventListener('not-found', (event) => {
-        document.title = event.title;
-        console.log('not-found');
-        console.log(event);
-    });
+    /**
+     * @type {{path: string, view: Function, title?: string}[]}
+     */
+    const routes = [
+        {path: '\/blackboard\/[a-zA-Z-._~]+\/?', view: oneBlackboard},
+        {path: '\/', view: home, title: 'Home'},
+        {path: '**', view: notFound, title: 'Not found'}
+    ];
 
-    router.startObservation();
+    const app = new WebApp(routes);
+    await app.init();
+}
+
+const pageApiClient = new APIClient('/static/html/');
+const parser = new Parser();
+
+async function home() {
+    const content = await pageApiClient.get('overview.html').catch((reason => {
+        throw Error(JSON.stringify(reason));
+    }));
+
+    const apiResponse = {
+        blackboardList: [{
+            url: 'first-url',
+            name: 'first-name',
+            editingDate: '12.01.2019',
+            empty: 'check'
+        }]
+    };
+
+    parser.insertAt(content, apiResponse, '.container');
+}
+
+async function oneBlackboard() {
+    const content = await pageApiClient.get('one_blackboard.html').catch((reason => {
+        throw Error(JSON.stringify(reason));
+    }));
+
+    const apiResponse = {
+        test: 'X',
+        fifty: Array.from(Array(1000).keys()),
+        hello: {
+            test: 'Y',
+            kuchen: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
+        }
+    };
+
+    parser.insertAt(content, apiResponse, '.container');
+}
+
+async function notFound() {
+    const content = await pageApiClient.get('not_found.html').catch((reason => {
+        throw Error(JSON.stringify(reason));
+    }));
+
+    parser.insertAt(content, {}, '.container');
+
 }
 
 
 window.onload = main;
 
-// TODO DOMParser() for templating

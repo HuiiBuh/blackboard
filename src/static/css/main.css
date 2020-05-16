@@ -44,4 +44,5 @@ a {
 
 body.loading .loading-indicator {
     display: block;
+    overflow: hidden !important;
 }

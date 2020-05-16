@@ -1,0 +1,54 @@
+
+.fix-not-found-position {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.number {
+    display: inline-block;
+    font-size: 10rem;
+}
+
+.number-1 {
+    animation: bounce01 5s ease infinite normal 0s none running;
+}
+
+.number-2 {
+    animation: bounce02 5s ease infinite normal 0s none running;
+}
+
+.number-3 {
+    animation: bounce03 5s ease infinite normal 0s none running;
+}
+
+@keyframes bounce01 {
+    0%, 30%, 100% {
+        transform: translateY(0px);
+    }
+
+    15% {
+        transform: translateY(-30px);
+    }
+}
+
+@keyframes bounce02 {
+    0%, 30%, 60%, 100% {
+        transform: translateY(0px);
+    }
+
+    45% {
+        transform: translateY(-30px);
+    }
+}
+
+@keyframes bounce03 {
+    0%, 60%, 90%, 100% {
+        transform: translateY(0px);
+    }
+
+    75% {
+        transform: translateY(-30px);
+    }
+}

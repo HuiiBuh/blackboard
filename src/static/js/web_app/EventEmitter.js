@@ -10,6 +10,21 @@ class EventEmitter {
         this.listeners[type].push(callback);
     };
 
+    removeEventListener(type, callback) {
+        if (!(type in this.listeners)) {
+            return;
+        }
+
+        const stackList = this.listeners[type].slice();
+        stackList.forEach((stack, index) => {
+            if (stack === callback) {
+                stack.splice(index, 1);
+                return;
+            }
+        });
+
+    }
+
 
     dispatchEvent(eventType, eventInformation = undefined) {
         if (!(eventType in this.listeners)) {
