@@ -39,12 +39,8 @@ async function oneBlackboard() {
     }));
 
     const apiResponse = {
-        test: 'X',
-        fifty: Array.from(Array(1000).keys()),
-        hello: {
-            test: 'Y',
-            kuchen: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
-        }
+        name:'TestBoard',
+        value:'<h4>hello <b>world</b></h4>'
     };
 
     parser.insertAt(content, apiResponse, '.container');

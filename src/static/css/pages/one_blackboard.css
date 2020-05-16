@@ -1,0 +1,53 @@
+.blackboard-wrapper {
+    position: relative;
+}
+
+.blackboard-wrapper > textarea {
+    resize: none;
+    width: 100%;
+    height: 80%;
+
+    display: none;
+}
+
+.blackboard-wrapper > .blackboard-preview {
+    min-height: 200px;
+    max-height: 80%;
+
+    background-color: rgba(240, 240, 240, 0.5);
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+}
+
+.blackboard-wrapper.editing > textarea {
+    display: block;
+}
+
+.blackboard-wrapper.editing > .blackboard-preview {
+    display: none;
+}
+
+.blackboard-wrapper.editing > .save {
+    display: block !important;
+}
+
+.blackboard-wrapper:not(.editing) > .edit {
+    display: block !important;
+}
+
+.edit, .save {
+    padding: 5px;
+    position: absolute;
+    display: none !important;
+}
+
+.edit {
+    top: 0;
+    right: 0;
+}
+
+.save {
+    bottom: 0;
+    right: 0;
+}

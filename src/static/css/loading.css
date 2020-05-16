@@ -57,3 +57,18 @@
         transform: translateX(100%);
     }
 }
+
+.loading-indicator {
+    background: white;
+    display: none;
+    position: fixed;
+    width: 100vw;
+    z-index: 5;
+    top: var(--navbar-height);
+    height: calc(100vw - var(--navbar-height));
+}
+
+body.loading .loading-indicator {
+    display: block;
+    overflow: hidden !important;
+}

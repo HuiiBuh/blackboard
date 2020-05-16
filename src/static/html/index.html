@@ -7,17 +7,17 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/loading.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/navbar.css') }}">
 
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/table.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/not_found.css') }}">
 
-    <!-- Material font -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/pages/not_found.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/pages/one_blackboard.css') }}">
 
-    <!-- Material icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <title>Blackboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/icons/material_icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/icons/roboto.css') }}">
+
+
 </head>
 
 <body class="loading">
@@ -28,11 +28,12 @@
     <input placeholder="search for blackboard">
 </div>
 
-<h1 class="text-center" id="page-title"></h1>
+<div class="full-height">
 
-<div class="container">
+    <div class="container"></div>
 
 </div>
+
 
 <div class="loading-indicator">
 
@@ -57,6 +58,9 @@
 <script src="{{ url_for('static', path='/js/web_app/WebApp.js') }}"></script>
 <script src="{{ url_for('static', path='/js/APIClient.js') }}"></script>
 <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+
+<script src="{{ url_for('static', path='/js/pages/home.js') }}"></script>
+<script src="{{ url_for('static', path='/js/pages/one_blackboard.js') }}"></script>
 </body>
 
 </html>

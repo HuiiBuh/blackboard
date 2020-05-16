@@ -1,20 +1,11 @@
-<p>What a beautiful page</p>
-<p>go <a routerLink="/">HOME</a></p>
+<h1 class="text-center">{{ name }}</h1>
 
+<div class="blackboard-wrapper">
+    <i class="material-icons edit pointer" onclick="startEditing()">edit</i>
 
-<div>{{ test }}</div>
-<div>{{ hello.test }}</div>
+    <div class="blackboard-preview">{{ value }}</div>
 
+    <textarea placeholder="HTML, CSS and JS supported">{{ value }}</textarea>
 
-{% for i in hello.kuchen %}
-
-    <div>{{ i }}</div>
-
-{% endfor %}
-
-{% for k in fifty %}
-
-    <div>{{ k }}</div>
-
-{% endfor %}
-ende
+    <i class="material-icons save pointer" onclick="saveChanges()">save</i>
+</div>
