@@ -18,7 +18,7 @@ class Message extends Component {
      * @param {string} type
      * @param {number} timeout
      */
-    constructor(message, type, timeout = 5000) {
+    constructor(message, type, timeout = 4000) {
         super();
 
         this.message = message;

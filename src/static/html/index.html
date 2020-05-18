@@ -17,8 +17,6 @@
 
     <link rel="stylesheet" href="{{ url_for('static', path='/icons/material_icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/icons/roboto.css') }}">
-
-
 </head>
 
 <body class="loading">
@@ -26,31 +24,41 @@
 
 {# Nav bar #}
 <div class="navigation-bar">
-    <a routerLink="/">Home</a>
-    <a routerLink="/random string">Not found</a>
+    <ul>
+        <li>
+            <a routerLink="/">Home</a>
+        </li>
 
-    <input placeholder="Search for blackboard">
+        <li>
+            <a routerLink="/random string">Not found</a>
+        </li>
+        <li>
+            <a class="search-container">
+                <input placeholder="Search for blackboard">
+                <div class="search-overlay">
+                    <h2>Nothing found</h2>
+                </div>
+            </a>
+        </li>
+    </ul>
+
 </div>
+
 
 {# Main content #}
 <div class="full-height">
     <div class="container"></div>
 </div>
 
-<div id="message-container">
-
-</div>
+<div id="message-container"></div>
 
 {# Loading animation #}
 <div class="loading-indicator">
 
     <div class="loading-card">
-        <div class="loading-bar loading-bar-2 loading first-loading-bar"></div>
-        {% for i in range(1, 20) %}
-            <div class="loading-bar loading-bar-3 loading "></div>
-            <div class="loading-bar loading-bar-1 loading "></div>
-            <div class="loading-bar loading-bar-2 loading "></div>
-            <div class="loading-bar loading-bar-1 loading "></div>
+        <div class="loading-bar loading"></div>
+        {% for i in range(1, 40) %}
+            <div class="loading-bar loading-bar-{{ i % 4 + 1 }} loading "></div>
         {% endfor %}
     </div>
 

@@ -1,3 +1,11 @@
+:focus {
+    outline: none;
+}
+
+::-moz-focus-inner {
+    border: 0;
+}
+
 html, body {
     height: 100%;
     font-size: 15px;
@@ -28,7 +36,6 @@ h1, h2, h3, h4, h5 {
 }
 
 
-
 button {
     cursor: pointer;
 
@@ -53,6 +60,33 @@ button {
     border: 1px solid #e5e5e5;
 }
 
+.primary-btn {
+    background-color: #1e87f0;
+    color: #fff;
+    border: none;
+}
+
+.error-btn {
+    background-color: #f0506e;
+    color: #fff;
+    border: none;
+}
+
+.warn-btn {
+    background-color: #faa05a;
+    color: #fff;
+    border: none;
+}
+
+.success-button {
+    background-color: #32d296;
+    color: #fff;
+    border: none;
+}
+
+.warn-icon {
+    color: #f0506e;
+}
 
 .text-center {
     text-align: center;
@@ -70,16 +104,12 @@ button {
     }
 }
 
-.warn {
-    color: #f0506e;
-}
-
 .pointer, [routerLink] {
     cursor: pointer;
 }
 
-[routerLink]:hover {
-    text-decoration: underline;
+[routerLink] {
+    transition: color .1s;
 }
 
 .full-height {
@@ -90,4 +120,49 @@ button {
     padding-top: 1rem;
 }
 
+.search-container:focus, .search-container:focus-within > .search-overlay {
+    display: block !important;
+    animation: fade-search-in .3s forwards;
+}
 
+.search-overlay {
+    display: none;
+    position: fixed;
+    padding: 1rem;
+
+
+    background: white;
+
+    top: var(--navbar-height);
+    bottom: 0;
+    right: 0;
+
+    animation: fade-search-out 3s;
+}
+
+
+@keyframes fade-search-in {
+    0% {
+        opacity: 0;
+        height: 0;
+        width: 0;
+    }
+    100% {
+        opacity: 1;
+        height: calc(100vh - var(--navbar-height));
+        width: 100vw;
+    }
+}
+
+@keyframes fade-search-out {
+    0% {
+        opacity: 1;
+        display: block !important;
+    }
+    99% {
+        display: none;
+    }
+    100% {
+        opacity: 0;
+    }
+}

@@ -7,15 +7,20 @@ table {
 
 
 table > tbody > tr:nth-child(2n+1) {
-    background-color: rgba(240, 240, 240, 0.5);
+    background-color: rgba(240, 240, 240, 0.4);
 }
 
 table > tbody > tr:hover {
-    background-color: rgba(200, 200, 200, 0.5);
+    background-color: rgba(35, 149, 242, 0.04);
 }
 
 thead {
     color: rgba(0, 0, 0, 0.6);
+}
+
+th {
+    font-weight: lighter;
+    text-transform: uppercase;
 }
 
 table, th, td {
@@ -23,7 +28,7 @@ table, th, td {
 }
 
 tr {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     transition: background-color ease-in-out .2s;
 }
 

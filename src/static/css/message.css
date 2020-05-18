@@ -3,7 +3,22 @@
     background: #fef4f6;
 }
 
-#message-container{
+.success, .success > * {
+    color: #32d296;
+    background: #edfbf6;
+}
+
+.warn, .warn > * {
+    color: #faa05a;
+    background: #fff6ee;
+}
+
+.primary, .primary > * {
+    color: #1e87f0;
+    background: #d8eafc;
+}
+
+#message-container {
     position: fixed;
     bottom: 1rem;
     right: 1rem;
@@ -22,6 +37,12 @@
     padding: 15px 29px 15px 15px;
 
     animation: fade-in .3s;
+}
+
+@media screen and (max-width: 500px) {
+    .message {
+        width: calc(100vw - 5rem);
+    }
 }
 
 .message .close {

@@ -1,6 +1,6 @@
 /*Create a border for the loading class*/
 .loading-card {
-    border: 1px solid #ddd;
+    margin-top: 1rem;
 }
 
 /*The loading bar*/
@@ -8,11 +8,6 @@
     background: #e9ebee;
     margin: 0 13px 13px;
     height: 19px;
-}
-
-/*Create a padding top for the first loading bar*/
-.first-loading-bar {
-    margin-top: 13px;
 }
 
 /*Loading bars in different width if the loading-bar class*/
@@ -25,6 +20,10 @@
 }
 
 .loading-bar-3 {
+    width: 90%;
+}
+
+.loading-bar-4 {
     width: 90%;
 }
 

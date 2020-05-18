@@ -21,7 +21,7 @@ class Home extends Component {
                 <td routerLink="/blackboard/{{ blackboard.url }}">{{ blackboard.name }}</td>
                 <td>{{ blackboard.editingDate }}</td>
                 <td class="text-center"><i class="material-icons ">{{ blackboard.empty }}</i></td>
-                <td class="text-center"><i class="material-icons warn pointer">delete</i></td>
+                <td class="text-center"><i class="material-icons warn-icon pointer">delete</i></td>
             </tr>
     
         {% endfor %}
@@ -31,7 +31,10 @@ class Home extends Component {
     
     </table>
     <p>
-        <button class="default-btn" onclick="const message = new Message('Test message', 'error'); message.show() ">Show error message</button>
+        <button class="error-btn" onclick="const message = new Message('Error', 'error'); message.show() ">Error</button>
+        <button class="success-button" onclick="const message = new Message('Success', 'success'); message.show() ">Success</button>
+        <button class="warn-btn" onclick="const message = new Message('Warn', 'warn'); message.show() ">Warn</button>
+        <button class="primary-btn" onclick="const message = new Message('Default', 'primary'); message.show() ">Default</button>
     </p>
     `;
 

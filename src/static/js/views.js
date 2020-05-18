@@ -7,6 +7,16 @@ async function home() {
             name: 'first-name',
             editingDate: '12.01.2019',
             empty: 'check'
+        }, {
+            url: 'first-url',
+            name: 'first-name',
+            editingDate: '12.01.2019',
+            empty: 'check'
+        }, {
+            url: 'first-url',
+            name: 'first-name',
+            editingDate: '12.01.2019',
+            empty: 'check'
         }]
     };
 
