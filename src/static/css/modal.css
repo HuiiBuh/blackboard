@@ -1,0 +1,46 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.43);
+    z-index: 600;
+}
+
+
+.modal {
+    background: white;
+    width: 50vw;
+    position: absolute;
+
+    top: 50px;
+    left: 50%;
+
+    transform: translateX(-50%);
+}
+
+@media (max-width: 800px ) {
+    .modal {
+        width: 80vw;
+    }
+}
+
+.modal-header {
+    padding: 2rem;
+}
+
+.modal-header > h1 {
+    margin-bottom: 0;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+
+.modal-footer {
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+}

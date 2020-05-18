@@ -4,7 +4,7 @@ class OneBlackboard extends Component {
     <h1 class="text-center title">{{ name }}</h1>
 
     <div class="blackboard-wrapper">
-        <i class="material-icons edit pointer">edit</i>
+        <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'startEditing'}">edit</i>
     
         <div class="blackboard-preview">{{ markdown }}</div>
     
@@ -12,7 +12,7 @@ class OneBlackboard extends Component {
             <textarea placeholder="Markdown supported">{{ value }}</textarea>
         </div>
     
-        <i class="material-icons save pointer">save</i>
+        <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>
     </div>
     `;
 
@@ -37,8 +37,7 @@ class OneBlackboard extends Component {
         const elementString = this.parser.parseDocument(OneBlackboard.html, this.apiResponse);
         this.element = this._createElement(elementString);
 
-        this.element.querySelector('.edit').addEventListener('click', this.startEditing.bind(this));
-        this.element.querySelector('.save').addEventListener('click', this.saveChanges.bind(this));
+        this._addListener();
     }
 
     remove() {
