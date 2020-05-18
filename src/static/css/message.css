@@ -1,0 +1,66 @@
+.error, .error > * {
+    color: #f0506e;
+    background: #fef4f6;
+}
+
+#message-container{
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    display: inline-block;
+    width: 400px;
+    z-index: 1000;
+    position: relative;
+
+    margin-top: 20px;
+    padding: 15px 29px 15px 15px;
+
+    animation: fade-in .3s;
+}
+
+.message .close {
+    position: absolute;
+    cursor: pointer;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+}
+
+.message-body {
+    border-radius: 12px;
+    text-align: center;
+}
+
+.fade-in {
+    animation: fade-in .3s forwards;
+}
+
+.fade-out {
+    animation: fade-out .3s forwards;
+}
+
+@keyframes fade-in {
+    0% {
+        visibility: visible;
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        visibility: hidden;
+        opacity: 0;
+    }
+}

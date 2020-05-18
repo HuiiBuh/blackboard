@@ -36,14 +36,15 @@ class Router {
             if (regex.test(path)) {
                 document.title = route.title;
 
-                document.body.classList.add('loading')
+                document.body.classList.add('loading');
                 await route.view.call(this);
-                document.body.classList.remove('loading')
+                document.body.classList.remove('loading');
 
                 break;
             }
         }
     }
+
 
     /**
      * Start the observation of the rout change

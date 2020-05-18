@@ -1,9 +1,10 @@
 
-.fix-not-found-position {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.not-found-position {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .number {

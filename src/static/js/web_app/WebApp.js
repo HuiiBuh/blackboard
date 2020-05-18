@@ -11,6 +11,31 @@ class WebApp {
     }
 
     /**
+     *
+     * @param {string} path
+     * @returns {string}
+     */
+    _pathToRegex(path) {
+
+        if (path[path.length - 1] !== '/') {
+            path += '/?';
+        } else if (path[path.length - 1] === '/') {
+            path += '?';
+        }
+
+        const variableRegex = new RegExp('{[a-zA-Z_]+}', 'g');
+
+        const match = variableRegex.exec(path);
+        if (match) {
+            path = path.slice(0, match.index) + '[a-zA-Z-._~]+' + path.slice(match.index + match[0].length);
+        }
+
+        path = path.replace('/', '\/');
+        path = `^${path}$`;
+        return path;
+    }
+
+    /**
      * Set the routes of the web app
      * @param  {{path: string, view: Function, title?: string}[]} value
      */
@@ -20,7 +45,8 @@ class WebApp {
             if (route.path === '**') {
                 route.path = '.*';
             }
-            route.path = `^${route.path}$`
+
+            route.path = this._pathToRegex(route.path);
         }
 
         this._router.routeList = value;
@@ -48,13 +74,3 @@ class WebApp {
         this._router.endObservation();
     }
 }
-
-
-// if (/^\/blackboard\/[^\/]*$/.test(location.pathname)) {
-//     this.dispatchEvent('one-blackboard', eventParameter);
-// } else if (location.pathname === "/") {
-//     this.dispatchEvent('blackboard-overview', eventParameter);
-// } else {
-//     eventParameter.title = '404';
-//     this.dispatchEvent('not-found', eventParameter);
-// }

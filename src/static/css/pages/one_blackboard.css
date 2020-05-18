@@ -1,5 +1,15 @@
+:root {
+    --title-size: 2rem;
+}
+
+.title {
+    margin: 0 0 1.5rem 0;
+    font-size: var(--title-size);
+}
+
 .blackboard-wrapper {
     position: relative;
+    height: calc(100vh - var(--navbar-height) - 1rem - var(--title-size) - 1.5rem);
 }
 
 .blackboard-wrapper > textarea {
@@ -12,7 +22,6 @@
 
 .blackboard-wrapper > .blackboard-preview {
     min-height: 200px;
-    max-height: 80%;
 
     background-color: rgba(240, 240, 240, 0.5);
     padding: 5px;
@@ -48,6 +57,6 @@
 }
 
 .save {
-    bottom: 0;
+    bottom: 20%;
     right: 0;
 }

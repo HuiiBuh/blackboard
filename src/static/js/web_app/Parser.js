@@ -15,7 +15,7 @@ class Parser {
     /**
      * Take a string and parse is with the variables
      * @param string {string} The input string
-     * @param variables {json} The variables in the json which can be parsed
+     * @param variables The variables in the json which can be parsed
      * @return {string} The parsed string
      */
     parseDocument(string, variables) {

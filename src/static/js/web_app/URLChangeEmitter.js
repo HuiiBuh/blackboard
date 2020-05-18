@@ -67,6 +67,7 @@ class URLChangeEmitter extends EventEmitter {
         this.currentURL = location.pathname;
 
         this.dispatchEvent('urlchange', this.currentURL);
+        document.dispatchEvent(new Event('urlchange'));
 
         // Set a timeout for 20ms so a push and pop event does not register twice
         this._changeTimeout = this._changeTimeout = setTimeout(() => this._changeTimeout = 0, 20);
