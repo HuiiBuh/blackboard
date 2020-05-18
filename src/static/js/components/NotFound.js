@@ -16,13 +16,14 @@ class NotFound extends Component {
     constructor() {
         super();
 
-        document.title = 'Not found - 404'
-        this.root = document.querySelector('.full-height');
+        document.title = 'Not found - 404';
+        this.root = document.querySelector('.container');
     }
 
 
     show() {
         this.element = this._createElement(NotFound.html);
+        this.root.innerText = '';
         this.root.appendChild(this.element);
     }
 

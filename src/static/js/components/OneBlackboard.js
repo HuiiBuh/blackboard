@@ -8,7 +8,9 @@ class OneBlackboard extends Component {
     
         <div class="blackboard-preview">{{ value }}</div>
     
-        <textarea placeholder="HTML, CSS and JS supported">{{ value }}</textarea>
+        <div class="textarea">
+            <textarea placeholder="HTML, CSS and JS supported">{{ value }}</textarea>
+        </div>
     
         <i class="material-icons save pointer" onclick="OneBlackboard.saveChanges()">save</i>
     </div>
@@ -24,9 +26,8 @@ class OneBlackboard extends Component {
 
     show() {
         this._create();
+        this.root.innerText = '';
         this.root.appendChild(this.element);
-
-
     }
 
     _create() {

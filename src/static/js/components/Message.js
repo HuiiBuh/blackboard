@@ -50,7 +50,7 @@ class Message extends Component {
 
         setTimeout(() => {
             this.element.remove();
-        }, 300000);
+        }, 300);
     }
 
 }

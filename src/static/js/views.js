@@ -1,7 +1,3 @@
-let homeComponent = null;
-let oneBlackboardComponent = null;
-let notFoundComponent = null;
-
 async function home() {
     document.title = 'Select blackboard';
 
@@ -14,7 +10,7 @@ async function home() {
         }]
     };
 
-    homeComponent = new Home(apiResponse);
+    const homeComponent = new Home(apiResponse);
     homeComponent.show();
 }
 
@@ -24,11 +20,11 @@ async function oneBlackboard() {
         value: '<h4>hello world</h4>'
     };
 
-    oneBlackboardComponent = new OneBlackboard(apiResponse);
+    const oneBlackboardComponent = new OneBlackboard(apiResponse);
     oneBlackboardComponent.show();
 }
 
 function notFound() {
-    notFoundComponent = new NotFound();
+    const notFoundComponent = new NotFound();
     notFoundComponent.show();
 }

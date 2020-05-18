@@ -27,8 +27,12 @@ class Home extends Component {
         {% endfor %}
     
         </tbody>
+        
     
     </table>
+    <p>
+        <button class="default-btn" onclick="const message = new Message('Test message', 'error'); message.show() ">Show error message</button>
+    </p>
     `;
 
     constructor(apiResponse) {
