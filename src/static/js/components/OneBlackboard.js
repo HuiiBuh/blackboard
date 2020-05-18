@@ -4,15 +4,15 @@ class OneBlackboard extends Component {
     <h1 class="text-center title">{{ name }}</h1>
 
     <div class="blackboard-wrapper">
-        <i class="material-icons edit pointer" onclick="OneBlackboard.startEditing()">edit</i>
+        <i class="material-icons edit pointer">edit</i>
     
-        <div class="blackboard-preview">{{ value }}</div>
+        <div class="blackboard-preview">{{ markdown }}</div>
     
         <div class="textarea">
-            <textarea placeholder="HTML, CSS and JS supported">{{ value }}</textarea>
+            <textarea placeholder="Markdown supported">{{ value }}</textarea>
         </div>
     
-        <i class="material-icons save pointer" onclick="OneBlackboard.saveChanges()">save</i>
+        <i class="material-icons save pointer">save</i>
     </div>
     `;
 
@@ -22,17 +22,23 @@ class OneBlackboard extends Component {
 
         document.title = apiResponse.name;
         this.root = document.querySelector('.container');
+        this.apiClient = new APIClient('', 'text/plain');
     }
 
-    show() {
-        this._create();
+    async show() {
+        await this._create();
         this.root.innerText = '';
         this.root.appendChild(this.element);
     }
 
-    _create() {
+    async _create() {
+        this.apiResponse.markdown = await this.getGithubMarkdown(this.apiResponse.value);
+
         const elementString = this.parser.parseDocument(OneBlackboard.html, this.apiResponse);
         this.element = this._createElement(elementString);
+
+        this.element.querySelector('.edit').addEventListener('click', this.startEditing.bind(this));
+        this.element.querySelector('.save').addEventListener('click', this.saveChanges.bind(this));
     }
 
     remove() {
@@ -41,24 +47,32 @@ class OneBlackboard extends Component {
     }
 
 
-    static saveListener = null;
+    saveListener = null;
 
-    static startEditing() {
+    startEditing() {
 
         document.querySelector('.blackboard-wrapper').classList.add('editing');
 
-        if (OneBlackboard.saveListener) return;
+        if (this.saveListener) return;
 
-        OneBlackboard.saveListener = new EventListener(document, 'keydown', (event) => {
+        this.saveListener = new EventListener(document, 'keydown', async (event) => {
             if (event.key === 'Escape') {
-                OneBlackboard.saveChanges();
+                await this.saveChanges();
             }
         });
     }
 
-    static saveChanges() {
+    async saveChanges() {
         document.querySelector('.blackboard-wrapper').classList.remove('editing');
         const value = document.querySelector('textarea').value;
-        document.querySelector('.blackboard-preview').innerHTML = value;
+
+        document.querySelector('.blackboard-preview').innerHTML = await this.getGithubMarkdown(value);
+    }
+
+    async getGithubMarkdown(value) {
+        return await this.apiClient.post(' https://api.github.com/markdown/raw', {}, value).catch((err) => {
+            new Message(JSON.stringify(err), 'error').show();
+            throw Error(JSON.stringify(err));
+        });
     }
 }

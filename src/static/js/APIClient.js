@@ -1,6 +1,7 @@
 class APIClient {
-    constructor(baseURL) {
+    constructor(baseURL, header = 'application/json') {
         this.baseURL = baseURL;
+        this.header = header;
     }
 
     async put() {
@@ -8,15 +9,15 @@ class APIClient {
     }
 
 
-    async get(url, urlParams = "", body = {}) {
+    async get(url, urlParams = '', body = {}) {
         return await this.request('GET', url, urlParams, body);
     }
 
-    async post(url, urlParams, body) {
+    async post(url, urlParams = {}, body = {}) {
         return await this.request('POST', url, urlParams, body);
     }
 
-    async request(method, url, urlParams = "", body = {}) {
+    async request(method, url, urlParams = '', body = {}) {
         const self = this;
 
         url = this.baseURL + url;
@@ -41,6 +42,7 @@ class APIClient {
             };
 
             request.open(method, url, true);
+            request.setRequestHeader('Content-Type', this.header);
             request.send(body);
         });
     }

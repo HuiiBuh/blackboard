@@ -27,11 +27,19 @@ async function home() {
 async function oneBlackboard() {
     const apiResponse = {
         name: 'TestBoard',
-        value: '<h4>hello world</h4>'
+        value: `
+# Your markdown here
+        
+| Tables   |      Are      |  Cool |
+|----------|:-------------:|------:|
+| col 1 is |  left-aligned | $1600 |
+| col 2 is |    centered   |   $12 |
+| col 3 is | right-aligned |    $1 |
+`
     };
 
     const oneBlackboardComponent = new OneBlackboard(apiResponse);
-    oneBlackboardComponent.show();
+    await oneBlackboardComponent.show();
 }
 
 function notFound() {

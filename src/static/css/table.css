@@ -11,7 +11,7 @@ table > tbody > tr:nth-child(2n+1) {
 }
 
 table > tbody > tr:hover {
-    background-color: rgba(35, 149, 242, 0.04);
+    background-color: rgba(35, 0, 242, 0.04);
 }
 
 thead {
