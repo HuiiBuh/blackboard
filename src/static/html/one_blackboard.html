@@ -1,11 +1,11 @@
-<h1 class="text-center">{{ name }}</h1>
+<h1 class="text-center title">{{ name }}</h1>
 
 <div class="blackboard-wrapper">
-    <i class="material-icons edit pointer" onclick="startEditing()">edit</i>
+    <i class="material-icons edit pointer" onclick="OneBlackboard.startEditing()">edit</i>
 
     <div class="blackboard-preview">{{ value }}</div>
 
     <textarea placeholder="HTML, CSS and JS supported">{{ value }}</textarea>
 
-    <i class="material-icons save pointer" onclick="saveChanges()">save</i>
+    <i class="material-icons save pointer" onclick="OneBlackboard.saveChanges()">save</i>
 </div>

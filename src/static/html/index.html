@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="{{ url_for('static', path='/css/index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/message.css') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', path='/css/pages/not_found.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/pages/one_blackboard.css') }}">
@@ -22,22 +23,27 @@
 
 <body class="loading">
 
+
+{# Nav bar #}
 <div class="navigation-bar">
     <a class="active" routerLink="/">Home</a>
 
-    <input placeholder="search for blackboard">
+    <input placeholder="Search for blackboard">
 </div>
 
+{# Main content #}
 <div class="full-height">
-
     <div class="container"></div>
+</div>
+
+<div id="message-container">
 
 </div>
 
-
+{# Loading animation #}
 <div class="loading-indicator">
 
-    <div class="loading-card" style="overflow: hidden">
+    <div class="loading-card">
         <div class="loading-bar loading-bar-2 loading first-loading-bar"></div>
         {% for i in range(1, 20) %}
             <div class="loading-bar loading-bar-3 loading "></div>
@@ -51,16 +57,22 @@
 
 {# Use the url_for method to get the static files (Everything in the static folder) #}
 {# Paths are relative to the static folder but have to be in the static folder #}
+<script src="{{ url_for('static', path='/js/web_app/EventListener.js') }}"></script>
 <script src="{{ url_for('static', path='/js/web_app/EventEmitter.js') }}"></script>
 <script src="{{ url_for('static', path='/js/web_app/URLChangeEmitter.js') }}"></script>
 <script src="{{ url_for('static', path='/js/web_app/Router.js') }}"></script>
 <script src="{{ url_for('static', path='/js/web_app/Parser.js') }}"></script>
 <script src="{{ url_for('static', path='/js/web_app/WebApp.js') }}"></script>
-<script src="{{ url_for('static', path='/js/APIClient.js') }}"></script>
-<script src="{{ url_for('static', path='/js/main.js') }}"></script>
 
-<script src="{{ url_for('static', path='/js/pages/home.js') }}"></script>
-<script src="{{ url_for('static', path='/js/pages/one_blackboard.js') }}"></script>
+<script src="{{ url_for('static', path='/js/main.js') }}"></script>
+<script src="{{ url_for('static', path='/js/views.js') }}"></script>
+<script src="{{ url_for('static', path='/js/APIClient.js') }}"></script>
+
+<script src="{{ url_for('static', path='/js/components/Component.js') }}"></script>
+<script src="{{ url_for('static', path='/js/components/Message.js') }}"></script>
+<script src="{{ url_for('static', path='/js/components/Home.js') }}"></script>
+<script src="{{ url_for('static', path='/js/components/NotFound.js') }}"></script>
+<script src="{{ url_for('static', path='/js/components/OneBlackboard.js') }}"></script>
 </body>
 
 </html>
