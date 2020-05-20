@@ -115,9 +115,9 @@ button {
 .full-height {
     width: 100vw;
     height: calc(100vh - var(--navbar-height));
-    position: fixed;
     overflow: auto;
     padding-top: 1rem;
+    position: fixed;
 }
 
 .search-container:focus, .search-container:focus-within > .search-overlay {
@@ -140,29 +140,3 @@ button {
     animation: fade-search-out 3s;
 }
 
-
-@keyframes fade-search-in {
-    0% {
-        opacity: 0;
-        height: 0;
-        width: 0;
-    }
-    100% {
-        opacity: 1;
-        height: calc(100vh - var(--navbar-height));
-        width: 100vw;
-    }
-}
-
-@keyframes fade-search-out {
-    0% {
-        opacity: 1;
-        display: block !important;
-    }
-    99% {
-        display: none;
-    }
-    100% {
-        opacity: 0;
-    }
-}

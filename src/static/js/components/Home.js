@@ -27,14 +27,16 @@ class Home extends Component {
         {% endfor %}
     
         </tbody>
-        
     
     </table>
+    
+    
     <p>
         <button class="error-btn" onclick="const message = new Message('Error', 'error'); message.show() ">Error</button>
         <button class="success-btn" onclick="const message = new Message('Success', 'success'); message.show() ">Success</button>
         <button class="warn-btn" onclick="const message = new Message('Warn', 'warn'); message.show() ">Warn</button>
         <button class="primary-btn" onclick="const message = new Message('Default', 'primary'); message.show() ">Default</button>
+        <button class="primary-btn" onclick="const modal = new Modal('Default', 'primary'); modal.show() ">Modal</button>
     </p>
     `;
 

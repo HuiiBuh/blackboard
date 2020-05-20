@@ -21,7 +21,7 @@ class Router {
     }
 
     /**
-     *
+     * Handle the url changes and call the function which is associated with the url
      * @param path {string}
      */
     async urlChange(path) {
@@ -102,7 +102,7 @@ class Router {
     }
 
     /**
-     *
+     * Set the routes
      * @param value  {{path: string, view: Function, title?: string}[]}
      */
     set routeList(value) {
@@ -110,7 +110,7 @@ class Router {
     }
 
     /**
-     *
+     * Get the currently active routes
      * @returns  {{path: string, view: Function, title?: string}[]}
      */
     get routeList() {

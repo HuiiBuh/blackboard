@@ -1,0 +1,60 @@
+@keyframes fade-search-in {
+    0% {
+        opacity: 0;
+        height: 0;
+        width: 0;
+    }
+    100% {
+        opacity: 1;
+        height: calc(100vh - var(--navbar-height));
+        width: 100vw;
+    }
+}
+
+@keyframes fade-search-out {
+    0% {
+        opacity: 1;
+        display: block !important;
+    }
+    99% {
+        display: none;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        visibility: visible;
+        opacity: 0;
+    }
+    99% {
+        display: block;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    99% {
+        display: none;
+    }
+    100% {
+        visibility: hidden;
+        opacity: 0;
+    }
+}
+
+
+.fade-in {
+    animation: fade-in .3s forwards;
+}
+
+.fade-out {
+    animation: fade-out .3s forwards;
+}

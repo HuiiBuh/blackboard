@@ -11,9 +11,9 @@ class WebApp {
     }
 
     /**
-     *
-     * @param {string} path
-     * @returns {string}
+     * Translate a path to a valid regex
+     * @param {string} path The url path with wildcards
+     * @returns {string} The regex string
      */
     _pathToRegex(path) {
 

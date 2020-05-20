@@ -6,7 +6,10 @@ class OneBlackboard extends Component {
     <div class="blackboard-wrapper">
         <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'startEditing'}">edit</i>
     
-        <div class="blackboard-preview">{{ markdown }}</div>
+        <div class="blackboard-preview">
+            <div class="spinner"></div>
+            <div>{{ markdown }}</div>
+        </div>
     
         <div class="textarea">
             <textarea placeholder="Markdown supported">{{ value }}</textarea>
@@ -25,12 +28,21 @@ class OneBlackboard extends Component {
         this.apiClient = new APIClient('', 'text/plain');
     }
 
+    /**
+     * Show the blackboard
+     * @return {Promise<void>}
+     */
     async show() {
         await this._create();
         this.root.innerText = '';
         this.root.appendChild(this.element);
     }
 
+    /**
+     * Create the Blackboard
+     * @return {Promise<void>}
+     * @private
+     */
     async _create() {
         this.apiResponse.markdown = await this.getGithubMarkdown(this.apiResponse.value);
 
@@ -40,34 +52,42 @@ class OneBlackboard extends Component {
         this._addListener();
     }
 
+    /**
+     * Remove the blackboard
+     */
     remove() {
         this.element.remove();
-        super.remove();
     }
 
-
-    saveListener = null;
-
+    /**
+     * Start the editing
+     */
     startEditing() {
-
         document.querySelector('.blackboard-wrapper').classList.add('editing');
-
-        if (this.saveListener) return;
-
-        this.saveListener = new EventListener(document, 'keydown', async (event) => {
-            if (event.key === 'Escape') {
-                await this.saveChanges();
-            }
-        });
     }
 
+    /**
+     * Save the changes made to the blackboard
+     * @return {Promise<void>}
+     */
     async saveChanges() {
-        document.querySelector('.blackboard-wrapper').classList.remove('editing');
         const value = document.querySelector('textarea').value;
+        const preview = document.querySelector('.blackboard-preview > div:not(.spinner)');
+        const spinner = document.querySelector('.spinner');
 
-        document.querySelector('.blackboard-preview').innerHTML = await this.getGithubMarkdown(value);
+        preview.innerText = '';
+        spinner.style.display = 'inline-block';
+        document.querySelector('.blackboard-wrapper').classList.remove('editing');
+
+        preview.innerHTML = await this.getGithubMarkdown(value);
+        spinner.style.display = 'none';
     }
 
+    /**
+     * Get the markdown representation of the string
+     * @param value The markdown in html
+     * @return {Promise<string>}
+     */
     async getGithubMarkdown(value) {
         return await this.apiClient.post(' https://api.github.com/markdown/raw', {}, value).catch((err) => {
             new Message(JSON.stringify(err), 'error').show();

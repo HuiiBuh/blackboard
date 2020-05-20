@@ -14,3 +14,15 @@ async function main() {
 }
 
 window.onload = main;
+
+
+/**
+ * Sleep for a specific amount of time
+ * @param ms {number} Sleep duration
+ * @return {Promise<void>}
+ */
+async function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
