@@ -103,6 +103,11 @@ class Search {
     }
 
     getSearchResults(search) {
+        if (!searchValue) {
+            this.searchPreview.innerHTML = '<h2>Nothing found</h2>';
+            return;
+        }
+
         // TODO API
         const apiResponse = {
             blackboardList: [

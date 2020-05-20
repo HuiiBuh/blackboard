@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from .models import *
 
 router = APIRouter()
@@ -44,7 +45,9 @@ async def body_example(the_body_data: BodyExample):
     }
 
 
-@router.post("/create_blackboard", response_model=CreateBlackboardResponse)
+# Vorbild für eine REST konforme API https://developer.spotify.com/documentation/web-api/reference/playlists/
+
+@router.post("/blackboards", response_model=CreateBlackboardResponse)
 async def create_blackboard(body_data: CreateBlackboardBody):
     pass
 
@@ -52,28 +55,30 @@ async def create_blackboard(body_data: CreateBlackboardBody):
 @router.post("/acquire_update", response_model=UpdateBlackboardResponse)
 async def acquire_update(body_data: UpdateBlackboardBody):
     pass
+    # TODO das schaut für mich wie update_blackboard aus, oder soll das den lock requesten?
 
 
-@router.post("/update_blackboard", response_model=UpdateBlackboardResponse)
-async def update_blackboard(body_data: UpdateBlackboardBody):
+@router.put("/blackboards/{blackboard_id}", response_model=UpdateBlackboardResponse)
+async def update_blackboard(blackboard_id: str, body_data: UpdateBlackboardBody):
     pass
 
 
-@router.post("/delete_blackboard", response_model=DeleteBlackboardResponse)
-async def delete_blackboard(body_data: DeleteBlackboardBody):
+@router.delete("/blackboards/{blackboard_id}", response_model=DeleteBlackboardResponse)
+async def delete_blackboard(blackboard_id: str, body_data: DeleteBlackboardBody):
     pass
 
 
-@router.get("/read_blackboard", response_model=GetBlackboardContentResponse)
-async def get_blackboard_content(body_data: GetBlackboardContentBody):
+@router.get("/blackboards/{blackboard_id}", response_model=GetBlackboardContentResponse)
+async def get_blackboard_content(blackboard_id: str, body_data: GetBlackboardContentBody):
     pass
 
 
 @router.get("/get_blackboard_status", response_model=GetBlackboardStatusResponse)
 async def get_blackboard_status(body_data: GetBlackboardStatusBody):
     pass
+    # TODO das schaut für mich wie get_blackboard_content, bzw sollte damit auch erschlagen werden
 
 
-@router.get("/get_all_blackboard", response_model=GetBlackboardListResponse)
+@router.get("/blackboards", response_model=GetBlackboardListResponse)
 async def get_all_blackboards(body_data: GetBlackboardListBody):
     pass
