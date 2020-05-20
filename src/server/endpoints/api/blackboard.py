@@ -1,6 +1,5 @@
 from fastapi import APIRouter
-
-from .models import BodyExample, HelloResponseRepresentation
+from .models import *
 
 router = APIRouter()
 
@@ -43,3 +42,38 @@ async def body_example(the_body_data: BodyExample):
     return {
         "hello": the_body_data.name
     }
+
+
+@router.post("/create_blackboard", response_model=CreateBlackboardResponse)
+async def create_blackboard(body_data: CreateBlackboardBody):
+    pass
+
+
+@router.post("/acquire_update", response_model=UpdateBlackboardResponse)
+async def acquire_update(body_data: UpdateBlackboardBody):
+    pass
+
+
+@router.post("/update_blackboard", response_model=UpdateBlackboardResponse)
+async def update_blackboard(body_data: UpdateBlackboardBody):
+    pass
+
+
+@router.post("/delete_blackboard", response_model=DeleteBlackboardResponse)
+async def delete_blackboard(body_data: DeleteBlackboardBody):
+    pass
+
+
+@router.get("/read_blackboard", response_model=GetBlackboardContentResponse)
+async def get_blackboard_content(body_data: GetBlackboardContentBody):
+    pass
+
+
+@router.get("/get_blackboard_status", response_model=GetBlackboardStatusResponse)
+async def get_blackboard_status(body_data: GetBlackboardStatusBody):
+    pass
+
+
+@router.get("/get_all_blackboard", response_model=GetBlackboardListResponse)
+async def get_all_blackboards(body_data: GetBlackboardListBody):
+    pass

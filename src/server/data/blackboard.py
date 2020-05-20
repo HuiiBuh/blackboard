@@ -5,6 +5,7 @@ from os.path import isfile, join
 import time
 import json
 
+
 class Blackboard:
 
     _BLACKBOARDS = {}

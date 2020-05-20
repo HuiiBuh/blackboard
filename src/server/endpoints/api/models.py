@@ -22,3 +22,79 @@ class BodyExample(BaseModel):
         }
     }
     """
+
+
+class CreateBlackboardBody(BaseModel):
+    name: str
+
+
+class CreateBlackboardResponse(BaseModel):
+    response_code: int
+    response_msg: str
+
+
+class UpdateBlackboardBody(BaseModel):
+    token: str
+    name: str
+    content: str
+
+
+class UpdateBlackboardResponse(BaseModel):
+    # Successful or not
+    response_code: int
+    response_msg: str
+
+
+class AcquireUpdateBody(BaseModel):
+    token: str
+    name: str
+
+
+class AcquireUpdateResponse(BaseModel):
+    name: str
+    # Blackboard currently locked by someone else
+    is_locked: bool
+    # Was the blackboard successfully acquired
+    is_acquired: bool
+    # Blackboard will be release automatically after timeout
+    timeout: int
+
+
+class DeleteBlackboardBody(BaseModel):
+    token: str
+    name: str
+
+
+class DeleteBlackboardResponse(BaseModel):
+    response_code: int
+    response_msg: str
+
+
+class GetBlackboardContentBody(BaseModel):
+    name: str
+
+
+class GetBlackboardContentResponse(BaseModel):
+    name: str
+    content: str
+    timestamp_create: float
+    timestamp_edit: float
+
+
+class GetBlackboardStatusBody(BaseModel):
+    name: str
+
+
+class GetBlackboardStatusResponse(BaseModel):
+    name: str
+    is_empty: bool
+    is_edit: bool
+    timestamp_edit: float
+
+
+class GetBlackboardListBody(BaseModel):
+    pass
+
+
+class GetBlackboardListResponse(BaseModel):
+    blackboard_list: []
