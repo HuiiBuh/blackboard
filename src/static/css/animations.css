@@ -1,4 +1,4 @@
-@keyframes fade-search-in {
+@keyframes fade-enlarge-in {
     0% {
         opacity: 0;
         height: 0;
@@ -7,22 +7,32 @@
     100% {
         opacity: 1;
         height: calc(100vh - var(--navbar-height));
-        width: 100vw;
+        width: calc(100vw - 2rem);
     }
 }
 
-@keyframes fade-search-out {
+@keyframes fade-enlarge-out {
     0% {
         opacity: 1;
-        display: block !important;
     }
     99% {
-        display: none;
     }
     100% {
         opacity: 0;
     }
 }
+
+
+.fade-enlarge-in {
+    animation: fade-enlarge-in .3s forwards;
+    display: block !important;
+}
+
+.fade-enlarge-out {
+    animation: fade-enlarge-out .3s forwards;
+    display: block !important;
+}
+
 
 @keyframes fade-in {
     0% {

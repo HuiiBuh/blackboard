@@ -2,22 +2,11 @@ async function home() {
     document.title = 'Select blackboard';
 
     const apiResponse = {
-        blackboardList: [{
-            url: 'first-url',
-            name: 'first-name',
-            editingDate: '12.01.2019',
-            empty: 'check'
-        }, {
-            url: 'first-url',
-            name: 'first-name',
-            editingDate: '12.01.2019',
-            empty: 'check'
-        }, {
-            url: 'first-url',
-            name: 'first-name',
-            editingDate: '12.01.2019',
-            empty: 'check'
-        }]
+        blackboardList: [
+            {url: 'first-url', name: 'first-name', editingDate: '12.01.2019', empty: 'check'},
+            {url: 'first-url', name: 'first-name', editingDate: '12.01.2019', empty: 'check'},
+            {url: 'first-url', name: 'first-name', editingDate: '12.01.2019', empty: 'check'}
+        ]
     };
 
     const homeComponent = new Home(apiResponse);

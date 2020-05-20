@@ -13,7 +13,7 @@
     background: #fff6ee;
 }
 
-.primary, .primary > * {
+.default, .default > * {
     color: #1e87f0;
     background: #d8eafc;
 }

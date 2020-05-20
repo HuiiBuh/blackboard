@@ -37,12 +37,20 @@
         <li>
             <a class="search-container">
                 <input placeholder="Search for blackboard">
-                <div class="search-overlay">
-                    <h2>Nothing found</h2>
-                </div>
             </a>
         </li>
     </ul>
+
+</div>
+
+{# Search #}
+<div class="search-overlay">
+    <i class="material-icons top-right">close</i>
+    <h1>Search results</h1>
+
+    <div class="search-results">
+        <h2>Nothing found</h2>
+    </div>
 
 </div>
 
@@ -86,6 +94,7 @@
 <script src="{{ url_for('static', path='/js/components/Home.js') }}"></script>
 <script src="{{ url_for('static', path='/js/components/NotFound.js') }}"></script>
 <script src="{{ url_for('static', path='/js/components/OneBlackboard.js') }}"></script>
+<script src="{{ url_for('static', path='/js/components/Search.js') }}"></script>
 </body>
 
 </html>

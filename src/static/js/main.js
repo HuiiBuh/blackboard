@@ -1,5 +1,7 @@
 async function main() {
 
+    new Search();
+
     /**
      * @type {{path: string, view: Function, title?: string}[]}
      */

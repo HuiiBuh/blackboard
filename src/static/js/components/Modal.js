@@ -1,7 +1,7 @@
 class Modal extends Component {
 
-    html = `
-    <div class="modal-overlay">
+    static html = `
+    <div class="modal-overlay" listener="{'type':'click', 'handler': 'overlayClicked'}">
     
         <div class="modal">
         
@@ -11,7 +11,7 @@ class Modal extends Component {
             <div class="modal-body">{{ body }}</div>
             
             <div class="modal-footer">
-                <button class="default-btn" listener="{'type':'click', 'handler': 'remove'}">Close</button>
+                <button class="default-btn" listener="{'type':'click', 'handler': 'close'}">Close</button>
                 <button class="primary-btn" listener="{'type':'click', 'handler': 'submit'}">Submit</button>
             </div>
             
@@ -21,9 +21,9 @@ class Modal extends Component {
     `;
 
     /**
-     *
-     * @param {string} header
-     * @param {string} body
+     * Create a new modal
+     * @param {string} header The modal header (HTML supported)
+     * @param {string} body The modal body (HTML supported)
      */
     constructor(header, body) {
         super();
@@ -31,20 +31,31 @@ class Modal extends Component {
         this.header = header;
         this.body = body;
         this.root = document.body;
+        this._create();
     }
 
+    /**
+     * Create the html element
+     * @private
+     */
     _create() {
-        const elementString = this.parser.parseDocument(this.html, {header: this.header, body: this.body});
-        this.element = this._createElement(elementString);
+        const elementString = this.parser.parseDocument(Modal.html, {header: this.header, body: this.body});
+        this.element = this._createElement(elementString, {position: 'fixed', 'z-index': 500});
         this._addListener();
     }
 
+    /**
+     * Show the modal
+     */
     show() {
-        this._create();
         this.root.appendChild(this.element);
+        this.element.classList.remove('fade-out');
         this.element.classList.add('fade-in');
     }
 
+    /**
+     * Remove the modal from the page
+     */
     remove() {
         this.element.classList.add('fade-out');
         setTimeout(() => {
@@ -52,7 +63,28 @@ class Modal extends Component {
         }, 300);
     }
 
+    /**
+     * Handles the submit button
+     */
     submit() {
         alert('hey');
+    }
+
+    /**
+     * Close the current modal
+     */
+    close() {
+        this.element.classList.add('fade-out');
+    }
+
+    /**
+     * Handle overlay click events
+     * @param event {KeyboardEvent}
+     */
+    overlayClicked(event) {
+        const modal = this.element.querySelector('.modal');
+        if (!modal.contains(event.target)) {
+            this.close();
+        }
     }
 }

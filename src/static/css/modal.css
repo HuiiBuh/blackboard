@@ -11,7 +11,7 @@
 
 .modal {
     background: white;
-    width: 50vw;
+    width: 60vw;
     position: absolute;
 
     top: 50px;
@@ -26,6 +26,12 @@
     .modal {
         width: 80vw;
     }
+}
+
+.modal-body {
+    min-height: 10vh;
+    display: flex;
+    align-items: center;
 }
 
 .modal-footer {
