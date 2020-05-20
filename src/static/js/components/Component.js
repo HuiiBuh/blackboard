@@ -11,19 +11,19 @@ class Component {
     /**
      * Create a html element from a string
      * @param string The html string
+     * @param styleObject {object} A list of styles which should be added to the base element
      * @return {Element} An valid html element
-     * @private
+     * @protected
      */
-    _createElement(string) {
+    _createElement(string, styleObject = {}) {
         const temp = document.createElement('div');
         temp.innerHTML = string;
 
-        const child = temp.children;
-        if (child.length === 1) {
-            return child[0];
-        } else {
-            return temp;
+        for (let style in styleObject) {
+            temp.style[style] = styleObject[style];
         }
+
+        return temp;
     }
 
     /**
@@ -42,6 +42,13 @@ class Component {
             // Add the event listener
             listener.addEventListener(attribute.type, this[attribute.handler].bind(this));
         }
+    }
+
+    /**
+     * Overwrite
+     */
+    _create(){
+        throw Error('Not implemented');
     }
 
     /**

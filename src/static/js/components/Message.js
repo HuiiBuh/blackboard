@@ -13,12 +13,12 @@ class Message extends Component {
 
 
     /**
-     *
-     * @param {string} message
-     * @param {string} type
-     * @param {number} timeout
+     * Create a new message
+     * @param {string} message The message string
+     * @param {'error'|'success'|'warn'|'default'} type The message type
+     * @param {number} timeout The timeout after which the message will disappear
      */
-    constructor(message, type, timeout = 4000) {
+    constructor(message, type = 'default', timeout = 4000) {
         super();
 
         this.message = message;
@@ -29,6 +29,9 @@ class Message extends Component {
     }
 
 
+    /**
+     * Show the message
+     */
     show() {
         this._create();
         this.root.appendChild(this.element);
@@ -38,12 +41,19 @@ class Message extends Component {
         }, this.timeout);
     }
 
+    /**
+     * Create the htmle element
+     * @private
+     */
     _create() {
         const elementString = this.parser.parseDocument(Message.html, {'message': this.message, 'type': this.type});
         this.element = this._createElement(elementString);
         this.element.querySelector('.material-icons.close').onclick = this.remove.bind(this);
     }
 
+    /**
+     * Remove the message (is called if the X is clicked)
+     */
     remove() {
         this.element.classList.remove('fade-int');
         this.element.classList.add('fade-out');

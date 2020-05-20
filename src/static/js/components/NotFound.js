@@ -13,6 +13,9 @@ class NotFound extends Component {
     </div>
     `;
 
+    /**
+     * Create the not found Component
+     */
     constructor() {
         super();
 
@@ -21,12 +24,18 @@ class NotFound extends Component {
     }
 
 
+    /**
+     * Show the Component
+     */
     show() {
         this.element = this._createElement(NotFound.html);
         this.root.innerText = '';
         this.root.appendChild(this.element);
     }
 
+    /**
+     * Remove the Component
+     */
     remove() {
         this.element.remove();
     }
