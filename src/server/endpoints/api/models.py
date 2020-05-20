@@ -24,34 +24,26 @@ class BodyExample(BaseModel):
     """
 
 
+# Create
 class CreateBlackboardBody(BaseModel):
     name: str
 
 
 class CreateBlackboardResponse(BaseModel):
-    response_code: int
-    response_msg: str
-
-
-class UpdateBlackboardBody(BaseModel):
-    token: str
-    name: str
-    content: str
-
-
-class UpdateBlackboardResponse(BaseModel):
     # Successful or not
+    # Error message if not
     response_code: int
     response_msg: str
 
 
+# Acquire Blackboard
 class AcquireUpdateBody(BaseModel):
-    token: str
-    name: str
+    pass
 
 
 class AcquireUpdateResponse(BaseModel):
     name: str
+    user_token: str
     # Blackboard currently locked by someone else
     is_locked: bool
     # Was the blackboard successfully acquired
@@ -60,9 +52,23 @@ class AcquireUpdateResponse(BaseModel):
     timeout: int
 
 
-class DeleteBlackboardBody(BaseModel):
-    token: str
+# Update
+class UpdateBlackboardBody(BaseModel):
+    user_token: str
     name: str
+    content: str
+
+
+class UpdateBlackboardResponse(BaseModel):
+    # Successful or not
+    # Error message if not
+    response_code: int
+    response_msg: str
+
+
+# Delete
+class DeleteBlackboardBody(BaseModel):
+    user_token: str
 
 
 class DeleteBlackboardResponse(BaseModel):
@@ -70,19 +76,23 @@ class DeleteBlackboardResponse(BaseModel):
     response_msg: str
 
 
-class GetBlackboardContentBody(BaseModel):
-    name: str
+# Get Blackboard
+class GetBlackboardBody(BaseModel):
+    pass
 
 
-class GetBlackboardContentResponse(BaseModel):
+class GetBlackboardResponse(BaseModel):
     name: str
     content: str
     timestamp_create: float
     timestamp_edit: float
+    is_empty: bool
+    is_edit: bool
 
 
+# Get Status
 class GetBlackboardStatusBody(BaseModel):
-    name: str
+    pass
 
 
 class GetBlackboardStatusResponse(BaseModel):
@@ -92,9 +102,10 @@ class GetBlackboardStatusResponse(BaseModel):
     timestamp_edit: float
 
 
-class GetBlackboardListBody(BaseModel):
+# Get all Blackboards
+class GetAllBlackboardsBody(BaseModel):
     pass
 
 
-class GetBlackboardListResponse(BaseModel):
+class GetAllBlackboardsResponse(BaseModel):
     blackboard_list: []
