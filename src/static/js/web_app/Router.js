@@ -6,10 +6,12 @@ class Router {
 
     /**
      * Create a new router
+     * @param preRouteFunction {Function} Function which will be called before the route function is executed
      */
-    constructor() {
+    constructor(preRouteFunction) {
         this._config = {attributes: true, childList: true, characterData: true, subtree: true};
         this._observer = new MutationObserver(this._addRouterLinks.bind(this));
+        this._preRouteFunction = preRouteFunction;
 
         /**
          * @type  {{path: string, view: Function, title?: string}[]}
@@ -25,6 +27,9 @@ class Router {
      * @param path {string}
      */
     async urlChange(path) {
+
+        // Execute the pre route function
+        this._preRouteFunction();
 
         /**
          * @type  {{path: string, view: Function, title?: string}}

@@ -3,10 +3,11 @@ class WebApp {
     /**
      * Create a new web app
      * @param  {{path: string, view: Function, title?: string}[]} routes
+     * @param preRouteFunction {Function} Function which will be called before the route function is executed
      */
-    constructor(routes) {
+    constructor(routes, preRouteFunction = () => null) {
 
-        this._router = new Router();
+        this._router = new Router(preRouteFunction);
         this.routes = routes;
     }
 

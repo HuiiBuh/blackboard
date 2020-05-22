@@ -12,7 +12,7 @@ class OneBlackboard extends Component {
         </div>
     
         <div class="textarea">
-            <textarea placeholder="Markdown supported">{{ value }}</textarea>
+            <textarea placeholder="Markdown supported">{{ content }}</textarea>
         </div>
     
         <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>
@@ -34,7 +34,6 @@ class OneBlackboard extends Component {
      */
     async show() {
         await this._create();
-        this.root.innerText = '';
         this.root.appendChild(this.element);
     }
 
@@ -44,7 +43,7 @@ class OneBlackboard extends Component {
      * @private
      */
     async _create() {
-        this.apiResponse.markdown = await this.getGithubMarkdown(this.apiResponse.value);
+        this.apiResponse.markdown = await this.getGithubMarkdown(this.apiResponse.content);
 
         const elementString = this.parser.parseDocument(OneBlackboard.html, this.apiResponse);
         this.element = this._createElement(elementString);
@@ -89,9 +88,12 @@ class OneBlackboard extends Component {
      * @return {Promise<string>}
      */
     async getGithubMarkdown(value) {
-        return await this.apiClient.post(' https://api.github.com/markdown/raw', {}, value).catch((err) => {
-            new Message(JSON.stringify(err), 'error').show();
-            throw Error(JSON.stringify(err));
-        });
+        try {
+            return await this.apiClient.post(' https://api.github.com/markdown/raw', {}, value);
+        } catch (e) {
+            e = JSON.parse(e.message);
+            new Message(e.message, 'error').show();
+        }
+        return '<h1>The preview could not be rendered, because of a GitHub API error</h1>';
     }
 }

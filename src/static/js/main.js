@@ -1,3 +1,20 @@
+let homeComponent = new Component();
+let oneBlackboardComponent = new Component();
+let notFoundComponent = new Component();
+
+/**
+ * Remove all current components
+ */
+function removeAll() {
+    homeComponent.remove();
+    oneBlackboardComponent.remove();
+    notFoundComponent.remove();
+}
+
+/**
+ * Main entry point
+ * @return {Promise<void>}
+ */
 async function main() {
 
     new Search();
@@ -11,20 +28,8 @@ async function main() {
         {path: '**', view: notFound, title: 'Not found'}
     ];
 
-    const app = new WebApp(routes);
+    const app = new WebApp(routes, removeAll);
     await app.init();
 }
 
 window.onload = main;
-
-
-/**
- * Sleep for a specific amount of time
- * @param ms {number} Sleep duration
- * @return {Promise<void>}
- */
-async function sleep(ms) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}

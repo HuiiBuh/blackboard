@@ -14,13 +14,13 @@ class Home extends Component {
     
         <tbody>
     
-        {% for blackboard in blackboardList %}
+        {% for blackboard in blackboard_list %}
     
             <tr>
-                <td routerLink="/blackboard/{{ blackboard.url }}">{{ blackboard.name }}</td>
-                <td>{{ blackboard.editingDate }}</td>
-                <td class="text-center"><i class="material-icons ">{{ blackboard.empty }}</i></td>
-                <td class="text-center"><i class="material-icons warn-icon pointer">delete</i></td>
+                <td routerLink="/blackboard/{{ blackboard.name }}">{{ blackboard.name }}</td>
+                <td>{{ blackboard.timestamp_edit }}</td>
+                <td class="text-center"><i class="material-icons ">{{ blackboard.state }}</i></td>
+                <td class="text-center"><i class="material-icons warn-icon pointer" listener="{'type':'click', 'handler': 'deleteBlackboard', 'args':'{{ blackboard.name }}'}">delete</i></td>
             </tr>
     
         {% endfor %}
@@ -44,7 +44,7 @@ class Home extends Component {
 
     static form = `
     <div style="min-width: 100%;">
-        <input class="custom-input" placeholder="Blackboard name"> 
+        <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="31"> 
     </div>
     `;
 
@@ -56,17 +56,17 @@ class Home extends Component {
         super();
         this.apiResponse = apiResponse;
 
-        this.modal = new Modal('Create Blackboard', Home.form);
+        this.apiClient = new APIClient('/api');
+
+        this.modal = new Modal('Create Blackboard', Home.form, this.createNewBlackboard.bind(this));
         this.root = document.querySelector('.container');
     }
-
 
     /**
      * Show the component
      */
-    show() {
-        this._create();
-        this.root.innerText = '';
+    async show() {
+        await this._create();
         this.root.appendChild(this.element);
     }
 
@@ -74,20 +74,90 @@ class Home extends Component {
      * Create the component
      * @private
      */
-    _create() {
+    async _create() {
+        // Get data from the api
+        await this.getData();
+
+        // Parse the api data
         const elementString = this.parser.parseDocument(Home.html, this.apiResponse);
+
+        // Add the created element to the class
         this.element = this._createElement(elementString);
         this._addListener();
     }
+
+    /**
+     * Get the data of all blackboards from the api
+     * @return {Promise<void>}
+     */
+    async getData() {
+        try {
+            this.apiResponse = await this.apiClient.get('/blackboards');
+        } catch (e) {
+            new Message(e.message.detail, 'error').show();
+        }
+    }
+
 
     /**
      * Remove the component
      */
     remove() {
         this.element.remove();
+        this.modal.remove();
     }
 
+    /**
+     * Open the modal
+     */
     openModal() {
         this.modal.show();
+    }
+
+    /**
+     * Create a new blackboard
+     * @return {Promise<void>}
+     */
+    async createNewBlackboard() {
+        const value = document.querySelector('#blackboard-name').value;
+
+        if (!value) {
+            new Message('No name provided', 'error', 500000).show();
+            return;
+        }
+
+        try {
+            await this.apiClient.post('/blackboards', {}, {name: value});
+        } catch (e) {
+            new Message(e.message.detail, 'warn').show();
+            return;
+        }
+
+        new Message(`Created blackboard ${value}`, 'success').show();
+        this.modal.close();
+        
+        this.remove();
+        await this.show();
+    }
+
+
+    /**
+     * Delete a modal
+     * @param _ {KeyboardEvent}
+     * @param blackboardName {string} The blackboard name
+     * @return {Promise<void>}
+     */
+    async deleteBlackboard(_, blackboardName) {
+        try {
+            await this.apiClient.delete(`/blackboards/${blackboardName}`);
+        } catch (e) {
+            new Message(e.message.detail, 'warn').show();
+            return;
+        }
+
+        new Message(`Deleted blackboard ${blackboardName}`, 'success').show();
+
+        this.remove();
+        await this.show();
     }
 }

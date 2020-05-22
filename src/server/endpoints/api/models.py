@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Union
+from typing import Union, Optional
 
 
 # Response models have to extend BaseModel.
@@ -55,7 +55,7 @@ class UpdateBlackboardResponse(BaseModel):
 # Get Blackboard
 class GetBlackboardResponse(BaseModel):
     name: str
-    content: str
+    content: Optional[str]
     timestamp_create: float
     timestamp_edit: float
 

@@ -25,12 +25,12 @@
 
     display: flex;
     flex-direction: column;
+    z-index: 2000;
 }
 
 .message {
     display: inline-block;
     width: 400px;
-    z-index: 1000;
     position: relative;
 
     margin-top: 20px;

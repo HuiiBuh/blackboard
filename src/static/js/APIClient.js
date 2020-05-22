@@ -43,6 +43,17 @@ class APIClient {
     }
 
     /**
+     * Delete request
+     * @param url {string} The url (relative to the base url)
+     * @param urlParams {object} A json object which will be used to create the url params
+     * @param body {object} The body as a json
+     * @return {Promise<string|object>}
+     */
+    async delete(url, urlParams = {}, body = {}) {
+        return await this.request('DELETE', url, urlParams, body);
+    }
+
+    /**
      * Standard request request
      * @param method {'get'|'post'|'delete'|'put'}
      * @param url {string} The url (relative to the base url)
@@ -53,10 +64,15 @@ class APIClient {
     async request(method, url, urlParams = '', body = {}) {
         const self = this;
 
+        // Add url params
         url = this.baseURL + url;
-
         if (urlParams) {
             url += new URLSearchParams(urlParams).toString();
+        }
+
+        // Parse the json object to string
+        if (typeof body === 'object') {
+            body = JSON.stringify(body);
         }
 
         return new Promise((resolve, reject) => {
