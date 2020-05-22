@@ -1,4 +1,4 @@
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from threading import Lock
 from os import listdir, remove
 from os.path import isfile, join, isdir
@@ -129,6 +129,11 @@ class Blackboard:
             "timestamp_edit": self.get_timestamp_edit()
         }
 
+    def get_overview(self) -> dict:
+        data = self.to_dict()
+        data["state"] = self.get_state()
+        return data
+
     def save(self, path: str = PATH):
         file = open(join(path, f"{self.get_name()}.json"), "w")
         json_str: str = json.dumps(self.to_dict(), indent=4)
@@ -170,3 +175,7 @@ class Blackboard:
     @staticmethod
     def get(name: str) -> 'Blackboard':
         return Blackboard._BLACKBOARDS[name]
+
+    @staticmethod
+    def get_all() -> List['Blackboard']:
+        return list(Blackboard._BLACKBOARDS.values())

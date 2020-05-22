@@ -70,10 +70,5 @@ class GetBlackboardStatusResponse(BaseModel):
     timestamp_edit: float
 
 
-# Get all Blackboards
-class GetAllBlackboardsBody(BaseModel):
-    pass
-
-
 class GetAllBlackboardsResponse(BaseModel):
     blackboard_list: list = []

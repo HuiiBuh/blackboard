@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 
 from .models import *
 from src.server.data.blackboard import Blackboard
+from typing import List
 from uuid import uuid1
 
 router = APIRouter()
@@ -165,7 +166,7 @@ async def get_blackboard(blackboard_name: str):
 
 
 @router.get("/blackboards", response_model=GetAllBlackboardsResponse)
-async def get_all_blackboards(body_data: GetAllBlackboardsBody):
+async def get_all_blackboards():
     """
     Return a list containing all blackboards with the following information:
     - name
@@ -173,7 +174,10 @@ async def get_all_blackboards(body_data: GetAllBlackboardsBody):
     - timestamp_edit
     - is_empty
     - is_edit
-    :param body_data:
     :return:
     """
-    pass
+    blackboards: List[Blackboard] = Blackboard.get_all()
+
+    return {
+        "blackboard_list": [b.get_overview() for b in blackboards]
+    }
