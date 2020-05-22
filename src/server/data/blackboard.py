@@ -141,11 +141,13 @@ class Blackboard:
         file.close()
 
     @staticmethod
-    def delete(filename: str, path: str = PATH):
+    def delete(name: str, path: str = PATH):
+        filename: str = name
         if not filename.endswith(".json"):
             filename: str = f"{filename}.json"
         if isfile(join(path, filename)):
             remove(join(path, filename))
+            del Blackboard._BLACKBOARDS[name]
 
     @staticmethod
     def load(filename: str, path: str = PATH):
