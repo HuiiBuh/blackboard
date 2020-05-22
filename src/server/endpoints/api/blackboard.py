@@ -147,11 +147,9 @@ async def get_blackboard_status(blackboard_name: str, body_data: GetBlackboardSt
 @router.get("/blackboards/{blackboard_name}", response_model=GetBlackboardResponse)
 async def get_blackboard(blackboard_name: str, body_data: GetBlackboardBody):
     """
-    Returns the status information as well as the additional information:
+    Returns the following information:
      - name: Name of blackboard
      - content: Content of blackboard
-     - is_empty: Has content or not
-     - is_edit: A user edits the blackboard right now or not
      - timestamp_edit: Timestamp of the last change
      - timestamp_create: Timestamp of creation
     :param blackboard_name:
@@ -167,7 +165,6 @@ async def get_blackboard(blackboard_name: str, body_data: GetBlackboardBody):
 
     # TODO: Returns bool!
     response_data = blackboard.to_dict()
-    response_data["is_empty"], response_data["is_empty"], response_data["timestamp_edit"] = blackboard.get_state()
 
     pass
 
