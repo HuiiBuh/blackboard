@@ -44,7 +44,7 @@ class Home extends Component {
 
     static form = `
     <div style="min-width: 100%;">
-        <input class="custom-input" placeholder="Blackboard name" id="blackboard-name"> 
+        <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="31"> 
     </div>
     `;
 
@@ -152,7 +152,7 @@ class Home extends Component {
             new Message(e.message.detail, 'warn').show();
             return;
         }
-        
+
         new Message(`Deleted blackboard ${blackboardName}`, 'success').show();
         await this.show();
     }
