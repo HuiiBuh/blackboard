@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Union
 
 
 # Response models have to extend BaseModel.
@@ -29,34 +30,19 @@ class CreateBlackboardBody(BaseModel):
     name: str
 
 
-class CreateBlackboardResponse(BaseModel):
-    # Successful or not
-    # Error message if not
-    response_code: int
-    response_msg: str
-
-
-# Acquire Blackboard
-class AcquireUpdateBody(BaseModel):
-    pass
-
-
 class AcquireUpdateResponse(BaseModel):
-    name: str
-    user_token: str
-    # Blackboard currently locked by someone else
-    is_locked: bool
-    # Was the blackboard successfully acquired
-    is_acquired: bool
-    # Blackboard will be release automatically after timeout
-    timeout: int
+    token: str
+
+
+class ReleaseUpdateBody(BaseModel):
+    token: str
 
 
 # Update
 class UpdateBlackboardBody(BaseModel):
-    user_token: str
-    name: str
-    content: str
+    token: str
+    name: Union[None, str]
+    content: Union[None, str]
 
 
 class UpdateBlackboardResponse(BaseModel):

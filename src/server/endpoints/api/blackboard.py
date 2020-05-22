@@ -1,96 +1,73 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 
 from .models import *
 from src.server.data.blackboard import Blackboard
+from uuid import uuid1
 
 router = APIRouter()
-
-
-@router.get("/", response_model=HelloResponseRepresentation)
-async def home(name: str = "world"):
-    """
-    MARKDOWN and basic HTML is supported!
-
-    A route which can be used to say hello to you\n
-    \n
-    __:param__ `name` The name which should be greeted (optional)\n
-    __:return__ A json which greets you\n
-
-    ```json
-    {
-        hello:your_name
-    }
-    ```
-    """
-
-    return {
-        'hello': name
-    }
-
-
-@router.post("/body", response_model=HelloResponseRepresentation)
-async def body_example(the_body_data: BodyExample):
-    """
-    This route uses the body of a request to get the data.\n
-    In general FastAPI tries to get the data and type you put into the function. \n
-    It does not make a difference between url params and body params. \n
-    If you pass multiple body parameters the variable names of the function will be used as a key.\n
-    \n
-    In @router.httpmethod( <- Here you can put in a lot of different information which will be shown in the api doc)
-
-    __:param__ `the_body_data`: The data you transmit in the body of a http request \n
-    __:return:__ The same thing as in home view
-    """
-    return {
-        "hello": the_body_data.name
-    }
 
 # ==========================================================
 # Vorbild für eine REST konforme API https://developer.spotify.com/documentation/web-api/reference/playlists/
 
 
-@router.post("/blackboards", response_model=CreateBlackboardResponse)
+@router.post("/blackboards", status_code=status.HTTP_201_CREATED)
 async def create_blackboard(body_data: CreateBlackboardBody):
     """
     Create blackboard with the given name. Names that already exit are invalid.
     :param body_data:
     :return:
     """
-    # .....
     try:
-        new_blackboard = Blackboard(body_data.name)
-        return new_blackboard
+        Blackboard(body_data.name)
+    except ValueError as e:
+        raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
     except IndexError as e:
-        raise HTTPException(404, 'Blackboard already exists.')
+        raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
 
 
-@router.put("/blackboards/{blackboard_name}/acquire", response_model=UpdateBlackboardResponse)
-async def acquire_blackboard(blackboard_name: str, body_data: UpdateBlackboardBody):
+@router.get("/blackboards/{blackboard_name}/acquire", status_code=status.HTTP_202_ACCEPTED, response_model=UpdateBlackboardResponse)
+async def acquire_blackboard(blackboard_name: str):
     """
     Requests a lock for the given blackboard. The blackboard will be acquired if the it hasn't already been acquired by
     someone else. The user is only able to edit the board (change to edit page), if the blackboard could be acquired.
 
-    TODO: Is this the way to go ??
-    For identifying the user, he has to have a user_token. This user_token is generated right here and given to the
-    user within the response of this call. The user has to use this token when making an update.
-
-    TODO: GOOD / BAD ??
-    Additional parameter in body_data - acquire: Can be set to False in order to release the blackboard without making
-    an update.
     :param blackboard_name:
-    :param body_data:
     :return:
     """
+
+    if not Blackboard.exists(blackboard_name):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
+
+    blackboard: Blackboard = Blackboard.get(blackboard_name)
+
     # Generate user_token
-
+    token = uuid1().hex
     # Try to acquire blackboard
+    if not blackboard.acquire_edit_mode(token):
+        # todo return timeout time
+        raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
 
-    # Return whether it was successful or not
+    # todo return timeout
+    return {
+        "token": token
+    }
 
-    pass
+
+@router.put("/blackboards/{blackboard_name}/release", status_code=status.HTTP_202_ACCEPTED)
+async def release_blackboard(blackboard_name: str, body_data: ReleaseUpdateBody):
+    if not Blackboard.exists(blackboard_name):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
+
+    blackboard: Blackboard = Blackboard.get(blackboard_name)
+
+    if not blackboard.get_edited_by() == body_data.token:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Your are not allowed to release the edit mode!")
+
+    if not blackboard.release_edit_mode():
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Could not release edit mode!")
 
 
-@router.put("/blackboards/{blackboard_name}", response_model=UpdateBlackboardResponse)
+@router.put("/blackboards/{blackboard_name}/update", response_model=UpdateBlackboardResponse)
 async def update_blackboard(blackboard_name: str, body_data: UpdateBlackboardBody):
     """
     Update the content of the blackboard. For this to happen, the user has to lock / acquire the blackboard via
@@ -101,13 +78,26 @@ async def update_blackboard(blackboard_name: str, body_data: UpdateBlackboardBod
     :param body_data:
     :return:
     """
-    # Check if blackboard is acquired with the given user_token
+    if not Blackboard.exists(blackboard_name):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
 
-    # If so, update blackboard
+    blackboard: Blackboard = Blackboard.get(blackboard_name)
 
-    # Release blackboard
+    if not blackboard.get_edited_by() == body_data.token:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Your are not allowed to edit the blackboard!")
 
-    pass
+    if body_data.name is not None:
+        try:
+            blackboard.set_name(body_data.name)
+        except ValueError as e:
+            raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
+        except IndexError as e:
+            raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
+
+    try:
+        blackboard.set_content(body_data.content)
+    except ValueError as e:
+        raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
 
 
 @router.delete("/blackboards/{blackboard_name}", response_model=DeleteBlackboardResponse)
