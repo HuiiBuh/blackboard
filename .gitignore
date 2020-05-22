@@ -131,6 +131,3 @@ dmypy.json
 #idea
 .idea/*
 *.iml
-
-#storage
-src/server/db/*
