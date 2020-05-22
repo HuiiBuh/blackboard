@@ -1,31 +1,31 @@
+const apiClient = new APIClient('/api');
+
+
 async function home() {
     document.title = 'Select blackboard';
-
-    const apiResponse = {
-        blackboardList: [
-            {url: 'first-url', name: 'first-name', editingDate: '12.01.2019', empty: 'check'},
-            {url: 'first-url', name: 'first-name', editingDate: '12.01.2019', empty: 'check'},
-            {url: 'first-url', name: 'first-name', editingDate: '12.01.2019', empty: 'check'}
-        ]
-    };
-
-    const homeComponent = new Home(apiResponse);
-    homeComponent.show();
+    const homeComponent = new Home();
+    await homeComponent.show();
 }
 
 async function oneBlackboard() {
-    const apiResponse = {
-        name: 'TestBoard',
-        value: `
-# Your markdown here
-        
-| Tables   |      Are      |  Cool |
-|----------|:-------------:|------:|
-| col 1 is |  left-aligned | $1600 |
-| col 2 is |    centered   |   $12 |
-| col 3 is | right-aligned |    $1 |
-`
-    };
+
+    const boardName = location.pathname.split('/').pop();
+
+    let apiResponse;
+    try {
+        apiResponse = await apiClient.get(`/blackboards/${boardName}`);
+    } catch (e) {
+        if (e.status === 404) {
+            notFound();
+            return;
+        }
+
+        new Message(e.message.detail, 'error').show();
+    }
+
+    if (!apiResponse.content) {
+        apiResponse.content = '';
+    }
 
     const oneBlackboardComponent = new OneBlackboard(apiResponse);
     await oneBlackboardComponent.show();

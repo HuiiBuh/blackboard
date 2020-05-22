@@ -39,15 +39,22 @@ class Component {
             let attribute = listener.getAttribute('listener').replace(/'/g, '"');
             attribute = JSON.parse(attribute);
 
+            let args = {};
+            if (typeof attribute.args !== 'undefined') {
+                args = attribute.args;
+            }
+
             // Add the event listener
-            listener.addEventListener(attribute.type, this[attribute.handler].bind(this));
+            listener.addEventListener(attribute.type, (event) => {
+                this[attribute.handler].bind(this)(event, args);
+            });
         }
     }
 
     /**
      * Overwrite
      */
-    _create(){
+    _create() {
         throw Error('Not implemented');
     }
 

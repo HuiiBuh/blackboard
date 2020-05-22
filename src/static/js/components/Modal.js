@@ -24,12 +24,15 @@ class Modal extends Component {
      * Create a new modal
      * @param {string} header The modal header (HTML supported)
      * @param {string} body The modal body (HTML supported)
+     * @param {Function} submitCallback The callback function if the submit button is clicked
      */
-    constructor(header, body) {
+    constructor(header, body, submitCallback) {
         super();
 
         this.header = header;
         this.body = body;
+        this.submit = submitCallback;
+
         this.root = document.body;
         this._create();
     }
@@ -61,13 +64,6 @@ class Modal extends Component {
         setTimeout(() => {
             this.element.remove();
         }, 300);
-    }
-
-    /**
-     * Handles the submit button
-     */
-    submit() {
-        alert('hey');
     }
 
     /**

@@ -32,7 +32,7 @@ class Parser {
      */
     _replaceForLoop(string, variables) {
 
-        const start = new RegExp('{% +for [a-zA-Z]+ +in +[a-zA-Z.]+ +%}');
+        const start = new RegExp('{% +for [a-zA-Z_]+ +in +[a-zA-Z._]+ +%}');
         const end = new RegExp('{% +endfor +%}');
 
         let startIndex, endIndex;
