@@ -34,7 +34,6 @@ class OneBlackboard extends Component {
      */
     async show() {
         await this._create();
-        this.root.innerText = '';
         this.root.appendChild(this.element);
     }
 

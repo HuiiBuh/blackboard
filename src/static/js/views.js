@@ -3,22 +3,18 @@ const apiClient = new APIClient('/api');
 
 async function home() {
     document.title = 'Select blackboard';
-    const homeComponent = new Home();
+    homeComponent = new Home();
     await homeComponent.show();
 }
 
 async function oneBlackboard() {
 
-    const boardName = location.pathname.split('/').pop();
-
     let apiResponse;
+
     try {
-        apiResponse = await apiClient.get(`/blackboards/${boardName}`);
+        apiResponse = await apiClient.get(`/blackboards/${location.pathname.split('/').pop()}`);
     } catch (e) {
-        if (e.status === 404) {
-            notFound();
-            return;
-        }
+        if (e.status === 404) return notFound();
 
         new Message(e.message.detail, 'error').show();
     }
@@ -27,11 +23,11 @@ async function oneBlackboard() {
         apiResponse.content = '';
     }
 
-    const oneBlackboardComponent = new OneBlackboard(apiResponse);
+    oneBlackboardComponent = new OneBlackboard(apiResponse);
     await oneBlackboardComponent.show();
 }
 
 function notFound() {
-    const notFoundComponent = new NotFound();
+    notFoundComponent = new NotFound();
     notFoundComponent.show();
 }

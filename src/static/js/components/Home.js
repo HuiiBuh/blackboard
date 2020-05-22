@@ -67,7 +67,6 @@ class Home extends Component {
      */
     async show() {
         await this._create();
-        this.root.innerText = '';
         this.root.appendChild(this.element);
     }
 
@@ -105,6 +104,7 @@ class Home extends Component {
      */
     remove() {
         this.element.remove();
+        this.modal.remove();
     }
 
     /**
@@ -135,6 +135,8 @@ class Home extends Component {
 
         new Message(`Created blackboard ${value}`, 'success').show();
         this.modal.close();
+        
+        this.remove();
         await this.show();
     }
 
@@ -154,6 +156,8 @@ class Home extends Component {
         }
 
         new Message(`Deleted blackboard ${blackboardName}`, 'success').show();
+
+        this.remove();
         await this.show();
     }
 }

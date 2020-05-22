@@ -55,20 +55,17 @@ class Component {
      * Overwrite
      */
     _create() {
-        throw Error('Not implemented');
     }
 
     /**
      * Overwrite
      */
     show() {
-        throw Error('Not implemented');
     }
 
     /**
      * Overwrite
      */
     remove() {
-        throw Error('Not implemented');
     }
 }

@@ -29,7 +29,6 @@ class NotFound extends Component {
      */
     show() {
         this.element = this._createElement(NotFound.html);
-        this.root.innerText = '';
         this.root.appendChild(this.element);
     }
 
