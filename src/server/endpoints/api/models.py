@@ -58,8 +58,6 @@ class GetBlackboardResponse(BaseModel):
     content: str
     timestamp_create: float
     timestamp_edit: float
-    is_empty: bool
-    is_edit: bool
 
 
 # Get Status
