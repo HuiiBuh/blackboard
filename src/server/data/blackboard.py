@@ -25,10 +25,10 @@ class Blackboard:
         if name in Blackboard._BLACKBOARDS.keys():
             raise IndexError(f"Blackboard with name '{name}' already exists!")
 
-        if not Blackboard._NAME_PATTERN.match(name):
+        if Blackboard._NAME_PATTERN.findall(name):
             raise ValueError("Name should only consist of a-z and A-Z letters.")
 
-        if Blackboard._MIN_NAME_LENGTH < len(name) < Blackboard._MAX_NAME_LENGTH:
+        if not Blackboard._MIN_NAME_LENGTH < len(name) < Blackboard._MAX_NAME_LENGTH:
             raise ValueError(f"Name should have a length of:"
                              f" {Blackboard._MIN_NAME_LENGTH} < length < {Blackboard._MAX_NAME_LENGTH}")
 
@@ -46,10 +46,10 @@ class Blackboard:
 
     def set_name(self, name: str) -> None:
 
-        if not Blackboard._NAME_PATTERN.match(name):
+        if Blackboard._NAME_PATTERN.findall(name):
             raise ValueError("Name should only consist of a-z and A-Z letters.")
 
-        if Blackboard._MIN_NAME_LENGTH < len(name) < Blackboard._MAX_NAME_LENGTH:
+        if not Blackboard._MIN_NAME_LENGTH < len(name) < Blackboard._MAX_NAME_LENGTH:
             raise ValueError(f"Name should have a length of:"
                              f" {Blackboard._MIN_NAME_LENGTH} < length < {Blackboard._MAX_NAME_LENGTH}")
 

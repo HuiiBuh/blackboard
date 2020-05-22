@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     print(bb.to_dict())
 
-    bb.set_name("Esklappt!")
+    bb.set_name("Esklappt")
 
 
     # Import string, but with : instead of .
