@@ -57,11 +57,20 @@ class Blackboard:
             raise IndexError(f"Blackboard with name '{name}' already exists!")
         cur_name = self.get_name()
         Blackboard.delete(cur_name)
-        del Blackboard._BLACKBOARDS[cur_name]
+
+        # TODO: Better solution?
+        # Problem: If blackboard is created and right afterwards the name is changed,
+        # the JSON-File does not yet exit. Raises exception.
+        # PS: The JSON-File won't be created at all!?!
+        try:
+            del Blackboard._BLACKBOARDS[cur_name]
+        except KeyError as e:
+            pass
 
         self._name = name
         self._timestamp_edit = time.time()
         Blackboard._BLACKBOARDS[name] = self
+
         self.save()
 
     def get_name(self) -> str:
