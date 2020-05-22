@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 
 from .models import *
 from src.server.data.blackboard import Blackboard
@@ -110,42 +110,49 @@ async def update_blackboard(blackboard_name: str, body_data: UpdateBlackboardBod
     pass
 
 
-@router.delete("/blackboards/{blackboard_name}", response_model=DeleteBlackboardResponse)
-async def delete_blackboard(blackboard_name: str, body_data: DeleteBlackboardBody):
+@router.delete("/blackboards/{blackboard_name}", status_code=status.HTTP_200_OK)
+async def delete_blackboard(blackboard_name: str):
     """
     Delete the blackboard. For this to happen, the user has to lock / acquire the blackboard via
     acquire_update() first. Additionally he must have the user_token transmitted, which was used for acquiring the
     blackboard.
-    :param blackboard_name:
-    :param body_data:
+    :param blackboard_name: Name of the blackboard to be deleted.
     :return:
     """
-    # Check if blackboard is acquired with the given user_token
+    if Blackboard.exists(blackboard_name):
+        blackboard: Blackboard = Blackboard.get(blackboard_name)
+        if blackboard.acquire_edit_mode("master_token"):
+            Blackboard.delete(blackboard.get_name())
+        else:
+            raise HTTPException(status.HTTP_423_LOCKED, 'Blackboard is in use.')
+    else:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, 'Blackboard does not exist.')
 
-    # If so, delete blackboard
 
-    pass
-
-
-@router.get("/blackboards/{blackboard_name}/status", response_model=GetBlackboardStatusResponse)
-async def get_blackboard_status(blackboard_name: str, body_data: GetBlackboardStatusBody):
+@router.get("/blackboards/{blackboard_name}/status", response_model=GetBlackboardStatusResponse,
+            status_code=status.HTTP_200_OK)
+async def get_blackboard_status(blackboard_name: str):
     """
     Return status of blackboard containing
-     - name: Name of blackboard
      - is_empty: Has content or not
      - is_edit: A user edits the blackboard right now or not
      - timestamp_edit: Timestamp of the last change
-    :param blackboard_name:
-    :param body_data:
+    :param blackboard_name: Name of the blackboard.
     :return:
     """
-    # Return blackboard status
+    if Blackboard.exists(blackboard_name):
+        blackboard: Blackboard = Blackboard.get(blackboard_name)
+        is_empty, is_edit, timestamp_edit = blackboard.get_state()
+        GetBlackboardStatusResponse.is_empty = is_empty
+        GetBlackboardStatusResponse.is_edit = is_edit
+        GetBlackboardStatusResponse.timestamp_edit = timestamp_edit
+        GetBlackboardStatusResponse.name = blackboard_name
+    else:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, 'Blackboard does not exist.')
 
-    pass
 
-
-@router.get("/blackboards/{blackboard_name}", response_model=GetBlackboardResponse)
-async def get_blackboard(blackboard_name: str, body_data: GetBlackboardBody):
+@router.get("/blackboards/{blackboard_name}", response_model=GetBlackboardResponse, status_code=status.HTTP_200_OK)
+async def get_blackboard(blackboard_name: str):
     """
     TODO: Do you need a token for getting this information?
 
@@ -154,18 +161,17 @@ async def get_blackboard(blackboard_name: str, body_data: GetBlackboardBody):
      - content: Content of blackboard
      - timestamp_edit: Timestamp of the last change
      - timestamp_create: Timestamp of creation
-    :param blackboard_name:
-    :param body_data:
+    :param blackboard_name: Name of the blackboard.
     :return:
     """
-    # ......
-
-    # Return blackboard
     if Blackboard.exists(blackboard_name):
-        blackboard = Blackboard.get(blackboard_name)
-        return blackboard.to_dict()
+        blackboard: Blackboard = Blackboard.get(blackboard_name)
+        GetBlackboardResponse.name = blackboard.get_name()
+        GetBlackboardResponse.content = blackboard.get_content()
+        GetBlackboardResponse.timestamp_create = blackboard.get_timestamp_create()
+        GetBlackboardResponse.timestamp_edit= blackboard.get_timestamp_edit()
     else:
-        raise HTTPException(404, 'Blackboard not found.')
+        raise HTTPException(status.HTTP_404_NOT_FOUND, 'Blackboard does not exist.')
 
 
 @router.get("/blackboards", response_model=GetAllBlackboardsResponse)

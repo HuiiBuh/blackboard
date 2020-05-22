@@ -66,21 +66,7 @@ class UpdateBlackboardResponse(BaseModel):
     response_msg: str
 
 
-# Delete
-class DeleteBlackboardBody(BaseModel):
-    user_token: str
-
-
-class DeleteBlackboardResponse(BaseModel):
-    response_code: int
-    response_msg: str
-
-
 # Get Blackboard
-class GetBlackboardBody(BaseModel):
-    pass
-
-
 class GetBlackboardResponse(BaseModel):
     name: str
     content: str
@@ -91,10 +77,6 @@ class GetBlackboardResponse(BaseModel):
 
 
 # Get Status
-class GetBlackboardStatusBody(BaseModel):
-    pass
-
-
 class GetBlackboardStatusResponse(BaseModel):
     name: str
     is_empty: bool
