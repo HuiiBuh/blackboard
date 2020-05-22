@@ -1,9 +1,10 @@
 from typing import Union, Tuple
 from threading import Lock
 from os import listdir, remove
-from os.path import isfile, join
+from os.path import isfile, join, isdir
 import time
 import json
+import re
 
 
 class Blackboard:
@@ -12,11 +13,24 @@ class Blackboard:
 
     PATH = join(join(".", "server"), "db")
 
+    _NAME_PATTERN = re.compile("[^a-zA-Z]")
+    _MIN_NAME_LENGTH = 3
+    _MAX_NAME_LENGTH = 32
+
+    _MIN_CONTENT_LENGTH = 1
+    _MAX_CONTENT_LENGTH = 1024
+
     def __init__(self, name: str, content: Union[None, str] = None, timestamp_create: float = time.time(),
                  timestamp_edit: float = time.time()):
-        # TODO Case Sensitive?
         if name in Blackboard._BLACKBOARDS.keys():
             raise IndexError(f"Blackboard with name '{name}' already exists!")
+
+        if not Blackboard._NAME_PATTERN.match(name):
+            raise ValueError("Name should only consist of a-z and A-Z letters.")
+
+        if Blackboard._MIN_NAME_LENGTH < len(name) < Blackboard._MAX_NAME_LENGTH:
+            raise ValueError(f"Name should have a length of:"
+                             f" {Blackboard._MIN_NAME_LENGTH} < length < {Blackboard._MAX_NAME_LENGTH}")
 
         self._name: str = name
         self._content: Union[None, str] = content
@@ -31,20 +45,37 @@ class Blackboard:
         Blackboard._BLACKBOARDS[name] = self
 
     def set_name(self, name: str) -> None:
+
+        if not Blackboard._NAME_PATTERN.match(name):
+            raise ValueError("Name should only consist of a-z and A-Z letters.")
+
+        if Blackboard._MIN_NAME_LENGTH < len(name) < Blackboard._MAX_NAME_LENGTH:
+            raise ValueError(f"Name should have a length of:"
+                             f" {Blackboard._MIN_NAME_LENGTH} < length < {Blackboard._MAX_NAME_LENGTH}")
+
         if name in Blackboard._BLACKBOARDS.keys():
             raise IndexError(f"Blackboard with name '{name}' already exists!")
         cur_name = self.get_name()
         Blackboard.delete(cur_name)
-        del Blackboard._BLACKBOARDS[name]
+        del Blackboard._BLACKBOARDS[cur_name]
 
         self._name = name
         self._timestamp_edit = time.time()
         Blackboard._BLACKBOARDS[name] = self
+        self.save()
 
     def get_name(self) -> str:
         return self._name
 
     def set_content(self, content: Union[None, str]) -> None:
+
+        if isinstance(content, str) and not content:
+            raise ValueError("Empty string is not allowed. Use None instead.")
+
+        if content is not None and Blackboard._MIN_CONTENT_LENGTH < len(content) < Blackboard._MAX_CONTENT_LENGTH:
+            raise ValueError(f"Content size should be: "
+                             f"{Blackboard._MIN_CONTENT_LENGTH} < length < {Blackboard._MAX_CONTENT_LENGTH}")
+
         self._content = content
         self._timestamp_edit = time.time()
 
@@ -106,7 +137,7 @@ class Blackboard:
 
     @staticmethod
     def delete(filename: str, path: str = PATH):
-        if not filename.find(".json"):
+        if not filename.endswith(".json"):
             filename: str = f"{filename}.json"
         if isfile(join(path, filename)):
             remove(join(path, filename))
@@ -137,5 +168,5 @@ class Blackboard:
         return name in Blackboard._BLACKBOARDS.keys()
 
     @staticmethod
-    def get(name: str) -> bool:
+    def get(name: str) -> 'Blackboard':
         return Blackboard._BLACKBOARDS[name]

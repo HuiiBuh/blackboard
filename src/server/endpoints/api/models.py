@@ -108,4 +108,4 @@ class GetAllBlackboardsBody(BaseModel):
 
 
 class GetAllBlackboardsResponse(BaseModel):
-    blackboard_list: []
+    blackboard_list: list = []
