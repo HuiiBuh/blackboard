@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from .models import *
 from src.server.data.blackboard import Blackboard
@@ -58,10 +58,10 @@ async def create_blackboard(body_data: CreateBlackboardBody):
     """
     # .....
     try:
-        Blackboard(body_data.name)
-        return True
+        new_blackboard = Blackboard(body_data.name)
+        return new_blackboard
     except IndexError as e:
-        return e
+        raise HTTPException(404, 'Blackboard already exists.')
 
 
 @router.put("/blackboards/{blackboard_name}/acquire", response_model=UpdateBlackboardResponse)
@@ -147,6 +147,8 @@ async def get_blackboard_status(blackboard_name: str, body_data: GetBlackboardSt
 @router.get("/blackboards/{blackboard_name}", response_model=GetBlackboardResponse)
 async def get_blackboard(blackboard_name: str, body_data: GetBlackboardBody):
     """
+    TODO: Do you need a token for getting this information?
+
     Returns the following information:
      - name: Name of blackboard
      - content: Content of blackboard
@@ -159,20 +161,22 @@ async def get_blackboard(blackboard_name: str, body_data: GetBlackboardBody):
     # ......
 
     # Return blackboard
-    blackboard = Blackboard.get(blackboard_name)
-    if blackboard is None:
-        return False
-
-    # TODO: Returns bool!
-    response_data = blackboard.to_dict()
-
-    pass
+    if Blackboard.exists(blackboard_name):
+        blackboard = Blackboard.get(blackboard_name)
+        return blackboard.to_dict()
+    else:
+        raise HTTPException(404, 'Blackboard not found.')
 
 
 @router.get("/blackboards", response_model=GetAllBlackboardsResponse)
 async def get_all_blackboards(body_data: GetAllBlackboardsBody):
     """
-    Return a list containing all blackboards with all the information available (check get_blackboard).
+    Return a list containing all blackboards with the following information:
+    - name
+    - timestamp_create
+    - timestamp_edit
+    - is_empty
+    - is_edit
     :param body_data:
     :return:
     """
