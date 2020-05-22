@@ -31,7 +31,6 @@ async def acquire_blackboard(blackboard_name: str):
     """
     Requests a lock for the given blackboard. The blackboard will be acquired if the it hasn't already been acquired by
     someone else. The user is only able to edit the board (change to edit page), if the blackboard could be acquired.
-
     :param blackboard_name:
     :return:
     """
@@ -56,6 +55,12 @@ async def acquire_blackboard(blackboard_name: str):
 
 @router.put("/blackboards/{blackboard_name}/release", status_code=status.HTTP_202_ACCEPTED)
 async def release_blackboard(blackboard_name: str, body_data: ReleaseUpdateBody):
+    """
+    Releases the lock for the given blackboard.
+    :param blackboard_name:
+    :param body_data: Name of the blackboard.
+    :return:
+    """
     if not Blackboard.exists(blackboard_name):
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
 
@@ -75,7 +80,7 @@ async def update_blackboard(blackboard_name: str, body_data: UpdateBlackboardBod
     acquire_update() first. Additionally he must have the user_token transmitted, which was used for acquiring the
     blackboard.
     After the update, the lock of the blackboard will automatically be released.
-    :param blackboard_name:
+    :param blackboard_name: Name of the blackboard.
     :param body_data:
     :return:
     """
