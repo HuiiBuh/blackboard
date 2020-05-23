@@ -97,11 +97,12 @@ class Blackboard:
     def get_timestamp_edit(self) -> float:
         return self._timestamp_create
 
-    # TODO: Please return this as json as well. It is clearer what property you access at the client
-    def get_state(self) -> Tuple[bool, bool, float]:
-        is_empty = self.get_content() is None
-        is_edit = self.get_edited_by() is not None
-        return is_empty, is_edit, self.get_timestamp_edit()
+    def get_state(self) -> dict:
+        return {
+            "is_empty": self.get_content() is None,
+            "is_edit": self.get_edited_by() is not None,
+            "timestamp_edit": self.get_timestamp_edit()
+        }
 
     def get_edited_by(self) -> Union[None, str]:
         return self._edited_by

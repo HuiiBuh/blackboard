@@ -24,7 +24,6 @@ async def get_all_blackboards():
     :return:
     """
     blackboards: List[Blackboard] = Blackboard.get_all()
-    print(blackboards)
 
     return {
         "blackboard_list": [b.get_overview() for b in blackboards]
@@ -151,6 +150,7 @@ async def delete_blackboard(blackboard_name: str):
 async def get_blackboard_status(blackboard_name: str):
     """
     Return status of blackboard containing
+     - name
      - is_empty: Has content or not
      - is_edit: A user edits the blackboard right now or not
      - timestamp_edit: Timestamp of the last change
@@ -161,14 +161,11 @@ async def get_blackboard_status(blackboard_name: str):
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
 
     blackboard: Blackboard = Blackboard.get(blackboard_name)
-    is_empty, is_edit, timestamp_edit = blackboard.get_state()
 
-    return {
-        "name": blackboard.get_name(),
-        "is_empty": is_empty,
-        "is_edit": is_edit,
-        "timestamp_edit": timestamp_edit
-    }
+    blackboard_state = blackboard.get_state()
+    blackboard_state["name"] = blackboard.get_name()
+
+    return blackboard_state
 
 
 @router.get("/blackboards/{blackboard_name}", response_model=GetBlackboardResponse)
