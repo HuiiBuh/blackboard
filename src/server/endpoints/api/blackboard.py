@@ -46,7 +46,7 @@ async def create_blackboard(body_data: CreateBlackboardBody):
 
 
 @router.get("/blackboards/{blackboard_name}/acquire", status_code=status.HTTP_202_ACCEPTED,
-            response_model=UpdateBlackboardResponse)
+            response_model=AcquireUpdateResponse)
 async def acquire_blackboard(blackboard_name: str):
     """
     Requests a lock for the given blackboard. The blackboard will be acquired if the it hasn't already been acquired by

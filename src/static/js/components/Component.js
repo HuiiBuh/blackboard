@@ -45,7 +45,7 @@ class Component {
             }
 
             // Add the event listener
-            listener.addEventListener(attribute.type, (event) => {
+            listener.addEventListener(attribute.type, async (event) => {
                 this[attribute.handler].bind(this)(event, args);
             });
         }
