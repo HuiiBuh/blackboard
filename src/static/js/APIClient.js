@@ -10,52 +10,72 @@ class APIClient {
     }
 
     /**
-     * Put request
+     * Put request (Exceptions get handled)
      * @param url {string} The url (relative to the base url)
      * @param urlParams {object} A json object which will be used to create the url params
      * @param body {object} The body as a json
      * @return {Promise<string|object>}
      */
-    async put(url, urlParams = '', body = {}) {
-        return await this.request('PUT', urlParams, body);
+    async put(url, urlParams = {}, body = {}) {
+        try {
+            return await this.request('PUT', url, urlParams, body);
+        } catch (e) {
+            new Message(e.message.detail, 'error').show();
+            throw new Error(JSON.stringify(e));
+        }
     }
 
     /**
-     * Get request
+     * Get request (Exceptions get handled)
      * @param url {string} The url (relative to the base url)
      * @param urlParams {object} A json object which will be used to create the url params
      * @param body {object} The body as a json
      * @return {Promise<string|object>}
      */
-    async get(url, urlParams = '', body = {}) {
-        return await this.request('GET', url, urlParams, body);
+    async get(url, urlParams = {}, body = {}) {
+        try {
+            return await this.request('GET', url, urlParams, body);
+        } catch (e) {
+            new Message(e.message.detail, 'error').show();
+            throw new Error(JSON.stringify(e));
+        }
     }
 
     /**
-     * Post request
+     * Post request (Exceptions get handled)
      * @param url {string} The url (relative to the base url)
      * @param urlParams {object} A json object which will be used to create the url params
      * @param body {object} The body as a json
      * @return {Promise<string|object>}
      */
     async post(url, urlParams = {}, body = {}) {
-        return await this.request('POST', url, urlParams, body);
+        try {
+            return await this.request('POST', url, urlParams, body);
+        } catch (e) {
+            new Message(e.message.detail, 'error').show();
+            throw new Error(JSON.stringify(e));
+        }
     }
 
     /**
-     * Delete request
+     * Delete request (Exceptions get handled)
      * @param url {string} The url (relative to the base url)
      * @param urlParams {object} A json object which will be used to create the url params
      * @param body {object} The body as a json
      * @return {Promise<string|object>}
      */
     async delete(url, urlParams = {}, body = {}) {
-        return await this.request('DELETE', url, urlParams, body);
+        try {
+            return await this.request('DELETE', url, urlParams, body);
+        } catch (e) {
+            new Message(e.message.detail, 'error').show();
+            throw new Error(JSON.stringify(e));
+        }
     }
 
     /**
      * Standard request request
-     * @param method {'get'|'post'|'delete'|'put'}
+     * @param method {'GET'|'POST'|'DELETE'|'PUT'}
      * @param url {string} The url (relative to the base url)
      * @param urlParams {object} A json object which will be used to create the url params
      * @param body {object} The body as a json
@@ -105,7 +125,7 @@ class APIClient {
     _extractResponse(request) {
         const contentType = request.getResponseHeader('Content-Type');
 
-        if (contentType.toLowerCase() === 'application/json') {
+        if (contentType && contentType.toLowerCase() === 'application/json') {
             return JSON.parse(request.responseText);
         }
         return request.responseText;

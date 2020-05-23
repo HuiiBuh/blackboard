@@ -91,11 +91,7 @@ class Home extends Component {
      * @return {Promise<void>}
      */
     async getData() {
-        try {
-            this.apiResponse = await this.apiClient.get('/blackboards');
-        } catch (e) {
-            new Message(e.message.detail, 'error').show();
-        }
+        this.apiResponse = await this.apiClient.get('/blackboards');
     }
 
 
@@ -126,16 +122,11 @@ class Home extends Component {
             return;
         }
 
-        try {
-            await this.apiClient.post('/blackboards', {}, {name: value});
-        } catch (e) {
-            new Message(e.message.detail, 'warn').show();
-            return;
-        }
+        await this.apiClient.post('/blackboards', {}, {name: value});
 
         new Message(`Created blackboard ${value}`, 'success').show();
+
         this.modal.close();
-        
         this.remove();
         await this.show();
     }
@@ -148,12 +139,7 @@ class Home extends Component {
      * @return {Promise<void>}
      */
     async deleteBlackboard(_, blackboardName) {
-        try {
-            await this.apiClient.delete(`/blackboards/${blackboardName}`);
-        } catch (e) {
-            new Message(e.message.detail, 'warn').show();
-            return;
-        }
+        await this.apiClient.delete(`/blackboards/${blackboardName}`);
 
         new Message(`Deleted blackboard ${blackboardName}`, 'success').show();
 

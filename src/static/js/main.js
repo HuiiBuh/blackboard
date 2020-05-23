@@ -1,3 +1,4 @@
+// Create all the components and initialize them
 let homeComponent = new Component();
 let oneBlackboardComponent = new Component();
 let notFoundComponent = new Component();
@@ -10,6 +11,8 @@ function removeAll() {
     oneBlackboardComponent.remove();
     notFoundComponent.remove();
 }
+
+const blackboardHandler = new BlackboardHandler();
 
 /**
  * Main entry point

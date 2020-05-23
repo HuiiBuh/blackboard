@@ -8,7 +8,7 @@ class Modal extends Component {
             <div class="modal-header">
                 <h1>{{ header }}</h1>
             </div>
-            <div class="modal-body">{{ body }}</div>
+            <div class="modal-body" listener="{'type':'keydown', 'handler': 'isEnter'}">{{ body }}</div>
             
             <div class="modal-footer">
                 <button class="default-btn" listener="{'type':'click', 'handler': 'close'}">Close</button>
@@ -82,5 +82,15 @@ class Modal extends Component {
         if (!modal.contains(event.target)) {
             this.close();
         }
+    }
+
+
+    /**
+     * Is the event a KeyboardEvent and if yes submit the modal
+     * @param event {KeyboardEvent}
+     */
+    async isEnter(event) {
+        if (event.key !== 'Enter') return;
+        await this.submit();
     }
 }

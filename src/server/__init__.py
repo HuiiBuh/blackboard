@@ -3,9 +3,10 @@ from fastapi.staticfiles import StaticFiles
 
 from .endpoints.api.blackboard import router as blackboard_router
 from .endpoints.webpage.webpage import router as webpage_router
+from .data.blackboard import Blackboard
 
 # Create an instance of the web framework
-app = FastAPI()
+app = FastAPI(title='Blackboard')
 
 # Serve the static files from the static files directory
 app.mount("/static", StaticFiles(directory="static"), name="static")

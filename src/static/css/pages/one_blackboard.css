@@ -35,27 +35,28 @@
     display: block;
 }
 
-.blackboard-wrapper.editing > .textarea {
-    display: block;
-}
 
-.blackboard-wrapper.editing > .blackboard-preview {
-    display: none;
-}
-
-.blackboard-wrapper.editing > .save {
+.editing input.title,
+.editing .blackboard-wrapper > .textarea,
+.editing .blackboard-wrapper > .save {
     display: block !important;
 }
 
-.blackboard-wrapper:not(.editing) > .edit {
-    display: block !important;
+input.title,
+.editing h1.title,
+
+.editing .edit,
+.save,
+
+.editing .blackboard-wrapper > .blackboard-preview {
+    display: none !important;
 }
+
 
 .edit, .save {
     z-index: 1;
     padding: 5px;
     position: absolute;
-    display: none !important;
 }
 
 .edit {
