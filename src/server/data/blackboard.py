@@ -13,6 +13,7 @@ class Blackboard:
 
     PATH = join(join(".", "server"), "db")
 
+    # RegEx for finding any digit which is not(^) a-z or A-Z
     _NAME_PATTERN = re.compile("[^a-zA-Z]")
     _MIN_NAME_LENGTH = 3
     _MAX_NAME_LENGTH = 32
