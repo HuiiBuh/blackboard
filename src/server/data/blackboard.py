@@ -3,7 +3,7 @@ import re
 from os import listdir, remove
 from os.path import isfile, join
 from threading import Lock
-from typing import Union, Tuple, List
+from typing import Union, List
 
 import time
 
@@ -211,7 +211,7 @@ class Blackboard:
 
     @staticmethod
     def delete_file(blackboard_id: int, path: str = PATH):
-        filename: str = Blackboard._BLACKBOARDS[blackboard_id].name
+        filename: str = Blackboard._BLACKBOARDS[blackboard_id]._name
         if not filename.endswith(".json"):
             filename: str = f"{filename}.json"
         if isfile(join(path, filename)):

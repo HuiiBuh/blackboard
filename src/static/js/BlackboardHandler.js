@@ -31,6 +31,7 @@ class BlackboardHandler {
         await this.apiCLient.put(`/blackboards/${this.blackboardName}/release`, {}, {
             token: this.token
         });
+        this.token = null;
     }
 
     async updateBlackboard(content, name) {

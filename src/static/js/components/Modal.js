@@ -1,14 +1,14 @@
 class Modal extends Component {
 
     static html = `
-    <div class="modal-overlay" listener="{'type':'click', 'handler': 'overlayClicked'}">
+    <div class="modal-overlay" listener="{'type':'click', 'handler': '_overlayClicked'}">
     
         <div class="modal">
         
             <div class="modal-header">
                 <h1>{{ header }}</h1>
             </div>
-            <div class="modal-body" listener="{'type':'keydown', 'handler': 'isEnter'}">{{ body }}</div>
+            <div class="modal-body" listener="{'type':'keydown', 'handler': '_isEnter'}">{{ body }}</div>
             
             <div class="modal-footer">
                 <button class="default-btn" listener="{'type':'click', 'handler': 'close'}">Close</button>
@@ -34,18 +34,9 @@ class Modal extends Component {
         this.submit = submitCallback;
 
         this.root = document.body;
-        this._create();
+        this._prepareComponent();
     }
 
-    /**
-     * Create the html element
-     * @private
-     */
-    _create() {
-        const elementString = this.parser.parseDocument(Modal.html, {header: this.header, body: this.body});
-        this.element = this._createElement(elementString, {position: 'fixed', 'z-index': 500});
-        this._addListener();
-    }
 
     /**
      * Show the modal
@@ -54,6 +45,16 @@ class Modal extends Component {
         this.root.appendChild(this.element);
         this.element.classList.remove('fade-out');
         this.element.classList.add('fade-in');
+    }
+
+    /**
+     * Create the html element
+     * @private
+     */
+    _prepareComponent() {
+        const elementString = this.parser.parseDocument(Modal.html, {header: this.header, body: this.body});
+        this.element = this._createElement(elementString, {position: 'fixed', 'z-index': 500});
+        this._addListener();
     }
 
     /**
@@ -76,8 +77,9 @@ class Modal extends Component {
     /**
      * Handle overlay click events
      * @param event {KeyboardEvent}
+     * @private
      */
-    overlayClicked(event) {
+    _overlayClicked(event) {
         const modal = this.element.querySelector('.modal');
         if (!modal.contains(event.target)) {
             this.close();
@@ -88,8 +90,9 @@ class Modal extends Component {
     /**
      * Is the event a KeyboardEvent and if yes submit the modal
      * @param event {KeyboardEvent}
+     * @private
      */
-    async isEnter(event) {
+    async _isEnter(event) {
         if (event.key !== 'Enter') return;
         await this.submit();
     }

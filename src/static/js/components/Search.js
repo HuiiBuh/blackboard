@@ -27,18 +27,26 @@ class Search {
         </tbody>
     `;
 
-    timeout = 10;
+    /**
+     * @type {Search}
+     */
+    static instance;
 
     /**
      * Create a new search class which handles the search requests
      */
     constructor() {
+        if (Search.instance) return Search.instance;
+        Search.instance = this;
+
         this.searchContainer = document.querySelector('.search-container');
         this.searchOverlay = document.querySelector('.search-overlay');
         this.closeButton = this.searchOverlay.querySelector('.top-right');
         this.navigationBar = document.querySelector('.navigation-bar');
         this.input = this.navigationBar.querySelector('input');
         this.searchPreview = document.querySelector('.search-results');
+
+        this.timeout = 10;
 
         this.parser = new Parser();
 

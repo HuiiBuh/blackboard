@@ -20,11 +20,10 @@ class OneBlackboard extends Component {
     </div>
     `;
 
-    constructor(apiResponse) {
+    constructor() {
         super();
 
-        this.apiResponse = apiResponse;
-        document.title = apiResponse.name;
+        this.apiResponse = null;
 
         this.root = document.querySelector('.container');
         this.apiClient = new APIClient('', 'text/plain');
@@ -35,8 +34,9 @@ class OneBlackboard extends Component {
      * Show the blackboard
      * @return {Promise<void>}
      */
-    async show() {
-        await this._create();
+    async show(apiResponse) {
+        document.title = apiResponse.name
+        await this._prepareComponent(apiResponse);
         this.root.appendChild(this.element);
     }
 
@@ -45,7 +45,9 @@ class OneBlackboard extends Component {
      * @return {Promise<void>}
      * @private
      */
-    async _create() {
+    async _prepareComponent(apiResponse) {
+        this.apiResponse = apiResponse;
+
         this.apiResponse.markdown = await this.getGithubMarkdown(this.apiResponse.content);
 
         const elementString = this.parser.parseDocument(OneBlackboard.html, this.apiResponse);
@@ -65,7 +67,7 @@ class OneBlackboard extends Component {
      * Start the editing
      */
     async startEditing() {
-        await this.blackboardHandler.acquireBlackboard(this.apiResponse.name);
+        await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
         document.body.classList.add('editing');
     }
 
@@ -74,19 +76,24 @@ class OneBlackboard extends Component {
      * @return {Promise<void>}
      */
     async saveChanges() {
-        this.apiResponse.content = document.querySelector('textarea').value;
-        this.apiResponse.name = document.querySelector('input.title').value;
-        document.title = this.apiResponse.name;
 
+        // Get the updated values of the blackboard
+        const content = document.querySelector('textarea').value;
+        const name = document.querySelector('input.title').value;
+
+        // Updated the blackboard
+        await this.blackboardHandler.updateBlackboard(content, name);
+
+        // Shows the spinner while the markdown gets loaded
         const spinnerElement = document.querySelector('.spinner');
-
-        await this.blackboardHandler.updateBlackboard(this.apiResponse.content, this.apiResponse.name);
-
         spinnerElement.style.display = 'inline-block';
+
         document.body.classList.remove('editing');
 
-        document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = await this.getGithubMarkdown(this.apiResponse.content);
-        document.querySelector('h1.title').innerHTML = this.apiResponse.name;
+        // Update the preview
+        document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = await this.getGithubMarkdown(content);
+        document.querySelector('h1.title').innerHTML = name;
+        document.title = name;
 
         spinnerElement.style.display = 'none';
     }

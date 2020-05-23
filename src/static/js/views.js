@@ -2,7 +2,6 @@ const apiClient = new APIClient('/api');
 
 
 async function home() {
-    document.title = 'Select blackboard';
     homeComponent = new Home();
     await homeComponent.show();
 }
@@ -10,7 +9,6 @@ async function home() {
 async function oneBlackboard() {
 
     let apiResponse;
-
     try {
         apiResponse = await apiClient.request('GET', `/blackboards/${location.pathname.split('/').pop()}`);
     } catch (e) {
@@ -23,8 +21,8 @@ async function oneBlackboard() {
         apiResponse.content = '';
     }
 
-    oneBlackboardComponent = new OneBlackboard(apiResponse);
-    await oneBlackboardComponent.show();
+    oneBlackboardComponent = new OneBlackboard();
+    await oneBlackboardComponent.show(apiResponse);
 }
 
 function notFound() {

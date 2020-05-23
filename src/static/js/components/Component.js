@@ -39,14 +39,14 @@ class Component {
             let attribute = listener.getAttribute('listener').replace(/'/g, '"');
             attribute = JSON.parse(attribute);
 
-            let args = {};
+            let args = [];
             if (typeof attribute.args !== 'undefined') {
-                args = attribute.args;
+                args = attribute.args.split(',').map(value => value.trim());
             }
 
             // Add the event listener
             listener.addEventListener(attribute.type, async (event) => {
-                this[attribute.handler].bind(this)(event, args);
+                this[attribute.handler].bind(this)(event, ...args);
             });
         }
     }
@@ -54,7 +54,7 @@ class Component {
     /**
      * Overwrite
      */
-    _create() {
+    _prepareComponent() {
     }
 
     /**

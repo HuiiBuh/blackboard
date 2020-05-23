@@ -33,7 +33,7 @@ class Message extends Component {
      * Show the message
      */
     show() {
-        this._create();
+        this._prepareComponent();
         this.root.appendChild(this.element);
 
         setTimeout(() => {
@@ -45,7 +45,7 @@ class Message extends Component {
      * Create the htmle element
      * @private
      */
-    _create() {
+    _prepareComponent() {
         const elementString = this.parser.parseDocument(Message.html, {'message': this.message, 'type': this.type});
         this.element = this._createElement(elementString);
         this.element.querySelector('.material-icons.close').onclick = this.remove.bind(this);

@@ -17,10 +17,11 @@ class Home extends Component {
         {% for blackboard in blackboard_list %}
     
             <tr>
-                <td routerLink="/blackboard/{{ blackboard.name }}">{{ blackboard.name }}</td>
+                <td routerLink="/blackboard/{{ blackboard.id }}">{{ blackboard.name }}</td>
                 <td>{{ blackboard.timestamp_edit }}</td>
                 <td class="text-center"><i class="material-icons ">{{ blackboard.state }}</i></td>
-                <td class="text-center"><i class="material-icons warn-icon pointer" listener="{'type':'click', 'handler': 'deleteBlackboard', 'args':'{{ blackboard.name }}'}">delete</i></td>
+                <td class="text-center"><i class="material-icons warn-icon pointer" 
+                listener="{'type':'click', 'handler': 'deleteBlackboard', 'args':'{{ blackboard.id }}, {{ blackboard.name }}'}">delete</i></td>
             </tr>
     
         {% endfor %}
@@ -49,12 +50,18 @@ class Home extends Component {
     `;
 
     /**
-     * Create a new home component
-     * @param apiResponse The api response which describes the home component
+     * @type {Home}
      */
-    constructor(apiResponse) {
+    static instance;
+
+    /**
+     * Create a new home component
+     */
+    constructor() {
         super();
-        this.apiResponse = apiResponse;
+
+        if (Home.instance) return Home.instance;
+        Home.instance = this;
 
         this.apiClient = new APIClient('/api');
 
@@ -66,7 +73,7 @@ class Home extends Component {
      * Show the component
      */
     async show() {
-        await this._create();
+        await this._prepareComponent();
         this.root.appendChild(this.element);
     }
 
@@ -74,24 +81,16 @@ class Home extends Component {
      * Create the component
      * @private
      */
-    async _create() {
+    async _prepareComponent() {
         // Get data from the api
-        await this.getData();
+        const apiResponse = await this.apiClient.get('/blackboards');
 
         // Parse the api data
-        const elementString = this.parser.parseDocument(Home.html, this.apiResponse);
+        const elementString = this.parser.parseDocument(Home.html, apiResponse);
 
         // Add the created element to the class
         this.element = this._createElement(elementString);
         this._addListener();
-    }
-
-    /**
-     * Get the data of all blackboards from the api
-     * @return {Promise<void>}
-     */
-    async getData() {
-        this.apiResponse = await this.apiClient.get('/blackboards');
     }
 
 
@@ -118,15 +117,15 @@ class Home extends Component {
         const value = document.querySelector('#blackboard-name').value;
 
         if (!value) {
-            new Message('No name provided', 'error', 500000).show();
+            new Message('No name provided', 'warn').show();
             return;
         }
 
         await this.apiClient.post('/blackboards', {}, {name: value});
-
-        new Message(`Created blackboard ${value}`, 'success').show();
-
         this.modal.close();
+
+        new Message(`Created blackboard ${value}`, 'success', 5000000).show();
+
         this.remove();
         await this.show();
     }
@@ -135,11 +134,12 @@ class Home extends Component {
     /**
      * Delete a modal
      * @param _ {KeyboardEvent}
+     * @param blackboardID {number} The id of the blackboard
      * @param blackboardName {string} The blackboard name
      * @return {Promise<void>}
      */
-    async deleteBlackboard(_, blackboardName) {
-        await this.apiClient.delete(`/blackboards/${blackboardName}`);
+    async deleteBlackboard(_, blackboardID, blackboardName) {
+        await this.apiClient.delete(`/blackboards/${blackboardID}`);
 
         new Message(`Deleted blackboard ${blackboardName}`, 'success').show();
 

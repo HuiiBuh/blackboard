@@ -14,10 +14,18 @@ class NotFound extends Component {
     `;
 
     /**
+     * @type {NotFound}
+     */
+    static instance;
+
+    /**
      * Create the not found Component
      */
     constructor() {
         super();
+        
+        if (NotFound.instance) return NotFound.instance;
+        NotFound.instance = this;
 
         document.title = 'Not found - 404';
         this.root = document.querySelector('.container');
