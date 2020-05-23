@@ -14,6 +14,8 @@ def test():
 
     # bb.set_name("Esklappt")
 
+    bb.set_content("test")
+
 
 if __name__ == "__main__":
     # test()

@@ -84,12 +84,14 @@ class Blackboard:
         if isinstance(content, str) and not content:
             content = None
 
-        if content is not None and Blackboard._MIN_CONTENT_LENGTH < len(content) < Blackboard._MAX_CONTENT_LENGTH:
+        if content is not None and not Blackboard._MIN_CONTENT_LENGTH < len(content) < Blackboard._MAX_CONTENT_LENGTH:
             raise ValueError(f"Content size should be: "
                              f"{Blackboard._MIN_CONTENT_LENGTH} < length < {Blackboard._MAX_CONTENT_LENGTH}")
 
         self._content = content
         self._timestamp_edit = time.time()
+
+        self.save()
 
     def get_content(self) -> Union[None, str]:
         return self._content
@@ -199,12 +201,10 @@ class Blackboard:
         return list(Blackboard._BLACKBOARDS.values())
     """
 
-    # ================
-    # New
     @staticmethod
     def exists_name(name: str) -> bool:
         for blackboard in Blackboard._BLACKBOARDS.values():
-            if blackboard['name'] == name:
+            if blackboard.get_name() == name:
                 return True
         return False
 
@@ -256,7 +256,7 @@ class Blackboard:
     @staticmethod
     def get_by_name(name: str) -> Union['Blackboard', None]:
         for blackboard in Blackboard._BLACKBOARDS.values():
-            if blackboard['name'] == name:
+            if blackboard.get_name() == name:
                 return blackboard
         return None
 
