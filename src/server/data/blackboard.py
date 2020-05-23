@@ -13,6 +13,7 @@ class Blackboard:
 
     PATH = join(join(".", "server"), "db")
 
+    # RegEx for finding any digit which is not(^) a-z or A-Z
     _NAME_PATTERN = re.compile("[^a-zA-Z]")
     _MIN_NAME_LENGTH = 3
     _MAX_NAME_LENGTH = 32
@@ -72,7 +73,7 @@ class Blackboard:
         if isinstance(content, str) and not content:
             raise ValueError("Empty string is not allowed. Use None instead.")
 
-        if content is not None and Blackboard._MIN_CONTENT_LENGTH < len(content) < Blackboard._MAX_CONTENT_LENGTH:
+        if content is not None and not Blackboard._MIN_CONTENT_LENGTH < len(content) < Blackboard._MAX_CONTENT_LENGTH:
             raise ValueError(f"Content size should be: "
                              f"{Blackboard._MIN_CONTENT_LENGTH} < length < {Blackboard._MAX_CONTENT_LENGTH}")
 
