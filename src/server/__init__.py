@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .endpoints.api.blackboard import router as blackboard_router
 from .endpoints.webpage.webpage import router as webpage_router
+from .data.blackboard import Blackboard
 
 # Create an instance of the web framework
 app = FastAPI()
