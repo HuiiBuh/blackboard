@@ -1,14 +1,33 @@
-from fastapi import APIRouter, HTTPException, status
-
-from .models import *
-from src.server.data.blackboard import Blackboard
 from typing import List
 from uuid import uuid1
 
+from fastapi import APIRouter, HTTPException, status
+
+from server.data.blackboard import Blackboard
+from .models import *
+
 router = APIRouter()
+
 
 # ==========================================================
 # Vorbild für eine REST konforme API https://developer.spotify.com/documentation/web-api/reference/playlists/
+
+@router.get("/blackboards", response_model=GetAllBlackboardsResponse)
+async def get_all_blackboards():
+    """
+    Return a list containing all blackboards with the following information:
+    - name
+    - timestamp_create
+    - timestamp_edit
+    - is_empty
+    - is_edit
+    :return:
+    """
+    blackboards: List[Blackboard] = Blackboard.get_all()
+
+    return {
+        "blackboard_list": [b.get_overview() for b in blackboards]
+    }
 
 
 @router.post("/blackboards", status_code=status.HTTP_201_CREATED)
@@ -26,7 +45,8 @@ async def create_blackboard(body_data: CreateBlackboardBody):
         raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
 
 
-@router.get("/blackboards/{blackboard_name}/acquire", status_code=status.HTTP_202_ACCEPTED, response_model=UpdateBlackboardResponse)
+@router.get("/blackboards/{blackboard_name}/acquire", status_code=status.HTTP_202_ACCEPTED,
+            response_model=UpdateBlackboardResponse)
 async def acquire_blackboard(blackboard_name: str):
     """
     Requests a lock for the given blackboard. The blackboard will be acquired if the it hasn't already been acquired by
@@ -167,21 +187,3 @@ async def get_blackboard(blackboard_name: str):
     blackboard: Blackboard = Blackboard.get(blackboard_name)
 
     return blackboard.to_dict()
-
-
-@router.get("/blackboards", response_model=GetAllBlackboardsResponse)
-async def get_all_blackboards():
-    """
-    Return a list containing all blackboards with the following information:
-    - name
-    - timestamp_create
-    - timestamp_edit
-    - is_empty
-    - is_edit
-    :return:
-    """
-    blackboards: List[Blackboard] = Blackboard.get_all()
-
-    return {
-        "blackboard_list": [b.get_overview() for b in blackboards]
-    }

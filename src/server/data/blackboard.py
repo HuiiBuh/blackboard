@@ -1,14 +1,14 @@
-from typing import Union, Tuple, List
-from threading import Lock
-from os import listdir, remove
-from os.path import isfile, join, isdir
-import time
 import json
 import re
+from os import listdir, remove
+from os.path import isfile, join
+from threading import Lock
+from typing import Union, Tuple, List
+
+import time
 
 
 class Blackboard:
-
     _BLACKBOARDS = {}
 
     PATH = join(join(".", "server"), "db")
@@ -97,6 +97,7 @@ class Blackboard:
     def get_timestamp_edit(self) -> float:
         return self._timestamp_create
 
+    # TODO: Please return this as json as well. It is clearer what property you access at the client
     def get_state(self) -> Tuple[bool, bool, float]:
         is_empty = self.get_content() is None
         is_edit = self.get_edited_by() is not None
