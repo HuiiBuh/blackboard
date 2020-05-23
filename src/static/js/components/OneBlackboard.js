@@ -1,6 +1,7 @@
 class OneBlackboard extends Component {
 
     static html = `
+    <input class="custom-input text-center title" value="{{ name }}">
     <h1 class="text-center title">{{ name }}</h1>
 
     <div class="blackboard-wrapper">
@@ -21,11 +22,13 @@ class OneBlackboard extends Component {
 
     constructor(apiResponse) {
         super();
-        this.apiResponse = apiResponse;
 
+        this.apiResponse = apiResponse;
         document.title = apiResponse.name;
+
         this.root = document.querySelector('.container');
         this.apiClient = new APIClient('', 'text/plain');
+        this.blackboardHandler = new BlackboardHandler();
     }
 
     /**
@@ -61,8 +64,9 @@ class OneBlackboard extends Component {
     /**
      * Start the editing
      */
-    startEditing() {
-        document.querySelector('.blackboard-wrapper').classList.add('editing');
+    async startEditing() {
+        await this.blackboardHandler.acquireBlackboard(this.apiResponse.name);
+        document.body.classList.add('editing');
     }
 
     /**
@@ -70,16 +74,21 @@ class OneBlackboard extends Component {
      * @return {Promise<void>}
      */
     async saveChanges() {
-        const value = document.querySelector('textarea').value;
-        const preview = document.querySelector('.blackboard-preview > div:not(.spinner)');
-        const spinner = document.querySelector('.spinner');
+        this.apiResponse.content = document.querySelector('textarea').value;
+        this.apiResponse.name = document.querySelector('input.title').value;
+        document.title = this.apiResponse.name;
 
-        preview.innerText = '';
-        spinner.style.display = 'inline-block';
-        document.querySelector('.blackboard-wrapper').classList.remove('editing');
+        const spinnerElement = document.querySelector('.spinner');
 
-        preview.innerHTML = await this.getGithubMarkdown(value);
-        spinner.style.display = 'none';
+        await this.blackboardHandler.updateBlackboard(this.apiResponse.content, this.apiResponse.name);
+
+        spinnerElement.style.display = 'inline-block';
+        document.body.classList.remove('editing');
+
+        document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = await this.getGithubMarkdown(this.apiResponse.content);
+        document.querySelector('h1.title').innerHTML = this.apiResponse.name;
+
+        spinnerElement.style.display = 'none';
     }
 
     /**
@@ -89,10 +98,11 @@ class OneBlackboard extends Component {
      */
     async getGithubMarkdown(value) {
         try {
-            return await this.apiClient.post(' https://api.github.com/markdown/raw', {}, value);
+            return await this.apiClient.request('POST', 'https://api.github.com/markdown/raw', {}, value);
         } catch (e) {
             e = JSON.parse(e.message);
             new Message(e.message, 'error').show();
+            console.error(e);
         }
         return '<h1>The preview could not be rendered, because of a GitHub API error</h1>';
     }

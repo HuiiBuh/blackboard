@@ -79,7 +79,7 @@ class Blackboard:
     def set_content(self, content: Union[None, str]) -> None:
 
         if isinstance(content, str) and not content:
-            raise ValueError("Empty string is not allowed. Use None instead.")
+            content = None
 
         if content is not None and Blackboard._MIN_CONTENT_LENGTH < len(content) < Blackboard._MAX_CONTENT_LENGTH:
             raise ValueError(f"Content size should be: "
