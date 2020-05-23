@@ -34,7 +34,7 @@ async def get_all_blackboards():
 async def create_blackboard(body_data: CreateBlackboardBody):
     """
     Create blackboard with the given name. Names that already exit are invalid.
-    :param body_data:
+    :param body_data: contains the name
     :return:
     """
     try:
@@ -45,20 +45,20 @@ async def create_blackboard(body_data: CreateBlackboardBody):
         raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
 
 
-@router.get("/blackboards/{blackboard_name}/acquire", status_code=status.HTTP_202_ACCEPTED,
+@router.get("/blackboards/{blackboard_id}/acquire", status_code=status.HTTP_202_ACCEPTED,
             response_model=AcquireUpdateResponse)
-async def acquire_blackboard(blackboard_name: str):
+async def acquire_blackboard(blackboard_id: int):
     """
     Requests a lock for the given blackboard. The blackboard will be acquired if the it hasn't already been acquired by
     someone else. The user is only able to edit the board (change to edit page), if the blackboard could be acquired.
-    :param blackboard_name:
+    :param blackboard_id: ID of blackboard.
     :return:
     """
 
-    if not Blackboard.exists(blackboard_name):
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
+    if not Blackboard.exists(blackboard_id):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 
-    blackboard: Blackboard = Blackboard.get(blackboard_name)
+    blackboard: Blackboard = Blackboard.get(blackboard_id)
 
     # Generate user_token
     token = uuid1().hex
@@ -73,18 +73,18 @@ async def acquire_blackboard(blackboard_name: str):
     }
 
 
-@router.put("/blackboards/{blackboard_name}/release", status_code=status.HTTP_202_ACCEPTED)
-async def release_blackboard(blackboard_name: str, body_data: ReleaseUpdateBody):
+@router.put("/blackboards/{blackboard_id}/release", status_code=status.HTTP_202_ACCEPTED)
+async def release_blackboard(blackboard_id: int, body_data: ReleaseUpdateBody):
     """
     Releases the lock for the given blackboard.
-    :param blackboard_name:
-    :param body_data: Name of the blackboard.
+    :param blackboard_id: ID of blackboard.
+    :param body_data: Contains token necessary for releasing blackboard.
     :return:
     """
-    if not Blackboard.exists(blackboard_name):
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
+    if not Blackboard.exists(blackboard_id):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 
-    blackboard: Blackboard = Blackboard.get(blackboard_name)
+    blackboard: Blackboard = Blackboard.get(blackboard_id)
 
     if not blackboard.get_edited_by() == body_data.token:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Your are not allowed to release the edit mode!")
@@ -93,21 +93,21 @@ async def release_blackboard(blackboard_name: str, body_data: ReleaseUpdateBody)
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Could not release edit mode!")
 
 
-@router.put("/blackboards/{blackboard_name}/update", response_model=UpdateBlackboardResponse)
-async def update_blackboard(blackboard_name: str, body_data: UpdateBlackboardBody):
+@router.put("/blackboards/{blackboard_id}/update")
+async def update_blackboard(blackboard_id: int, body_data: UpdateBlackboardBody):
     """
     Update the content of the blackboard. For this to happen, the user has to lock / acquire the blackboard via
     acquire_update() first. Additionally he must have the user_token transmitted, which was used for acquiring the
     blackboard.
     After the update, the lock of the blackboard will automatically be released.
-    :param blackboard_name: Name of the blackboard.
+    :param blackboard_id: ID of blackboard.
     :param body_data:
     :return:
     """
-    if not Blackboard.exists(blackboard_name):
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
+    if not Blackboard.exists(blackboard_id):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 
-    blackboard: Blackboard = Blackboard.get(blackboard_name)
+    blackboard: Blackboard = Blackboard.get(blackboard_id)
 
     if not blackboard.get_edited_by() == body_data.token:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Your are not allowed to edit the blackboard!")
@@ -126,62 +126,61 @@ async def update_blackboard(blackboard_name: str, body_data: UpdateBlackboardBod
         raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
 
 
-@router.delete("/blackboards/{blackboard_name}")
-async def delete_blackboard(blackboard_name: str):
+@router.delete("/blackboards/{blackboard_id}")
+async def delete_blackboard(blackboard_id: int):
     """
     Delete the blackboard. For this to happen, the user has to lock / acquire the blackboard via
     acquire_update() first. Additionally he must have the user_token transmitted, which was used for acquiring the
     blackboard.
-    :param blackboard_name: Name of the blackboard to be deleted.
+    :param blackboard_id: ID of blackboard.
     :return:
     """
-    if not Blackboard.exists(blackboard_name):
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
+    if not Blackboard.exists(blackboard_id):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 
-    blackboard: Blackboard = Blackboard.get(blackboard_name)
+    blackboard: Blackboard = Blackboard.get(blackboard_id)
     if not blackboard.acquire_edit_mode("master_token"):
         # TODO return timeout time
         raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
 
-    Blackboard.delete(blackboard.get_name())
+    Blackboard.delete(blackboard_id)
 
 
-@router.get("/blackboards/{blackboard_name}/status", response_model=GetBlackboardStatusResponse)
-async def get_blackboard_status(blackboard_name: str):
+@router.get("/blackboards/{blackboard_id}/status", response_model=GetBlackboardStatusResponse)
+async def get_blackboard_status(blackboard_id: int):
     """
     Return status of blackboard containing
-     - name
      - is_empty: Has content or not
      - is_edit: A user edits the blackboard right now or not
      - timestamp_edit: Timestamp of the last change
-    :param blackboard_name: Name of the blackboard.
+    :param blackboard_id: ID of blackboard.
     :return:
     """
-    if not Blackboard.exists(blackboard_name):
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
+    if not Blackboard.exists(blackboard_id):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 
-    blackboard: Blackboard = Blackboard.get(blackboard_name)
+    blackboard: Blackboard = Blackboard.get(blackboard_id)
 
     blackboard_state = blackboard.get_state()
-    blackboard_state["name"] = blackboard.get_name()
 
     return blackboard_state
 
 
-@router.get("/blackboards/{blackboard_name}", response_model=GetBlackboardResponse)
-async def get_blackboard(blackboard_name: str):
+@router.get("/blackboards/{blackboard_id}", response_model=GetBlackboardResponse)
+async def get_blackboard(blackboard_id: int):
     """
     Returns the following information:
+     - id: ID of blackboard
      - name: Name of blackboard
      - content: Content of blackboard
      - timestamp_edit: Timestamp of the last change
      - timestamp_create: Timestamp of creation
-    :param blackboard_name: Name of the blackboard.
+    :param blackboard_id: ID of blackboard.
     :return:
     """
-    if not Blackboard.exists(blackboard_name):
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Could not find blackboard with name {blackboard_name}!")
+    if not Blackboard.exists(blackboard_id):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 
-    blackboard: Blackboard = Blackboard.get(blackboard_name)
+    blackboard: Blackboard = Blackboard.get(blackboard_id)
 
     return blackboard.to_dict()

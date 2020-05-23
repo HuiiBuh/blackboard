@@ -21,8 +21,8 @@ class Blackboard:
     _MAX_CONTENT_LENGTH = 1024
 
     def __init__(self, name: str, content: Union[None, str] = None, timestamp_create: float = time.time(),
-                 timestamp_edit: float = time.time()):
-        if name in Blackboard._BLACKBOARDS.keys():
+                 timestamp_edit: float = time.time(), blackboard_id: int = 0):
+        if Blackboard.exists_name(name):
             raise IndexError(f"Blackboard with name '{name}' already exists!")
 
         if Blackboard._NAME_PATTERN.findall(name):
@@ -31,6 +31,17 @@ class Blackboard:
         if not Blackboard._MIN_NAME_LENGTH < len(name) < Blackboard._MAX_NAME_LENGTH:
             raise ValueError(f"Name should have a length of:"
                              f" {Blackboard._MIN_NAME_LENGTH} < length < {Blackboard._MAX_NAME_LENGTH}")
+
+        # Set ID
+        self._id = blackboard_id
+        if self._id == 0:
+            # No ID given. This means that to blackboard wasn't loaded but created.
+            # IMPORTANT: Blackboard IDs start at 1. Otherwise there would be problems when loading the blackboard
+            # with the ID 0.
+            self._id = 1
+            for blackboard in Blackboard._BLACKBOARDS.values():
+                if blackboard.get_id() >= self._id:
+                    self._id = blackboard.get_id() + 1
 
         self._name: str = name
         self._content: Union[None, str] = content
@@ -42,10 +53,12 @@ class Blackboard:
 
         self.save()
 
-        Blackboard._BLACKBOARDS[name] = self
+        Blackboard._BLACKBOARDS[self._id] = self
+
+    def get_id(self) -> int:
+        return self._id
 
     def set_name(self, name: str) -> None:
-
         if Blackboard._NAME_PATTERN.findall(name):
             raise ValueError("Name should only consist of a-z and A-Z letters.")
 
@@ -53,23 +66,13 @@ class Blackboard:
             raise ValueError(f"Name should have a length of:"
                              f" {Blackboard._MIN_NAME_LENGTH} < length < {Blackboard._MAX_NAME_LENGTH}")
 
-        if name in Blackboard._BLACKBOARDS.keys():
+        if Blackboard.exists_name(name):
             raise IndexError(f"Blackboard with name '{name}' already exists!")
-        cur_name = self.get_name()
-        Blackboard.delete(cur_name)
 
-        # TODO: Better solution?
-        # Problem: If blackboard is created and right afterwards the name is changed,
-        # the JSON-File does not yet exit. Raises exception.
-        # PS: The JSON-File won't be created at all!?!
-        try:
-            del Blackboard._BLACKBOARDS[cur_name]
-        except KeyError as e:
-            pass
+        Blackboard.delete_file(self.get_id())
 
         self._name = name
         self._timestamp_edit = time.time()
-        Blackboard._BLACKBOARDS[name] = self
 
         self.save()
 
@@ -134,6 +137,7 @@ class Blackboard:
 
     def to_dict(self) -> dict:
         return {
+            "id": self.get_id(),
             "name": self.get_name(),
             "content": self.get_content(),
             "timestamp_create": self.get_timestamp_create(),
@@ -142,7 +146,7 @@ class Blackboard:
 
     def get_overview(self) -> dict:
         data = self.to_dict()
-        data["state"] = self.get_state()
+        data.update(self.get_state())
         return data
 
     def save(self, path: str = PATH):
@@ -151,6 +155,7 @@ class Blackboard:
         file.write(json_str)
         file.close()
 
+    """
     @staticmethod
     def delete(name: str, path: str = PATH):
         filename: str = name
@@ -188,6 +193,72 @@ class Blackboard:
     @staticmethod
     def get(name: str) -> 'Blackboard':
         return Blackboard._BLACKBOARDS[name]
+
+    @staticmethod
+    def get_all() -> List['Blackboard']:
+        return list(Blackboard._BLACKBOARDS.values())
+    """
+
+    # ================
+    # New
+    @staticmethod
+    def exists_name(name: str) -> bool:
+        for blackboard in Blackboard._BLACKBOARDS.values():
+            if blackboard['name'] == name:
+                return True
+        return False
+
+    @staticmethod
+    def delete_file(blackboard_id: int, path: str = PATH):
+        filename: str = Blackboard._BLACKBOARDS[blackboard_id].name
+        if not filename.endswith(".json"):
+            filename: str = f"{filename}.json"
+        if isfile(join(path, filename)):
+            remove(join(path, filename))
+
+    @staticmethod
+    def delete(blackboard_id: int, path: str = PATH):
+        # Delete JSON-File
+        Blackboard.delete_file(blackboard_id, path)
+        # Delete dict entry
+        if blackboard_id in Blackboard._BLACKBOARDS.keys():
+            del Blackboard._BLACKBOARDS[blackboard_id]
+
+    @staticmethod
+    def load(filename: str, path: str = PATH):
+        file = open(join(path, filename), "r")
+        json_str: str = file.read()
+        data: dict = json.loads(json_str)
+        file.close()
+        Blackboard(data["name"], data["content"], data["timestamp_create"], data["timestamp_edit"], data["id"])
+
+    @staticmethod
+    def save_all(path: str = PATH):
+        for blackboard in Blackboard._BLACKBOARDS:
+            blackboard.save(path)
+
+    @staticmethod
+    def load_all(path: str = PATH):
+        # reset internal storage
+        Blackboard._BLACKBOARDS = {}
+        files = [f for f in listdir(path) if isfile(join(path, f))]
+        for filename in files:
+            Blackboard.load(filename, path)
+
+    @staticmethod
+    def exists(blackboard_id: int) -> bool:
+        return blackboard_id in Blackboard._BLACKBOARDS.keys()
+
+    @staticmethod
+    def get(blackboard_id: int) -> 'Blackboard':
+        return Blackboard._BLACKBOARDS[blackboard_id]
+
+    @staticmethod
+    def get_by_name(name: str) -> Union['Blackboard', None]:
+        for blackboard in Blackboard._BLACKBOARDS.values():
+            if blackboard['name'] == name:
+                return blackboard
+        return None
 
     @staticmethod
     def get_all() -> List['Blackboard']:

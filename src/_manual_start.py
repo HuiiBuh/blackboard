@@ -7,12 +7,12 @@ def test():
     Blackboard.load_all()
 
     name = "Klapptes"
-    if Blackboard.exists(name):
-        bb = Blackboard.get(name)
+    if Blackboard.exists_name(name):
+        bb = Blackboard.get_by_name(name)
     else:
         bb = Blackboard("Klapptes")
 
-    bb.set_name("Esklappt")
+    # bb.set_name("Esklappt")
 
 
 if __name__ == "__main__":
