@@ -13,8 +13,8 @@ class Blackboard:
 
     PATH = join(join(".", "server"), "db")
 
-    # RegEx for finding any digit which is not(^) a-z or A-Z
-    _NAME_PATTERN = re.compile("[^a-zA-Z]")
+    # RegEx for finding any character which is not(^) a-z or A-Z or 0-9 or '-' or '_'
+    _NAME_PATTERN = re.compile("[^a-zA-Z0-9_-]")
     _MIN_NAME_LENGTH = 3
     _MAX_NAME_LENGTH = 32
 
@@ -27,11 +27,11 @@ class Blackboard:
             raise IndexError(f"Blackboard with name '{name}' already exists!")
 
         if Blackboard._NAME_PATTERN.findall(name):
-            raise ValueError("Name should only consist of a-z and A-Z letters.")
+            raise ValueError("Name should only consist of a-z, A-Z, 0-9, '-' or '_'.")
 
-        if not Blackboard._MIN_NAME_LENGTH < len(name) < Blackboard._MAX_NAME_LENGTH:
+        if not Blackboard._MIN_NAME_LENGTH <= len(name) <= Blackboard._MAX_NAME_LENGTH:
             raise ValueError(f"Name should have a length of:"
-                             f" {Blackboard._MIN_NAME_LENGTH} < length < {Blackboard._MAX_NAME_LENGTH}")
+                             f" {Blackboard._MIN_NAME_LENGTH} <= length <= {Blackboard._MAX_NAME_LENGTH}")
 
         # Set ID
         self._id = blackboard_id
@@ -61,11 +61,11 @@ class Blackboard:
 
     def set_name(self, name: str) -> None:
         if Blackboard._NAME_PATTERN.findall(name):
-            raise ValueError("Name should only consist of a-z and A-Z letters.")
+            raise ValueError("Name should only consist of a-z, A-Z, 0-9, '-' or '_'.")
 
-        if not Blackboard._MIN_NAME_LENGTH < len(name) < Blackboard._MAX_NAME_LENGTH:
+        if not Blackboard._MIN_NAME_LENGTH <= len(name) <= Blackboard._MAX_NAME_LENGTH:
             raise ValueError(f"Name should have a length of:"
-                             f" {Blackboard._MIN_NAME_LENGTH} < length < {Blackboard._MAX_NAME_LENGTH}")
+                             f" {Blackboard._MIN_NAME_LENGTH} <= length <= {Blackboard._MAX_NAME_LENGTH}")
 
         if Blackboard.exists_name(name):
             raise IndexError(f"Blackboard with name '{name}' already exists!")
