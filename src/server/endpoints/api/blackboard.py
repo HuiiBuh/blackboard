@@ -2,9 +2,9 @@ from typing import List
 from uuid import uuid1
 
 from fastapi import APIRouter, HTTPException, status
-from src.server.data.blackboard import Blackboard
 
 from .models import *
+from ...data.blackboard import Blackboard
 
 router = APIRouter()
 

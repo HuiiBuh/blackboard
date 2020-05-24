@@ -1,0 +1,16 @@
+version: '3.0'
+services:
+
+  blackboard_fastapi:
+    container_name: blackboard_fastapi
+    expose:
+      - 8000
+    build: fastapi
+
+  blackboard_reverse_proxy:
+    container_name: blackboard_reverse_proxy
+    expose:
+      - 80
+    build: nginx
+    depends_on:
+      - blackboard_fastapi
