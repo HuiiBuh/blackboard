@@ -43,7 +43,7 @@ class BlackboardHandler {
      * @return {Promise<void>}
      */
     async releaseBlackboard(event = null) {
-        if (event) event.preventDefault();
+        if (event && this.token) event.preventDefault();
 
         if (!this.token) return;
 

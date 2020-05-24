@@ -122,8 +122,15 @@ class OneBlackboard extends Component {
             response = await apiClient.request('POST', 'https://api.github.com/markdown/raw', {}, value);
         } catch (e) {
             console.error(e);
-            response = '<h1>The preview could not be rendered, because of a GitHub API error</h1>';
-            new Message('There was an error rendering the preview.', 'warn').show();
+
+            if (e.status === 403) {
+                new Message('Github API limit exceeded.', 'warn').show();
+            } else {
+
+                new Message('There was an error rendering the preview.', 'warn').show();
+            }
+
+            response = value;
         }
 
         return response;

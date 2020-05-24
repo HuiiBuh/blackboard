@@ -10,6 +10,7 @@ class Home extends Component {
             <th>Name</th>
             <th>Last Edited</th>
             <th class="text-center">Content</th>
+            <th class="text-center">Currently edited</th>
             <th></th>
         </tr>
         </thead>
@@ -21,7 +22,8 @@ class Home extends Component {
             <tr>
                 <td routerLink="/blackboard/{{ blackboard.id }}">{{ blackboard.name }}</td>
                 <td>{{ blackboard.timestamp_edit }}</td>
-                <td class="text-center"><i class="material-icons ">{{ blackboard.state }}</i></td>
+                <td class="text-center"><i class="material-icons ">{{ blackboard.emptyIcon }}</i></td>
+                <td class="text-center"><i class="material-icons ">{{ blackboard.editedIcon }}</i></td>
                 <td class="text-center"><i class="material-icons warn-icon pointer" 
                 listener="{'type':'click', 'handler': 'deleteBlackboard', 'args':'{{ blackboard.id }}, {{ blackboard.name }}'}">delete</i></td>
             </tr>
@@ -35,14 +37,6 @@ class Home extends Component {
     <a class="fab primary-btn" listener="{'type':'click', 'handler': 'openModal'}">
         <i class="material-icons">add</i>
     </a>
-    
-    <p>
-        <button class="error-btn" onclick="const message = new Message('Error', 'error'); message.show() ">Error</button>
-        <button class="success-btn" onclick="const message = new Message('Success', 'success'); message.show() ">Success</button>
-        <button class="warn-btn" onclick="const message = new Message('Warn', 'warn'); message.show() ">Warn</button>
-        <button class="primary-btn" onclick="const message = new Message('Default', 'default'); message.show() ">Default</button>
-        <button class="primary-btn" onclick="const modal = new Modal('Default', 'primary'); modal.show() ">Modal</button>
-    </p>
     `;
 
     static FORM = `
@@ -86,6 +80,11 @@ class Home extends Component {
     async _prepareComponent() {
         // Get data from the api
         const apiResponse = await this.apiClient.get('/blackboards');
+
+        apiResponse.blackboard_list.forEach(blackboard => {
+            blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
+            blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
+        });
 
         // Parse the api data
         const elementString = this._parser.parseDocument(Home.HTML, apiResponse);
