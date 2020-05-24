@@ -1,3 +1,5 @@
+'use strict';
+
 class BlackboardHandler {
 
     /**
@@ -5,6 +7,11 @@ class BlackboardHandler {
      */
     static instance;
 
+
+    /**
+     * Create a new Blackboard handler which deals with locking, and updating the blackboards
+     * @return {BlackboardHandler}
+     */
     constructor() {
         if (BlackboardHandler.instance) return BlackboardHandler.instance;
         BlackboardHandler.instance = this;
@@ -13,35 +20,53 @@ class BlackboardHandler {
 
         this.apiCLient = new APIClient('/api');
         this.token = '';
-        this.blackboardName = '';
+        this.blackboardID = -1;
     }
 
 
-    async acquireBlackboard(blackboardName) {
+    /**
+     * Acquire a blackboard and if there is a blackboard locked, release it
+     * @param {number} blackboardID
+     * @return {Promise<void>}
+     */
+    async acquireBlackboard(blackboardID) {
         if (this.token) await this.releaseBlackboard();
 
-        this.blackboardName = blackboardName;
-        let response = await this.apiCLient.get(`/blackboards/${this.blackboardName}/acquire`);
+        this.blackboardID = blackboardID;
+        const response = await this.apiCLient.get(`/blackboards/${this.blackboardID}/acquire`);
         this.token = response.token;
     }
 
-    async releaseBlackboard() {
+    /**
+     * Release the current blackboard
+     * @param event {BeforeUnloadEvent|null} Optional if some cleanup has to be done
+     * @return {Promise<void>}
+     */
+    async releaseBlackboard(event = null) {
+        if (event) event.preventDefault();
+
         if (!this.token) return;
 
-        await this.apiCLient.put(`/blackboards/${this.blackboardName}/release`, {}, {
+        await this.apiCLient.put(`/blackboards/${this.blackboardID}/release`, {}, {
             token: this.token
         });
         this.token = null;
     }
 
+    /**
+     * Updated the blackboard
+     * @param content {string} The content of the blackboard
+     * @param name {string} The updated name of the blackboard
+     * @return {Promise<void>}
+     */
     async updateBlackboard(content, name) {
         const body = {
             token: this.token,
-            blackboardName: name,
+            name: name,
             content: content
         };
 
-        await this.apiCLient.put(`/blackboards/${this.blackboardName}/update`, {}, body);
+        await this.apiCLient.put(`/blackboards/${this.blackboardID}/update`, {}, body);
         await this.releaseBlackboard();
     }
 

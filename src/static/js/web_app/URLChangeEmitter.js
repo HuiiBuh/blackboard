@@ -1,11 +1,23 @@
+'use strict';
+
 class URLChangeEmitter extends EventEmitter {
+
+    /**
+     * @type {URLChangeEmitter}
+     */
+    static INSTANCE;
 
     /**
      * Create a new URLChangeEmitter which fires a event if the url changes
      */
     constructor() {
         super();
-        this.addURLChangeEventListener();
+
+        if (URLChangeEmitter.INSTANCE) return URLChangeEmitter.INSTANCE;
+        URLChangeEmitter.INSTANCE = this;
+
+
+        this._monkeyPatchListener();
 
         /**
          * Should the Emitter emit values
@@ -29,8 +41,9 @@ class URLChangeEmitter extends EventEmitter {
 
     /**
      * Start the listening
+     * @private
      */
-    addURLChangeEventListener() {
+    _monkeyPatchListener() {
         const self = this;
         history.pushState = (f => function pushState() {
             const ret = f.apply(this, arguments);
@@ -70,6 +83,6 @@ class URLChangeEmitter extends EventEmitter {
         document.dispatchEvent(new Event('urlchange'));
 
         // Set a timeout for 20ms so a push and pop event does not register twice
-        this._changeTimeout = this._changeTimeout = setTimeout(() => this._changeTimeout = 0, 20);
+        this._changeTimeout = setTimeout(() => this._changeTimeout = 0, 20);
     }
 }

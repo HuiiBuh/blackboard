@@ -1,5 +1,7 @@
+'use strict';
+
 class Home extends Component {
-    static html = `
+    static HTML = `
     <h1 class="text-center">Select Blackboard</h1>
 
     <table>
@@ -43,7 +45,7 @@ class Home extends Component {
     </p>
     `;
 
-    static form = `
+    static FORM = `
     <div style="min-width: 100%;">
         <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="31"> 
     </div>
@@ -52,7 +54,7 @@ class Home extends Component {
     /**
      * @type {Home}
      */
-    static instance;
+    static INSTANCE;
 
     /**
      * Create a new home component
@@ -60,12 +62,12 @@ class Home extends Component {
     constructor() {
         super();
 
-        if (Home.instance) return Home.instance;
-        Home.instance = this;
+        if (Home.INSTANCE) return Home.INSTANCE;
+        Home.INSTANCE = this;
 
         this.apiClient = new APIClient('/api');
 
-        this.modal = new Modal('Create Blackboard', Home.form, this.createNewBlackboard.bind(this));
+        this.modal = new Modal('Create Blackboard', Home.FORM, this.createNewBlackboard.bind(this));
         this.root = document.querySelector('.container');
     }
 
@@ -74,7 +76,7 @@ class Home extends Component {
      */
     async show() {
         await this._prepareComponent();
-        this.root.appendChild(this.element);
+        this.root.appendChild(this._element);
     }
 
     /**
@@ -86,10 +88,10 @@ class Home extends Component {
         const apiResponse = await this.apiClient.get('/blackboards');
 
         // Parse the api data
-        const elementString = this.parser.parseDocument(Home.html, apiResponse);
+        const elementString = this._parser.parseDocument(Home.HTML, apiResponse);
 
         // Add the created element to the class
-        this.element = this._createElement(elementString);
+        this._element = this._createElement(elementString);
         this._addListener();
     }
 
@@ -98,7 +100,7 @@ class Home extends Component {
      * Remove the component
      */
     remove() {
-        this.element.remove();
+        this._element.remove();
         this.modal.remove();
     }
 
@@ -124,7 +126,7 @@ class Home extends Component {
         await this.apiClient.post('/blackboards', {}, {name: value});
         this.modal.close();
 
-        new Message(`Created blackboard ${value}`, 'success', 5000000).show();
+        new Message(`Created blackboard ${value}`, 'success').show();
 
         this.remove();
         await this.show();
@@ -132,7 +134,7 @@ class Home extends Component {
 
 
     /**
-     * Delete a modal
+     * Delete the blackboard
      * @param _ {KeyboardEvent}
      * @param blackboardID {number} The id of the blackboard
      * @param blackboardName {string} The blackboard name

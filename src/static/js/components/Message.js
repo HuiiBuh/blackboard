@@ -1,6 +1,8 @@
+'use strict';
+
 class Message extends Component {
 
-    static html = `
+    static HTML = `
     <div class="message {{ type }} fade-in">
         <i class="material-icons close">close</i>
         <div class="message-body">
@@ -34,7 +36,7 @@ class Message extends Component {
      */
     show() {
         this._prepareComponent();
-        this.root.appendChild(this.element);
+        this.root.appendChild(this._element);
 
         setTimeout(() => {
             this.remove();
@@ -42,24 +44,24 @@ class Message extends Component {
     }
 
     /**
-     * Create the htmle element
+     * Create the html element
      * @private
      */
     _prepareComponent() {
-        const elementString = this.parser.parseDocument(Message.html, {'message': this.message, 'type': this.type});
-        this.element = this._createElement(elementString);
-        this.element.querySelector('.material-icons.close').onclick = this.remove.bind(this);
+        const elementString = this._parser.parseDocument(Message.HTML, {'message': this.message, 'type': this.type});
+        this._element = this._createElement(elementString);
+        this._element.querySelector('.material-icons.close').onclick = this.remove.bind(this);
     }
 
     /**
      * Remove the message (is called if the X is clicked)
      */
     remove() {
-        this.element.classList.remove('fade-int');
-        this.element.classList.add('fade-out');
+        this._element.classList.remove('fade-int');
+        this._element.classList.add('fade-out');
 
         setTimeout(() => {
-            this.element.remove();
+            this._element.remove();
         }, 300);
     }
 

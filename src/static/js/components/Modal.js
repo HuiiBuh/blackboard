@@ -1,6 +1,8 @@
+'use strict';
+
 class Modal extends Component {
 
-    static html = `
+    static HTML = `
     <div class="modal-overlay" listener="{'type':'click', 'handler': '_overlayClicked'}">
     
         <div class="modal">
@@ -33,7 +35,6 @@ class Modal extends Component {
         this.body = body;
         this.submit = submitCallback;
 
-        this.root = document.body;
         this._prepareComponent();
     }
 
@@ -42,9 +43,9 @@ class Modal extends Component {
      * Show the modal
      */
     show() {
-        this.root.appendChild(this.element);
-        this.element.classList.remove('fade-out');
-        this.element.classList.add('fade-in');
+        document.body.appendChild(this._element);
+        this._element.classList.remove('fade-out');
+        this._element.classList.add('fade-in');
     }
 
     /**
@@ -52,8 +53,8 @@ class Modal extends Component {
      * @private
      */
     _prepareComponent() {
-        const elementString = this.parser.parseDocument(Modal.html, {header: this.header, body: this.body});
-        this.element = this._createElement(elementString, {position: 'fixed', 'z-index': 500});
+        const elementString = this._parser.parseDocument(Modal.HTML, {header: this.header, body: this.body});
+        this._element = this._createElement(elementString, {position: 'fixed', 'z-index': 500});
         this._addListener();
     }
 
@@ -61,9 +62,9 @@ class Modal extends Component {
      * Remove the modal from the page
      */
     remove() {
-        this.element.classList.add('fade-out');
+        this._element.classList.add('fade-out');
         setTimeout(() => {
-            this.element.remove();
+            this._element.remove();
         }, 300);
     }
 
@@ -71,7 +72,7 @@ class Modal extends Component {
      * Close the current modal
      */
     close() {
-        this.element.classList.add('fade-out');
+        this._element.classList.add('fade-out');
     }
 
     /**
@@ -80,7 +81,7 @@ class Modal extends Component {
      * @private
      */
     _overlayClicked(event) {
-        const modal = this.element.querySelector('.modal');
+        const modal = this._element.querySelector('.modal');
         if (!modal.contains(event.target)) {
             this.close();
         }

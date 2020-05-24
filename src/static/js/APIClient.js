@@ -1,3 +1,7 @@
+'use strict';
+
+// TODO better error handling
+
 class APIClient {
     /**
      * A new async base client
@@ -36,8 +40,9 @@ class APIClient {
         try {
             return await this.request('GET', url, urlParams, body);
         } catch (e) {
+            console.error(e);
             new Message(e.message.detail, 'error').show();
-            throw new Error(JSON.stringify(e));
+            throw new Error();
         }
     }
 

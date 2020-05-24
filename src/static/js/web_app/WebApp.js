@@ -1,3 +1,5 @@
+'use strict';
+
 class WebApp {
 
     /**
@@ -6,7 +8,6 @@ class WebApp {
      * @param preRouteFunction {Function} Function which will be called before the route function is executed
      */
     constructor(routes, preRouteFunction = () => null) {
-
         this._router = new Router(preRouteFunction);
         this.routes = routes;
     }
@@ -18,14 +19,17 @@ class WebApp {
      */
     _pathToRegex(path) {
 
+        // Add the optional trailing slash to the url
         if (path[path.length - 1] !== '/') {
             path += '/?';
         } else if (path[path.length - 1] === '/') {
             path += '?';
         }
 
+        // Check for wildcards
         const variableRegex = new RegExp('{[a-zA-Z_]+}', 'g');
 
+        // Replace the wildcard with regex
         const match = variableRegex.exec(path);
         if (match) {
             path = path.slice(0, match.index) + '[a-zA-Z-._~1-9]+' + path.slice(match.index + match[0].length);

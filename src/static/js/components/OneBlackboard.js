@@ -1,6 +1,8 @@
+'use strict';
+
 class OneBlackboard extends Component {
 
-    static html = `
+    static HTML = `
     <input class="custom-input text-center title" value="{{ name }}">
     <h1 class="text-center title">{{ name }}</h1>
 
@@ -20,13 +22,18 @@ class OneBlackboard extends Component {
     </div>
     `;
 
+    /**
+     * @type {{name:string, content:string, id:number, markdown?:string}}
+     */
+    apiResponse;
+
+    /**
+     * Show one blackboard
+     */
     constructor() {
         super();
 
-        this.apiResponse = null;
-
         this.root = document.querySelector('.container');
-        this.apiClient = new APIClient('', 'text/plain');
         this.blackboardHandler = new BlackboardHandler();
     }
 
@@ -35,9 +42,9 @@ class OneBlackboard extends Component {
      * @return {Promise<void>}
      */
     async show(apiResponse) {
-        document.title = apiResponse.name
+        document.title = apiResponse.name;
         await this._prepareComponent(apiResponse);
-        this.root.appendChild(this.element);
+        this.root.appendChild(this._element);
     }
 
     /**
@@ -48,10 +55,11 @@ class OneBlackboard extends Component {
     async _prepareComponent(apiResponse) {
         this.apiResponse = apiResponse;
 
+        // Get the github markdown
         this.apiResponse.markdown = await this.getGithubMarkdown(this.apiResponse.content);
 
-        const elementString = this.parser.parseDocument(OneBlackboard.html, this.apiResponse);
-        this.element = this._createElement(elementString);
+        const elementString = this._parser.parseDocument(OneBlackboard.HTML, this.apiResponse);
+        this._element = this._createElement(elementString);
 
         this._addListener();
     }
@@ -60,14 +68,14 @@ class OneBlackboard extends Component {
      * Remove the blackboard
      */
     remove() {
-        this.element.remove();
+        this._element.remove();
     }
 
     /**
      * Start the editing
      */
     async startEditing() {
-        await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
+        const a = await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
         document.body.classList.add('editing');
     }
 
@@ -84,11 +92,11 @@ class OneBlackboard extends Component {
         // Updated the blackboard
         await this.blackboardHandler.updateBlackboard(content, name);
 
+        document.body.classList.remove('editing');
+
         // Shows the spinner while the markdown gets loaded
         const spinnerElement = document.querySelector('.spinner');
         spinnerElement.style.display = 'inline-block';
-
-        document.body.classList.remove('editing');
 
         // Update the preview
         document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = await this.getGithubMarkdown(content);
@@ -104,13 +112,20 @@ class OneBlackboard extends Component {
      * @return {Promise<string>}
      */
     async getGithubMarkdown(value) {
+        const apiClient = new APIClient('', 'text/plain');
+
+        /**
+         * @type {string}
+         */
+        let response = '';
         try {
-            return await this.apiClient.request('POST', 'https://api.github.com/markdown/raw', {}, value);
+            response = await apiClient.request('POST', 'https://api.github.com/markdown/raw', {}, value);
         } catch (e) {
-            e = JSON.parse(e.message);
-            new Message(e.message, 'error').show();
             console.error(e);
+            response = '<h1>The preview could not be rendered, because of a GitHub API error</h1>';
+            new Message('There was an error rendering the preview.', 'warn').show();
         }
-        return '<h1>The preview could not be rendered, because of a GitHub API error</h1>';
+
+        return response;
     }
 }

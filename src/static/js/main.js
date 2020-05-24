@@ -1,7 +1,12 @@
+'use strict';
+
 // Create all the components and initialize them
-let homeComponent = new Component();
-let oneBlackboardComponent = new Component();
-let notFoundComponent = new Component();
+let homeComponent = new Home();
+let oneBlackboardComponent = new OneBlackboard();
+let notFoundComponent = new NotFound();
+
+// Create a new search
+new Search();
 
 /**
  * Remove all current components
@@ -12,15 +17,11 @@ function removeAll() {
     notFoundComponent.remove();
 }
 
-const blackboardHandler = new BlackboardHandler();
-
 /**
  * Main entry point
  * @return {Promise<void>}
  */
 async function main() {
-
-    new Search();
 
     /**
      * @type {{path: string, view: Function, title?: string}[]}
@@ -35,4 +36,5 @@ async function main() {
     await app.init();
 }
 
+// Start the main app
 window.onload = main;

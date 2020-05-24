@@ -1,6 +1,8 @@
+'use strict';
+
 class NotFound extends Component {
 
-    static html = `
+    static HTML = `
     <div class="text-center not-found-position">
 
         <div>
@@ -16,7 +18,7 @@ class NotFound extends Component {
     /**
      * @type {NotFound}
      */
-    static instance;
+    static INSTANCE;
 
     /**
      * Create the not found Component
@@ -24,8 +26,8 @@ class NotFound extends Component {
     constructor() {
         super();
         
-        if (NotFound.instance) return NotFound.instance;
-        NotFound.instance = this;
+        if (NotFound.INSTANCE) return NotFound.INSTANCE;
+        NotFound.INSTANCE = this;
 
         document.title = 'Not found - 404';
         this.root = document.querySelector('.container');
@@ -36,14 +38,14 @@ class NotFound extends Component {
      * Show the Component
      */
     show() {
-        this.element = this._createElement(NotFound.html);
-        this.root.appendChild(this.element);
+        this._element = this._createElement(NotFound.HTML);
+        this.root.appendChild(this._element);
     }
 
     /**
      * Remove the Component
      */
     remove() {
-        this.element.remove();
+        this._element.remove();
     }
 }

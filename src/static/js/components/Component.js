@@ -1,11 +1,17 @@
+'use strict';
+
 class Component {
 
     /**
      * Create a new component (an abstract class would be better, but JS does not have such a thing)
      */
     constructor() {
-        this.parser = new Parser();
-        this.element = null;
+        this._parser = new Parser();
+
+        // Init the element so the remove call does throw an error
+        this._element = {
+            remove: () => null
+        };
     }
 
     /**
@@ -33,7 +39,7 @@ class Component {
     _addListener() {
 
         // Get all declared listener
-        const listenerList = [...this.element.querySelectorAll('[listener]')];
+        const listenerList = [...this._element.querySelectorAll('[listener]')];
         for (let listener of listenerList) {
 
             let attribute = listener.getAttribute('listener').replace(/'/g, '"');
@@ -46,7 +52,7 @@ class Component {
 
             // Add the event listener
             listener.addEventListener(attribute.type, async (event) => {
-                this[attribute.handler].bind(this)(event, ...args);
+                await this[attribute.handler].bind(this)(event, ...args);
             });
         }
     }

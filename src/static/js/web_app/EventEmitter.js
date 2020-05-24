@@ -1,3 +1,5 @@
+'use strict';
+
 class EventEmitter {
     /**
      * Custom event emitter implementation for event driven communication
@@ -22,6 +24,7 @@ class EventEmitter {
      * Remove the event listener
      * @param type The type of the event listener which has been added
      * @param callback The callback function of event listener
+     * @return {void}
      */
     removeEventListener(type, callback) {
         if (!(type in this.listeners)) {
@@ -32,7 +35,6 @@ class EventEmitter {
         stackList.forEach((stack, index) => {
             if (stack === callback) {
                 stack.splice(index, 1);
-                return;
             }
         });
 
@@ -41,13 +43,13 @@ class EventEmitter {
 
     /**
      * Dispatch an event to the right listeners event
-     * @param eventType The event type
-     * @param eventInformation Some additional information to the event
-     * @return {boolean}
+     * @param eventType {string} The event type
+     * @param eventInformation {{}} Some additional information to the event
+     * @return {void}
      */
     dispatchEvent(eventType, eventInformation = undefined) {
         if (!(eventType in this.listeners)) {
-            return true;
+            return;
         }
 
         const stackList = this.listeners[eventType].slice();
@@ -55,7 +57,6 @@ class EventEmitter {
             stack.call(this, eventInformation);
         }
 
-        return !eventType.defaultPrevented;
     };
 
 }

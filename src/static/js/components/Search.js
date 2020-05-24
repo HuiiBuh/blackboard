@@ -1,6 +1,8 @@
+'use strict';
+
 class Search {
 
-    static html = `
+    static HTML = `
         <table>
         <thead>
         <tr>
@@ -30,14 +32,14 @@ class Search {
     /**
      * @type {Search}
      */
-    static instance;
+    static INSTANCE;
 
     /**
      * Create a new search class which handles the search requests
      */
     constructor() {
-        if (Search.instance) return Search.instance;
-        Search.instance = this;
+        if (Search.INSTANCE) return Search.INSTANCE;
+        Search.INSTANCE = this;
 
         this.searchContainer = document.querySelector('.search-container');
         this.searchOverlay = document.querySelector('.search-overlay');
@@ -110,8 +112,12 @@ class Search {
         }, 300);
     }
 
+    /**
+     * Get the search results from the api
+     * @param search {string} The search term
+     */
     getSearchResults(search) {
-        if (!searchValue) {
+        if (!search) {
             this.searchPreview.innerHTML = '<h2>Nothing found</h2>';
             return;
         }
@@ -127,7 +133,11 @@ class Search {
         this.showSearchResults(apiResponse);
     }
 
-    showSearchResults(a) {
-        this.parser.insertAt(Search.html, a, '.search-results');
+    /**
+     * Show the search results
+     * @param apiResponse {{}} The api response
+     */
+    showSearchResults(apiResponse) {
+        this.parser.insertAt(Search.HTML, apiResponse, '.search-results');
     }
 }

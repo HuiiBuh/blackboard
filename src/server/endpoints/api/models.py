@@ -1,5 +1,6 @@
+from typing import Optional
+
 from pydantic import BaseModel
-from typing import Union, Optional
 
 
 # Create
@@ -20,8 +21,8 @@ class ReleaseUpdateBody(BaseModel):
 # Update
 class UpdateBlackboardBody(BaseModel):
     token: str
-    name: Union[None, str]
-    content: Union[None, str]
+    name: str
+    content: Optional[str]
 
 
 # Get Blackboard
