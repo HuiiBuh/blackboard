@@ -14,7 +14,7 @@ class Blackboard:
     PATH = join(join(".", "server"), "db")
 
     # RegEx for finding any character which is not(^) a-z or A-Z or 0-9 or '-' or '_'
-    _NAME_PATTERN = re.compile("[^a-zA-Z0-9_-]")
+    _NAME_PATTERN = re.compile("[^ a-zA-Z0-9_-]")
     _MIN_NAME_LENGTH = 3
     _MAX_NAME_LENGTH = 32
 
