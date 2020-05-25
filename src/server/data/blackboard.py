@@ -270,7 +270,7 @@ class Blackboard:
         blackboard_list: List[Blackboard] = []
 
         for blackboard in Blackboard._BLACKBOARDS.values():
-            if q in blackboard.get_name():
+            if q.lower() in blackboard.get_name().lower():
                 blackboard_list.append(blackboard)
 
         return blackboard_list
