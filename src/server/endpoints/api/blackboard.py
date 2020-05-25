@@ -112,13 +112,16 @@ async def update_blackboard(blackboard_id: int, body_data: UpdateBlackboardBody)
     if not blackboard.get_edited_by() == body_data.token:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Your are not allowed to edit the blackboard!")
 
-    try:
-        blackboard.set_name(body_data.name)
-    except ValueError as e:
-        raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
-    except IndexError as e:
-        raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
+    # Update name
+    if blackboard.get_name() != body_data.name:
+        try:
+            blackboard.set_name(body_data.name)
+        except ValueError as e:
+            raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
+        except IndexError as e:
+            raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, str(e))
 
+    # Update content
     try:
         blackboard.set_content(body_data.content)
     except ValueError as e:
