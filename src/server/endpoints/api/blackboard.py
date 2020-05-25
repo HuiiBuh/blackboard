@@ -1,4 +1,3 @@
-from typing import List
 from uuid import uuid1
 
 from fastapi import APIRouter, HTTPException, status
@@ -92,11 +91,12 @@ async def delete_blackboard(blackboard_id: int):
 async def get_blackboard_status(blackboard_id: int):
     """
     Return status of blackboard containing
-     - is_empty: Has content or not
-     - is_edit: A user edits the blackboard right now or not
-     - timestamp_edit: Timestamp of the last change
-    :param blackboard_id: ID of blackboard.
-    :return:
+     - `is_empty`: Has content or not
+     - `is_edit`: A user edits the blackboard right now or not
+     - `timestamp_edit`: Timestamp of the last change
+
+    Query param
+     - `blackboard_id`: ID of blackboard.
     """
     if not Blackboard.exists(blackboard_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")

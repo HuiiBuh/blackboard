@@ -28,7 +28,7 @@ async function main() {
      */
     const routes = [
         {path: '/blackboard/{board_name}', view: oneBlackboard},
-        {path: '/', view: home, title: 'Select blackboard'},
+        {path: '/', view: home, title: 'Select Blackboard'},
         {path: '**', view: notFound, title: 'Not found'}
     ];
 

@@ -140,7 +140,7 @@ class APIClient {
         } else if (error.status >= 500 && error.message.detail) {
             new Message(error.message.detail, 'warn').show();
         } else {
-            new Message(error.message.detail, 'error').show();
+            new Message('Internal server error', 'error').show();
         }
 
         console.error(error);

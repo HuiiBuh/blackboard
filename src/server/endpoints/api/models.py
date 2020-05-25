@@ -36,6 +36,11 @@ class BlackboardStatusModel(BaseModel):
     timestamp_edit: float
 
 
+# The status of the blackboard and all the blackboard information
+class BlackboardAndStatusModel(BlackboardModel, BlackboardStatusModel):
+    pass
+
+
 # Get All
 class BlackboardListModel(BaseModel):
-    blackboard_list: List[BlackboardModel]
+    blackboard_list: List[BlackboardAndStatusModel]

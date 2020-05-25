@@ -64,7 +64,7 @@
     width: 100vw;
     z-index: 5;
     top: var(--navbar-height);
-    height: calc(100vw - var(--navbar-height));
+    height: calc(100vh - var(--navbar-height));
 }
 
 body.loading .loading-indicator {

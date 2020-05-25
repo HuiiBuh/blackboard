@@ -126,11 +126,8 @@ class Search {
             return;
         }
 
-        const apiResponse = await this.apiClient.get(`/search?q=${search}`);
-        apiResponse.blackboard_list.forEach(blackboard => {
-            blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
-            blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
-        });
+        let apiResponse = await this.apiClient.get(`/search?q=${search}`);
+        apiResponse = formatApiData(apiResponse);
 
         if (apiResponse.blackboard_list.length === 0) {
             this.searchPreview.innerHTML = '<h2>Nothing found</h2>';

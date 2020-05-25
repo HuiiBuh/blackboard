@@ -4,35 +4,37 @@ class Home extends Component {
     static HTML = `
     <h1 class="text-center">Select Blackboard</h1>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Last Edited</th>
-            <th class="text-center">Content</th>
-            <th class="text-center">Currently edited</th>
-            <th></th>
-        </tr>
-        </thead>
-    
-        <tbody>
-    
-        {% for blackboard in blackboard_list %}
-    
+    <div class="scroll-table">
+        <table>
+            <thead>
             <tr>
-                <td routerLink="/blackboard/{{ blackboard.id }}">{{ blackboard.name }}</td>
-                <td>{{ blackboard.timestamp_edit }}</td>
-                <td class="text-center"><i class="material-icons ">{{ blackboard.emptyIcon }}</i></td>
-                <td class="text-center"><i class="material-icons ">{{ blackboard.editedIcon }}</i></td>
-                <td class="text-center"><i class="material-icons warn-icon pointer" 
-                listener="{'type':'click', 'handler': 'deleteBlackboard', 'args':'{{ blackboard.id }}, {{ blackboard.name }}'}">delete</i></td>
+                <th>Name</th>
+                <th>Last Edited</th>
+                <th class="text-center">Content</th>
+                <th class="text-center">Currently edited</th>
+                <th></th>
             </tr>
-    
-        {% endfor %}
-    
-        </tbody>
-    
-    </table>
+            </thead>
+        
+            <tbody>
+        
+            {% for blackboard in blackboard_list %}
+        
+                <tr>
+                    <td routerLink="/blackboard/{{ blackboard.id }}">{{ blackboard.name }}</td>
+                    <td>{{ blackboard.timestamp_edit }}</td>
+                    <td class="text-center"><i class="material-icons ">{{ blackboard.emptyIcon }}</i></td>
+                    <td class="text-center"><i class="material-icons ">{{ blackboard.editedIcon }}</i></td>
+                    <td class="text-center"><i class="material-icons warn-icon pointer" 
+                    listener="{'type':'click', 'handler': 'deleteBlackboard', 'args':'{{ blackboard.id }}, {{ blackboard.name }}'}">delete</i></td>
+                </tr>
+        
+            {% endfor %}
+        
+            </tbody>
+        
+        </table>
+    </div>
     
     <a class="fab primary-btn" listener="{'type':'click', 'handler': 'openModal'}">
         <i class="material-icons">add</i>
@@ -79,12 +81,8 @@ class Home extends Component {
      */
     async _prepareComponent() {
         // Get data from the api
-        const apiResponse = await this.apiClient.get('/blackboards');
-
-        apiResponse.blackboard_list.forEach(blackboard => {
-            blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
-            blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
-        });
+        let apiResponse = await this.apiClient.get('/blackboards');
+        apiResponse = formatApiData(apiResponse);
 
         // Parse the api data
         const elementString = this._parser.parseDocument(Home.HTML, apiResponse);
@@ -147,4 +145,21 @@ class Home extends Component {
         this.remove();
         await this.show();
     }
+}
+
+/**
+ * Format the api response so it can be displayed properly
+ * @param apiResponse {object} The api response
+ * @return {*}
+ */
+function formatApiData(apiResponse) {
+
+    console.log(apiResponse);
+    apiResponse.blackboard_list.forEach(blackboard => {
+        blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
+        blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
+        blackboard.timestamp_edit = new Date(blackboard.timestamp_edit * 1000).toLocaleString();
+    });
+
+    return apiResponse;
 }
