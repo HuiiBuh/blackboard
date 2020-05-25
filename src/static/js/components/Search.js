@@ -48,6 +48,8 @@ class Search {
         this.input = this.navigationBar.querySelector('input');
         this.searchPreview = document.querySelector('.search-results');
 
+        this.visible = false;
+
         this.apiClient = new APIClient('/api');
 
         this.timeout = 10;
@@ -67,12 +69,15 @@ class Search {
         this.navigationBar.onclick = this.hideSearchOverlay.bind(this);
 
         document.addEventListener('urlchange', this.hideSearchOverlay.bind(this));
+        document.addEventListener('suppressed_urlchange', this.hideSearchOverlay.bind(this));
     }
 
     /**
      * Show the search overlay
      */
     async showSearchOverlay() {
+        this.visible = true;
+
         this.searchOverlay.classList.add('fade-enlarge-in');
         this.searchOverlay.classList.remove('none');
         this.searchOverlay.classList.remove('fade-enlarge-out');
@@ -86,7 +91,9 @@ class Search {
      * @param event {MouseEvent}
      */
     hideSearchOverlay(event) {
-        if (this.input.contains(event.target)) return;
+        if (this.input.contains(event.target) || !this.visible) return;
+
+        this.visible = false;
 
         this.searchOverlay.classList.add('fade-enlarge-out');
         this.searchOverlay.classList.remove('fade-enlarge-in');

@@ -41,6 +41,7 @@ class Router {
         this._urlChangeEmitter.active = true;
 
         // Call the first url change manually
+        this._urlChangeEmitter.currentURL = location.pathname;
         await this._urlChange(location.pathname);
     }
 

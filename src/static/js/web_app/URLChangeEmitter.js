@@ -67,14 +67,15 @@ class URLChangeEmitter extends EventEmitter {
 
     /**
      * Handle redirects
-     * @private
      */
     _handleRedirects() {
+
 
         // Check if event should be emitted
         // Check if the url has changed
         // Check if the timeout has expired
         if (!this.active || this.currentURL === location.pathname || this._changeTimeout) {
+            document.dispatchEvent(new Event('suppressed_urlchange'));
             return;
         }
         this.currentURL = location.pathname;

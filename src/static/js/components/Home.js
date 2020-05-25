@@ -168,8 +168,6 @@ class Home extends Component {
  * @return {*}
  */
 function formatApiData(apiResponse) {
-
-    console.log(apiResponse);
     apiResponse.blackboard_list.forEach(blackboard => {
         blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
         blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
