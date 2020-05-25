@@ -1,32 +1,27 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 
 
 # Create
-class CreateBlackboardBody(BaseModel):
+class CreateBlackboardModel(BaseModel):
     name: str
 
 
 # Acquire
-class AcquireUpdateResponse(BaseModel):
-    token: str
-
-
-# Release
-class ReleaseUpdateBody(BaseModel):
+class TokenModel(BaseModel):
     token: str
 
 
 # Update
-class UpdateBlackboardBody(BaseModel):
+class UpdateBlackboardModal(BaseModel):
     token: str
     name: str
     content: Optional[str]
 
 
 # Get Blackboard
-class GetBlackboardResponse(BaseModel):
+class BlackboardModel(BaseModel):
     id: int
     name: str
     content: Optional[str]
@@ -35,12 +30,12 @@ class GetBlackboardResponse(BaseModel):
 
 
 # Get Status
-class GetBlackboardStatusResponse(BaseModel):
+class BlackboardStatusModel(BaseModel):
     is_empty: bool
     is_edit: bool
     timestamp_edit: float
 
 
 # Get All
-class GetAllBlackboardsResponse(BaseModel):
-    blackboard_list: list = []
+class BlackboardListModel(BaseModel):
+    blackboard_list: List[BlackboardModel]
