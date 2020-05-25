@@ -21,8 +21,8 @@ class Blackboard:
     _MIN_CONTENT_LENGTH = 1
     _MAX_CONTENT_LENGTH = 1048576
 
-    def __init__(self, name: str, content: Union[None, str] = None, timestamp_create: float = time.time(),
-                 timestamp_edit: float = time.time(), blackboard_id: int = 0):
+    def __init__(self, name: str, content: Union[None, str] = None, timestamp_create: float = 0,
+                 timestamp_edit: float = 0, blackboard_id: int = 0):
         if Blackboard.exists_name(name):
             raise IndexError(f"Blackboard with name '{name}' already exists!")
 
@@ -49,6 +49,12 @@ class Blackboard:
         self._timestamp_create: float = timestamp_create
         self._timestamp_edit: float = timestamp_edit
         self._edited_by: Union[None, str] = None
+
+        # Create new timestamps when blackboard is newly created
+        if self._timestamp_create == 0:
+            self._timestamp_create = time.time()
+        if self._timestamp_edit == 0:
+            self._timestamp_edit = time.time()
 
         self._lock = Lock()
 
@@ -101,7 +107,7 @@ class Blackboard:
         return self._timestamp_create
 
     def get_timestamp_edit(self) -> float:
-        return self._timestamp_create
+        return self._timestamp_edit
 
     def get_state(self) -> dict:
         return {
@@ -157,50 +163,6 @@ class Blackboard:
         json_str: str = json.dumps(self.to_dict(), indent=4)
         file.write(json_str)
         file.close()
-
-    """
-    @staticmethod
-    def delete(name: str, path: str = PATH):
-        filename: str = name
-        if not filename.endswith(".json"):
-            filename: str = f"{filename}.json"
-        if isfile(join(path, filename)):
-            remove(join(path, filename))
-            del Blackboard._BLACKBOARDS[name]
-
-    @staticmethod
-    def load(filename: str, path: str = PATH):
-        file = open(join(path, filename), "r")
-        json_str: str = file.read()
-        data: dict = json.loads(json_str)
-        file.close()
-        Blackboard(data["name"], data["content"], data["timestamp_create"], data["timestamp_edit"])
-
-    @staticmethod
-    def save_all(path: str = PATH):
-        for blackboard in Blackboard._BLACKBOARDS:
-            blackboard.save(path)
-
-    @staticmethod
-    def load_all(path: str = PATH):
-        # reset internal storage
-        Blackboard._BLACKBOARDS = {}
-        files = [f for f in listdir(path) if isfile(join(path, f))]
-        for filename in files:
-            Blackboard.load(filename, path)
-
-    @staticmethod
-    def exists(name: str) -> bool:
-        return name in Blackboard._BLACKBOARDS.keys()
-
-    @staticmethod
-    def get(name: str) -> 'Blackboard':
-        return Blackboard._BLACKBOARDS[name]
-
-    @staticmethod
-    def get_all() -> List['Blackboard']:
-        return list(Blackboard._BLACKBOARDS.values())
-    """
 
     @staticmethod
     def exists_name(name: str) -> bool:
