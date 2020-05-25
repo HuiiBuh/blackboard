@@ -3,22 +3,24 @@
 class OneBlackboard extends Component {
 
     static HTML = `
-    <input class="custom-input text-center title" value="{{ name }}">
-    <h1 class="text-center title">{{ name }}</h1>
-
-    <div class="blackboard-wrapper">
-        <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'startEditing'}">edit</i>
+    <div id="editing-wrapper">
+        <input class="custom-input text-center title" value="{{ name }}">
+        <h1 class="text-center title">{{ name }}</h1>
     
-        <div class="blackboard-preview">
-            <div class="spinner"></div>
-            <div>{{ markdown }}</div>
+        <div class="blackboard-wrapper">
+            <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'startEditing'}">edit</i>
+        
+            <div class="blackboard-preview">
+                <div class="spinner"></div>
+                <div>{{ markdown }}</div>
+            </div>
+        
+            <div class="textarea">
+                <textarea placeholder="Markdown supported">{{ content }}</textarea>
+            </div>
+        
+            <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>
         </div>
-    
-        <div class="textarea">
-            <textarea placeholder="Markdown supported">{{ content }}</textarea>
-        </div>
-    
-        <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>
     </div>
     `;
 
@@ -75,8 +77,8 @@ class OneBlackboard extends Component {
      * Start the editing
      */
     async startEditing() {
-        const a = await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
-        document.body.classList.add('editing');
+        await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
+        document.querySelector('#editing-wrapper').classList.add('editing');
     }
 
     /**
@@ -92,7 +94,7 @@ class OneBlackboard extends Component {
         // Updated the blackboard
         await this.blackboardHandler.updateBlackboard(content, name);
 
-        document.body.classList.remove('editing');
+        document.querySelector('#editing-wrapper').classList.remove('editing');
 
         // Shows the spinner while the markdown gets loaded
         const spinnerElement = document.querySelector('.spinner');

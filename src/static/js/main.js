@@ -1,9 +1,9 @@
 'use strict';
 
 // Create all the components and initialize them
-let homeComponent = new Home();
+const homeComponent = new Home();
 let oneBlackboardComponent = new OneBlackboard();
-let notFoundComponent = new NotFound();
+const notFoundComponent = new NotFound();
 
 // Create a new search
 new Search();

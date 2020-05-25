@@ -8,6 +8,7 @@
 }
 
 .blackboard-wrapper {
+    word-wrap: break-word;
     position: relative;
     height: calc(100vh - var(--navbar-height) - 1rem - var(--title-size) - 1.5rem);
 }
@@ -29,6 +30,7 @@
 .blackboard-wrapper > .blackboard-preview {
     min-height: 200px;
     position: relative;
+    margin-bottom: 2rem;
 
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     padding: 5px;
@@ -44,16 +46,15 @@
 
 input.title,
 .editing h1.title,
-
 .editing .edit,
 .save,
-
 .editing .blackboard-wrapper > .blackboard-preview {
     display: none !important;
 }
 
 
 .edit, .save {
+    background: white;
     z-index: 1;
     padding: 5px;
     position: absolute;

@@ -19,7 +19,7 @@ class Blackboard:
     _MAX_NAME_LENGTH = 32
 
     _MIN_CONTENT_LENGTH = 1
-    _MAX_CONTENT_LENGTH = 1024
+    _MAX_CONTENT_LENGTH = 1048576
 
     def __init__(self, name: str, content: Union[None, str] = None, timestamp_create: float = time.time(),
                  timestamp_edit: float = time.time(), blackboard_id: int = 0):

@@ -7,7 +7,6 @@ const apiClient = new APIClient('/api');
  * Render the home view
  */
 async function home() {
-    homeComponent = new Home();
     await homeComponent.show();
 }
 
@@ -38,6 +37,5 @@ async function oneBlackboard() {
  * Render the not found view
  */
 function notFound() {
-    notFoundComponent = new NotFound();
     notFoundComponent.show();
 }
