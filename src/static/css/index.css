@@ -20,7 +20,7 @@ html, body {
     text-rendering: optimizeLegibility;
 }
 
-body, textarea{
+body, textarea {
     font-family: 'Helvetica Neue', sans-serif;
 }
 
@@ -177,4 +177,8 @@ button {
     position: absolute;
     top: .5rem;
     right: .5rem;
+}
+
+.align-right {
+    text-align: right;
 }

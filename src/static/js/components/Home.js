@@ -3,6 +3,10 @@
 class Home extends Component {
     static HTML = `
     <h1 class="text-center">Select Blackboard</h1>
+    
+    <div class="align-right">
+        <i class="material-icons pointer" listener="{'type':'click', 'handler': 'refresh'}">refresh</i>
+    </div>
 
     <div class="scroll-table">
         <table>
@@ -99,6 +103,15 @@ class Home extends Component {
     remove() {
         this._element.remove();
         this.modal.remove();
+    }
+
+    /**
+     * Refresh the home page
+     */
+    async refresh() {
+        this.remove();
+        await this.show();
+        new Message('Reload finished').show();
     }
 
     /**
