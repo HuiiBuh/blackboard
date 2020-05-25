@@ -264,3 +264,13 @@ class Blackboard:
     @staticmethod
     def get_all() -> List['Blackboard']:
         return list(Blackboard._BLACKBOARDS.values())
+
+    @staticmethod
+    def search(q: str):
+        blackboard_list: List[Blackboard] = []
+
+        for blackboard in Blackboard._BLACKBOARDS.values():
+            if q in blackboard.get_name():
+                blackboard_list.append(blackboard)
+
+        return blackboard_list

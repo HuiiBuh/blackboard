@@ -171,13 +171,15 @@ async def get_blackboard_status(blackboard_id: int):
 @router.get("/blackboards/{blackboard_id}", response_model=GetBlackboardResponse)
 async def get_blackboard(blackboard_id: int):
     """
+    Query parameter:
+     - `blackboard_id`: ID of blackboard.
+
     Returns the following information:
-     - id: ID of blackboard
-     - name: Name of blackboard
-     - content: Content of blackboard
-     - timestamp_edit: Timestamp of the last change
-     - timestamp_create: Timestamp of creation
-    :param blackboard_id: ID of blackboard.
+     - `id`: ID of blackboard
+     - `name`: Name of blackboard
+     - `content`: Content of blackboard
+     - `timestamp_edit`: Timestamp of the last change
+     - `timestamp_create`: Timestamp of creation
     :return:
     """
     if not Blackboard.exists(blackboard_id):
@@ -186,3 +188,18 @@ async def get_blackboard(blackboard_id: int):
     blackboard: Blackboard = Blackboard.get(blackboard_id)
 
     return blackboard.to_dict()
+
+
+@router.get("/search", response_model=GetAllBlackboardsResponse)
+async def search(q: str):
+    """
+    Search for a specific blackboard name or the content of a blackboard
+
+    URL query:
+     - `q`: The search query
+    """
+
+    search_result = Blackboard.search(q)
+    return {
+        "blackboard_list": [b.get_overview() for b in search_result]
+    }

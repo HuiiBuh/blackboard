@@ -21,12 +21,7 @@ class APIClient {
      * @return {Promise<string|object>}
      */
     async put(url, urlParams = {}, body = {}) {
-        try {
-            return await this.request('PUT', url, urlParams, body);
-        } catch (e) {
-            new Message(e.message.detail, 'error').show();
-            throw new Error(JSON.stringify(e));
-        }
+        return await this.request('PUT', url, urlParams, body);
     }
 
     /**
@@ -37,13 +32,7 @@ class APIClient {
      * @return {Promise<string|object>}
      */
     async get(url, urlParams = {}, body = {}) {
-        try {
-            return await this.request('GET', url, urlParams, body);
-        } catch (e) {
-            console.error(e);
-            new Message(e.message.detail, 'error').show();
-            throw new Error();
-        }
+        return await this.request('GET', url, urlParams, body);
     }
 
     /**
@@ -54,12 +43,7 @@ class APIClient {
      * @return {Promise<string|object>}
      */
     async post(url, urlParams = {}, body = {}) {
-        try {
-            return await this.request('POST', url, urlParams, body);
-        } catch (e) {
-            new Message(e.message.detail, 'error').show();
-            throw new Error(JSON.stringify(e));
-        }
+        return await this.request('POST', url, urlParams, body);
     }
 
     /**
@@ -70,12 +54,7 @@ class APIClient {
      * @return {Promise<string|object>}
      */
     async delete(url, urlParams = {}, body = {}) {
-        try {
-            return await this.request('DELETE', url, urlParams, body);
-        } catch (e) {
-            new Message(e.message.detail, 'error').show();
-            throw new Error(JSON.stringify(e));
-        }
+        return await this.request('DELETE', url, urlParams, body);
     }
 
     /**
@@ -87,8 +66,6 @@ class APIClient {
      * @return {Promise<string|object>}
      */
     async request(method, url, urlParams = '', body = {}) {
-        const self = this;
-
         // Add url params
         url = this.baseURL + url;
         if (urlParams) {
@@ -99,7 +76,22 @@ class APIClient {
         if (typeof body === 'object') {
             body = JSON.stringify(body);
         }
+        try {
+            return await this.executeRequest(method, url, body);
+        } catch (e) {
+            this._handleError(e);
+        }
+    }
 
+    /**
+     * Make the available request
+     * @param method {string} The method
+     * @param url {string} The url
+     * @param body {object} The body as a json
+     * @return {Promise<string|{}>}
+     */
+    executeRequest(method, url, body) {
+        const self = this;
         return new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
 
@@ -136,5 +128,23 @@ class APIClient {
         return request.responseText;
     }
 
+    /**
+     * Handle error
+     * @param error {object}
+     * @private
+     */
+    _handleError(error) {
+
+        if (error.status === 422) {
+            new Message('There was a type error in your response or you did not submit a required input value', 'warn').show();
+        } else if (error.status >= 500 && error.message.detail) {
+            new Message(error.message.detail, 'warn').show();
+        } else {
+            new Message(error.message.detail, 'error').show();
+        }
+
+        console.error(error);
+        throw new Error('See the object above for more details');
+    }
 }
 

@@ -25,6 +25,11 @@ class OneBlackboard extends Component {
     `;
 
     /**
+     * @type {OneBlackboard}
+     */
+    static INSTANCE;
+
+    /**
      * @type {{name:string, content:string, id:number, markdown?:string}}
      */
     apiResponse;
@@ -34,6 +39,9 @@ class OneBlackboard extends Component {
      */
     constructor() {
         super();
+
+        if (OneBlackboard.INSTANCE) return OneBlackboard.INSTANCE;
+        OneBlackboard.INSTANCE = this;
 
         this.root = document.querySelector('.container');
         this.blackboardHandler = new BlackboardHandler();
@@ -121,14 +129,13 @@ class OneBlackboard extends Component {
          */
         let response = '';
         try {
-            response = await apiClient.request('POST', 'https://api.github.com/markdown/raw', {}, value);
-        } catch (e) {
-            console.error(e);
+            response = await apiClient.executeRequest('POST', 'https://api.github.com/markdown/raw', value);
+        } catch (error) {
+            console.warn(error);
 
-            if (e.status === 403) {
+            if (error.status === 403) {
                 new Message('Github API limit exceeded.', 'warn').show();
             } else {
-
                 new Message('There was an error rendering the preview.', 'warn').show();
             }
 

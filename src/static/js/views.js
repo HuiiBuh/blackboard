@@ -29,7 +29,6 @@ async function oneBlackboard() {
         apiResponse.content = '';
     }
 
-    oneBlackboardComponent = new OneBlackboard();
     await oneBlackboardComponent.show(apiResponse);
 }
 

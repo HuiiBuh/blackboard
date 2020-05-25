@@ -5,7 +5,7 @@ class BlackboardHandler {
     /**
      * @type {BlackboardHandler}
      */
-    static instance;
+    static INSTANCE;
 
 
     /**
@@ -13,10 +13,11 @@ class BlackboardHandler {
      * @return {BlackboardHandler}
      */
     constructor() {
-        if (BlackboardHandler.instance) return BlackboardHandler.instance;
-        BlackboardHandler.instance = this;
+        if (BlackboardHandler.INSTANCE) return BlackboardHandler.INSTANCE;
+        BlackboardHandler.INSTANCE = this;
 
         this._removeLockOnNavigation();
+        this._addSaveShortcut();
 
         this.apiCLient = new APIClient('/api');
         this.token = '';
@@ -33,6 +34,7 @@ class BlackboardHandler {
         if (this.token) await this.releaseBlackboard();
 
         this.blackboardID = blackboardID;
+
         const response = await this.apiCLient.get(`/blackboards/${this.blackboardID}/acquire`);
         this.token = response.token;
     }
@@ -77,6 +79,21 @@ class BlackboardHandler {
     _removeLockOnNavigation() {
         document.addEventListener('urlchange', this.releaseBlackboard.bind(this));
         window.addEventListener('beforeunload', this.releaseBlackboard.bind(this));
+    }
+
+    /**
+     * Add a shortcut which saves the page if you press Strg + s
+     * @private
+     */
+    _addSaveShortcut() {
+        document.addEventListener('keydown', async (event) => {
+            if (event.key.toLowerCase() === 's' && event.ctrlKey) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (this.token) await new OneBlackboard().saveChanges();
+            }
+        });
     }
 
 }

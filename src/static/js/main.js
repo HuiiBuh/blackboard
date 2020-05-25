@@ -2,7 +2,7 @@
 
 // Create all the components and initialize them
 const homeComponent = new Home();
-let oneBlackboardComponent = new OneBlackboard();
+const oneBlackboardComponent = new OneBlackboard();
 const notFoundComponent = new NotFound();
 
 // Create a new search

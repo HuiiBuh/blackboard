@@ -9,19 +9,19 @@ class Search {
             <th>Name</th>
             <th>Last Edited</th>
             <th class="text-center">Content</th>
-            <th></th>
+            <th class="text-center">Currently edited</th>
         </tr>
         </thead>
     
         <tbody>
     
-        {% for blackboard in blackboardList %}
+        {% for blackboard in blackboard_list %}
     
             <tr>
-                <td routerLink="/blackboard/{{ blackboard.url }}">{{ blackboard.name }}</td>
-                <td>{{ blackboard.editingDate }}</td>
-                <td class="text-center"><i class="material-icons ">{{ blackboard.empty }}</i></td>
-                <td class="text-center"><i class="material-icons warn-icon pointer">delete</i></td>
+                <td routerLink="/blackboard/{{ blackboard.id }}">{{ blackboard.name }}</td>
+                <td>{{ blackboard.timestamp_edit }}</td>
+                <td class="text-center"><i class="material-icons ">{{ blackboard.emptyIcon }}</i></td>
+                <td class="text-center"><i class="material-icons ">{{ blackboard.editedIcon }}</i></td>
             </tr>
     
         {% endfor %}
@@ -48,6 +48,8 @@ class Search {
         this.input = this.navigationBar.querySelector('input');
         this.searchPreview = document.querySelector('.search-results');
 
+        this.apiClient = new APIClient('/api');
+
         this.timeout = 10;
 
         this.parser = new Parser();
@@ -70,11 +72,13 @@ class Search {
     /**
      * Show the search overlay
      */
-    showSearchOverlay() {
+    async showSearchOverlay() {
         this.searchOverlay.classList.add('fade-enlarge-in');
         this.searchOverlay.classList.remove('none');
         this.searchOverlay.classList.remove('fade-enlarge-out');
-        this.getSearchResults();
+
+        const value = document.querySelector('.search-container > input').value;
+        await this.getSearchResults(value);
     }
 
     /**
@@ -107,8 +111,8 @@ class Search {
             return;
         }
 
-        this.timeout = setTimeout(() => {
-            this.getSearchResults();
+        this.timeout = setTimeout(async () => {
+            await this.getSearchResults(searchValue);
         }, 300);
     }
 
@@ -116,20 +120,23 @@ class Search {
      * Get the search results from the api
      * @param search {string} The search term
      */
-    getSearchResults(search) {
+    async getSearchResults(search) {
         if (!search) {
             this.searchPreview.innerHTML = '<h2>Nothing found</h2>';
             return;
         }
 
-        // TODO API
-        const apiResponse = {
-            blackboardList: [
-                {url: 'first-url', name: 'first-name', editingDate: '12.01.2019', empty: 'check'},
-                {url: 'first-url', name: 'first-name', editingDate: '12.01.2019', empty: 'check'},
-                {url: 'first-url', name: 'first-name', editingDate: '12.01.2019', empty: 'check'}
-            ]
-        };
+        const apiResponse = await this.apiClient.get(`/search?q=${search}`);
+        apiResponse.blackboard_list.forEach(blackboard => {
+            blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
+            blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
+        });
+
+        if (apiResponse.blackboard_list.length === 0) {
+            this.searchPreview.innerHTML = '<h2>Nothing found</h2>';
+            return;
+        }
+
         this.showSearchResults(apiResponse);
     }
 
