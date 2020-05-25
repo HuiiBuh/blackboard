@@ -13,6 +13,7 @@ class Home extends Component {
             <thead>
             <tr>
                 <th>Name</th>
+                <th>Creation time</th>
                 <th>Last Edited</th>
                 <th class="text-center">Content</th>
                 <th class="text-center">Currently edited</th>
@@ -26,6 +27,7 @@ class Home extends Component {
         
                 <tr>
                     <td routerLink="/blackboard/{{ blackboard.id }}">{{ blackboard.name }}</td>
+                    <td>{{ blackboard.timestamp_create }}</td>
                     <td>{{ blackboard.timestamp_edit }}</td>
                     <td class="text-center"><i class="material-icons ">{{ blackboard.emptyIcon }}</i></td>
                     <td class="text-center"><i class="material-icons ">{{ blackboard.editedIcon }}</i></td>
@@ -171,6 +173,7 @@ function formatApiData(apiResponse) {
     apiResponse.blackboard_list.forEach(blackboard => {
         blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
         blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
+        blackboard.timestamp_create = new Date(blackboard.timestamp_create * 1000).toLocaleString();
         blackboard.timestamp_edit = new Date(blackboard.timestamp_edit * 1000).toLocaleString();
     });
 
