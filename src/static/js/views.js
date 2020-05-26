@@ -17,11 +17,13 @@ async function oneBlackboard() {
 
     let apiResponse;
     try {
-        apiResponse = await apiClient.executeRequest('GET', `/blackboards/${location.pathname.split('/').pop()}`, {});
+        const url = `/api/blackboards/${location.pathname.split('/').pop()}`;
+        apiResponse = await apiClient.executeRequest('GET', url, {});
     } catch (e) {
         if (e.status === 404) return notFound();
 
         new Message(e.message.detail, 'error').show();
+        return;
     }
 
     // Remove the null in the api response for a empty string
