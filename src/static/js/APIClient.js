@@ -137,10 +137,12 @@ class APIClient {
 
         if (error.status === 422) {
             new Message('There was a type error in your response or you did not submit a required input value', 'warn').show();
-        } else if (error.status >= 500 && error.message.detail) {
-            new Message(error.message.detail, 'warn').show();
-        } else {
-            new Message('Internal server error', 'error').show();
+        } else if (error.message.detail) {
+            new Message(error.message.detail, 'error').show();
+        } else if (error.status >= 500) {
+            new Message('Internal server error. View the console for more details.', 'error').show();
+        } else if (error.status < 500 && error.status >= 400) {
+            new Message('There was an error on your side. View the console for more details.', 'error').show();
         }
 
         console.error(error);

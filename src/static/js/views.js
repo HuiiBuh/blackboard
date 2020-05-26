@@ -17,7 +17,7 @@ async function oneBlackboard() {
 
     let apiResponse;
     try {
-        apiResponse = await apiClient.request('GET', `/blackboards/${location.pathname.split('/').pop()}`);
+        apiResponse = await apiClient.executeRequest('GET', `/blackboards/${location.pathname.split('/').pop()}`, {});
     } catch (e) {
         if (e.status === 404) return notFound();
 
