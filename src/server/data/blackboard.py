@@ -1,11 +1,10 @@
 import json
 import re
+import time
 from os import listdir, remove
 from os.path import isfile, join
 from threading import Lock
 from typing import Union, List
-
-import time
 
 
 class Blackboard:
@@ -13,7 +12,7 @@ class Blackboard:
 
     PATH = join(join(".", "server"), "db")
 
-    # RegEx for finding any character which is not(^) a-z or A-Z or 0-9 or '-' or '_'
+    # RegEx for finding any character which is not(^) a-z or A-Z or 0-9 or '-' or '_' or space
     _NAME_PATTERN = re.compile("[^ a-zA-Z0-9_-]")
     _MIN_NAME_LENGTH = 3
     _MAX_NAME_LENGTH = 32
@@ -27,7 +26,7 @@ class Blackboard:
             raise IndexError(f"Blackboard with name '{name}' already exists!")
 
         if Blackboard._NAME_PATTERN.findall(name):
-            raise ValueError("Name should only consist of a-z, A-Z, 0-9, '-' or '_'.")
+            raise ValueError("Name should only consist of a-z, A-Z, 0-9, '-', '_' or space.")
 
         if not Blackboard._MIN_NAME_LENGTH <= len(name) <= Blackboard._MAX_NAME_LENGTH:
             raise ValueError(f"Name should have a length of:"
@@ -67,7 +66,7 @@ class Blackboard:
 
     def set_name(self, name: str) -> None:
         if Blackboard._NAME_PATTERN.findall(name):
-            raise ValueError("Name should only consist of a-z, A-Z, 0-9, '-' or '_'.")
+            raise ValueError("Name should only consist of a-z, A-Z, 0-9, '-', '_' or space.")
 
         if not Blackboard._MIN_NAME_LENGTH <= len(name) <= Blackboard._MAX_NAME_LENGTH:
             raise ValueError(f"Name should have a length of:"
@@ -173,7 +172,7 @@ class Blackboard:
 
     @staticmethod
     def delete_file(blackboard_id: int, path: str = PATH):
-        filename: str = Blackboard._BLACKBOARDS[blackboard_id]._name
+        filename: str = Blackboard._BLACKBOARDS[blackboard_id].get_name()
         if not filename.endswith(".json"):
             filename: str = f"{filename}.json"
         if isfile(join(path, filename)):
