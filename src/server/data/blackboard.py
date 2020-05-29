@@ -205,7 +205,8 @@ class Blackboard:
         Blackboard._BLACKBOARDS = {}
         files = [f for f in listdir(path) if isfile(join(path, f))]
         for filename in files:
-            Blackboard.load(filename, path)
+            if filename.endswith(".json"):
+                Blackboard.load(filename, path)
 
     @staticmethod
     def exists(blackboard_id: int) -> bool:
