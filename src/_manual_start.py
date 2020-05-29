@@ -1,6 +1,7 @@
 import uvicorn
 
 from src.server.data.blackboard import Blackboard
+from src.server.data.logger import Logger
 
 
 def test():
@@ -19,6 +20,8 @@ def test():
 
 if __name__ == "__main__":
     # test()
+
+    Logger.info("Server is starting...")
 
     # Import string, but with : instead of .
     uvicorn.run("server:app", host="0.0.0.0", reload=True)

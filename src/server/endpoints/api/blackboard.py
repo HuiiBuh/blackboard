@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, status
 
 from .models import *
 from ...data.blackboard import Blackboard
+from ...data.logger import Logger
 
 router = APIRouter()
 
@@ -23,6 +24,8 @@ async def get_all_blackboards():
     :return:
     """
     blackboards: List[Blackboard] = Blackboard.get_all()
+
+    Logger.info("API Endpoint '/blackboards' called!")
 
     return {
         "blackboard_list": [b.get_overview() for b in blackboards]
