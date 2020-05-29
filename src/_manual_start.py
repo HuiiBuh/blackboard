@@ -1,6 +1,6 @@
 import uvicorn
 from uvicorn.config import LOGGING_CONFIG
-
+from os.path import isfile, join
 from src.server.data.blackboard import Blackboard
 
 LOGGING_CONFIG["formatters"]["default"]["fmt"] = "[%(asctime)s]"+LOGGING_CONFIG["formatters"]["default"]["fmt"]
@@ -9,13 +9,13 @@ LOGGING_CONFIG["formatters"]["access"]["fmt"] = "[%(asctime)s]"+LOGGING_CONFIG["
 LOGGING_CONFIG["handlers"]["file_default"] = {
     "formatter": "default",
     "class": "logging.FileHandler",
-    "filename": "api.log"
+    "filename": join(join(".", "log"), "api_console.log")
 }
 
 LOGGING_CONFIG["handlers"]["file_access"] = {
     "formatter": "access",
     "class": "logging.FileHandler",
-    "filename": "api_access.log"
+    "filename": join(join(".", "log"), "api_access.log")
 }
 
 LOGGING_CONFIG["loggers"][""]["handlers"].append("file_default")
