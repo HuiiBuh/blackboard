@@ -1,4 +1,4 @@
-name: Docker CI
+name: Docker Continuous Integration
 
 on:
   push:
@@ -23,11 +23,11 @@ jobs:
       run: docker ps -a
     - name: Check if container blackboard_fastapi is alive
       run: cd docker && docker-compose exec -T blackboard_fastapi echo "I am up"
-    - name: Get Failed logs
+    - name: Get Failed FastAPI logs
       if: ${{ failure() }}
       run: cd docker && docker-compose logs blackboard_fastapi
     - name: Check if container blackboard_reverse_proxy is alive
       run: cd docker && docker-compose exec -T blackboard_reverse_proxy echo "I am up"
-    - name: Get Failed logs
+    - name: Get Failed Nginx logs
       if: ${{ failure() }}
       run: cd docker && docker-compose logs blackboard_reverse_proxy
