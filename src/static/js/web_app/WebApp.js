@@ -32,7 +32,7 @@ class WebApp {
         // Replace the wildcard with regex
         const match = variableRegex.exec(path);
         if (match) {
-            path = path.slice(0, match.index) + '[a-zA-Z-._~1-9]+' + path.slice(match.index + match[0].length);
+            path = path.slice(0, match.index) + '[a-zA-z0-9]+' + path.slice(match.index + match[0].length);
         }
 
         path = path.replace('/', '\/');

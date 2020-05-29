@@ -207,7 +207,7 @@ class Blackboard:
         return blackboard_id in Blackboard._BLACKBOARDS.keys()
 
     @staticmethod
-    def get(blackboard_id: int) -> 'Blackboard':
+    def get(blackboard_id: str) -> 'Blackboard':
         return Blackboard._BLACKBOARDS[blackboard_id]
 
     @staticmethod

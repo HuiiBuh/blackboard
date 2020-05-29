@@ -20,6 +20,7 @@ async function oneBlackboard() {
         const url = `/api/blackboards/${location.pathname.split('/').pop()}`;
         apiResponse = await apiClient.executeRequest('GET', url, {});
     } catch (e) {
+        console.error(e);
         if (e.status === 404) return notFound();
 
         new Message(e.message.detail, 'error').show();
