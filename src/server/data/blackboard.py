@@ -6,6 +6,8 @@ from os.path import isfile, join
 from threading import Lock
 from typing import Union, List
 
+from uuid import uuid1
+
 
 class Blackboard:
     _BLACKBOARDS = {}
@@ -21,7 +23,7 @@ class Blackboard:
     _MAX_CONTENT_LENGTH = 1048576
 
     def __init__(self, name: str, content: Union[None, str] = None, timestamp_create: float = 0,
-                 timestamp_edit: float = 0, blackboard_id: int = 0):
+                 timestamp_edit: float = 0, blackboard_id: Union[None, str] = None):
         if Blackboard.exists_name(name):
             raise IndexError(f"Blackboard with name '{name}' already exists!")
 
@@ -33,15 +35,7 @@ class Blackboard:
                              f" {Blackboard._MIN_NAME_LENGTH} <= length <= {Blackboard._MAX_NAME_LENGTH}")
 
         # Set ID
-        self._id = blackboard_id
-        if self._id == 0:
-            # No ID given. This means that to blackboard wasn't loaded but created.
-            # IMPORTANT: Blackboard IDs start at 1. Otherwise there would be problems when loading the blackboard
-            # with the ID 0.
-            self._id = 1
-            for blackboard in Blackboard._BLACKBOARDS.values():
-                if blackboard.get_id() >= self._id:
-                    self._id = blackboard.get_id() + 1
+        self._id = blackboard_id or uuid1().hex
 
         self._name: str = name
         self._content: Union[None, str] = content
@@ -61,7 +55,7 @@ class Blackboard:
 
         Blackboard._BLACKBOARDS[self._id] = self
 
-    def get_id(self) -> int:
+    def get_id(self) -> str:
         return self._id
 
     def set_name(self, name: str) -> None:
@@ -171,7 +165,7 @@ class Blackboard:
         return False
 
     @staticmethod
-    def delete_file(blackboard_id: int, path: str = PATH):
+    def delete_file(blackboard_id: str, path: str = PATH):
         filename: str = Blackboard._BLACKBOARDS[blackboard_id].get_name()
         if not filename.endswith(".json"):
             filename: str = f"{filename}.json"
@@ -179,7 +173,7 @@ class Blackboard:
             remove(join(path, filename))
 
     @staticmethod
-    def delete(blackboard_id: int, path: str = PATH):
+    def delete(blackboard_id: str, path: str = PATH):
         # Delete JSON-File
         Blackboard.delete_file(blackboard_id, path)
         # Delete dict entry
@@ -209,7 +203,7 @@ class Blackboard:
                 Blackboard.load(filename, path)
 
     @staticmethod
-    def exists(blackboard_id: int) -> bool:
+    def exists(blackboard_id: str) -> bool:
         return blackboard_id in Blackboard._BLACKBOARDS.keys()
 
     @staticmethod

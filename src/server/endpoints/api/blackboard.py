@@ -49,7 +49,7 @@ async def create_blackboard(body_data: CreateBlackboardModel):
 
 
 @router.get("/blackboards/{blackboard_id}", response_model=BlackboardModel)
-async def get_blackboard(blackboard_id: int):
+async def get_blackboard(blackboard_id: str):
     """
     Query parameter:
      - `blackboard_id`: ID of blackboard.

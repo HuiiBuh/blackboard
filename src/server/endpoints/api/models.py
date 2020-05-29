@@ -22,7 +22,7 @@ class UpdateBlackboardModal(BaseModel):
 
 # Get Blackboard
 class BlackboardModel(BaseModel):
-    id: int
+    id: str
     name: str
     content: Optional[str]
     timestamp_create: float
