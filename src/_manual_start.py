@@ -36,7 +36,5 @@ def test():
 if __name__ == "__main__":
     # test()
 
-    Logger.info("Server is starting...")
-
     # Import string, but with : instead of .
     uvicorn.run("server:app", host="0.0.0.0", reload=True, log_config=LOGGING_CONFIG)

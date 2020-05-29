@@ -1,11 +1,15 @@
+import logging
+
 from uuid import uuid1
 
-from fastapi import APIRouter, HTTPException, status, logger
+from fastapi import APIRouter, HTTPException, status
 
 from .models import *
 from ...data.blackboard import Blackboard
 
 router = APIRouter()
+
+Logger = logging.getLogger("uvicorn")
 
 
 # ==========================================================
@@ -23,7 +27,7 @@ async def get_all_blackboards():
     :return:
     """
     blackboards: List[Blackboard] = Blackboard.get_all()
-
+    Logger.info("Test")
     return {
         "blackboard_list": [b.get_overview() for b in blackboards]
     }
