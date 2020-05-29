@@ -71,7 +71,7 @@ async def get_blackboard(blackboard_id: str):
 
 
 @router.delete("/blackboards/{blackboard_id}")
-async def delete_blackboard(blackboard_id: int):
+async def delete_blackboard(blackboard_id: str):
     """
     Delete the blackboard. For this to happen, the user has to lock / acquire the blackboard via
     acquire_update() first. Additionally he must have the user_token transmitted, which was used for acquiring the
@@ -92,7 +92,7 @@ async def delete_blackboard(blackboard_id: int):
 
 
 @router.get("/blackboards/{blackboard_id}/status", response_model=BlackboardStatusModel)
-async def get_blackboard_status(blackboard_id: int):
+async def get_blackboard_status(blackboard_id: str):
     """
     Return status of blackboard containing
      - `is_empty`: Has content or not
@@ -114,7 +114,7 @@ async def get_blackboard_status(blackboard_id: int):
 
 @router.get("/blackboards/{blackboard_id}/acquire", status_code=status.HTTP_202_ACCEPTED,
             response_model=TokenModel)
-async def acquire_blackboard(blackboard_id: int):
+async def acquire_blackboard(blackboard_id: str):
     """
     Requests a lock for the given blackboard. The blackboard will be acquired if the it hasn't already been acquired by
     someone else. The user is only able to edit the board (change to edit page), if the blackboard could be acquired.
@@ -141,7 +141,7 @@ async def acquire_blackboard(blackboard_id: int):
 
 
 @router.put("/blackboards/{blackboard_id}/update")
-async def update_blackboard(blackboard_id: int, body_data: UpdateBlackboardModal):
+async def update_blackboard(blackboard_id: str, body_data: UpdateBlackboardModal):
     """
     Update the content of the blackboard. For this to happen, the user has to lock / acquire the blackboard via
     acquire_update() first. Additionally he must have the user_token transmitted, which was used for acquiring the
@@ -176,7 +176,7 @@ async def update_blackboard(blackboard_id: int, body_data: UpdateBlackboardModal
 
 
 @router.put("/blackboards/{blackboard_id}/release", status_code=status.HTTP_202_ACCEPTED)
-async def release_blackboard(blackboard_id: int, body_data: TokenModel):
+async def release_blackboard(blackboard_id: str, body_data: TokenModel):
     """
     Releases the lock for the given blackboard.
     :param blackboard_id: ID of blackboard.
