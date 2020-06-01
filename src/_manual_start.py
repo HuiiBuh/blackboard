@@ -2,8 +2,8 @@ import uvicorn
 from uvicorn.config import LOGGING_CONFIG
 from os.path import join
 
-LOGGING_CONFIG["formatters"]["default"]["fmt"] = "[%(asctime)s]"+LOGGING_CONFIG["formatters"]["default"]["fmt"]
-LOGGING_CONFIG["formatters"]["access"]["fmt"] = "[%(asctime)s]"+LOGGING_CONFIG["formatters"]["access"]["fmt"]
+LOGGING_CONFIG["formatters"]["default"]["fmt"] = "[%(asctime)s] - "+LOGGING_CONFIG["formatters"]["default"]["fmt"]
+LOGGING_CONFIG["formatters"]["access"]["fmt"] = "[%(asctime)s] - "+LOGGING_CONFIG["formatters"]["access"]["fmt"]
 
 LOGGING_CONFIG["handlers"]["file_default"] = {
     "formatter": "default",
