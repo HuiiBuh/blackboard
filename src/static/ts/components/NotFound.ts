@@ -13,10 +13,7 @@ class NotFound extends Component {
     </div>
     `;
 
-    /**
-     * @type {NotFound}
-     */
-    static INSTANCE;
+    static INSTANCE: NotFound;
     private root: HTMLElement;
 
     /**
@@ -24,7 +21,7 @@ class NotFound extends Component {
      */
     constructor() {
         super();
-        
+
         if (NotFound.INSTANCE) return NotFound.INSTANCE;
         NotFound.INSTANCE = this;
 

@@ -1,9 +1,6 @@
 class BlackboardHandler {
 
-    /**
-     * @type {BlackboardHandler}
-     */
-    static INSTANCE;
+    static INSTANCE: BlackboardHandler;
     private apiClient: APIClient = new APIClient('/api');
 
     private token = '';
@@ -12,7 +9,6 @@ class BlackboardHandler {
 
     /**
      * Create a new Blackboard handler which deals with locking, and updating the blackboards
-     * @return {BlackboardHandler}
      */
     constructor() {
         if (BlackboardHandler.INSTANCE) return BlackboardHandler.INSTANCE;
@@ -41,10 +37,10 @@ class BlackboardHandler {
 
     /**
      * Release the current blackboard
-     * @param event {BeforeUnloadEvent|null} Optional if some cleanup has to be done
-     * @return {Promise<void>}
+     * @param event Optional if some cleanup has to be done
+     * @return
      */
-    async releaseBlackboard(event = null) {
+    async releaseBlackboard(event: BeforeUnloadEvent | null = null): Promise<void> {
         if (event && this.token) event.preventDefault();
 
         if (!this.token) return;
@@ -55,11 +51,10 @@ class BlackboardHandler {
 
     /**
      * Updated the blackboard
-     * @param content {string} The content of the blackboard
-     * @param name {string} The updated name of the blackboard
-     * @return {Promise<void>}
+     * @param content The content of the blackboard
+     * @param name The updated name of the blackboard
      */
-    async updateBlackboard(content, name) {
+    async updateBlackboard(content: string, name: string): Promise<void> {
         const body = {
             token: this.token,
             name: name,
@@ -73,7 +68,7 @@ class BlackboardHandler {
     /**
      * Remove the lock on the blackboard if you have
      */
-    _removeLockOnNavigation() {
+    _removeLockOnNavigation(): void {
         document.addEventListener('urlchange', this.releaseBlackboard.bind(this));
         window.addEventListener('beforeunload', this.releaseBlackboard.bind(this));
     }
@@ -81,7 +76,7 @@ class BlackboardHandler {
     /**
      * Add a shortcut which saves the page if you press Strg + s
      */
-    _addSaveShortcut() {
+    _addSaveShortcut(): void {
         document.addEventListener('keydown', async (event) => {
             if (event.key.toLowerCase() === 's' && event.ctrlKey) {
                 event.preventDefault();

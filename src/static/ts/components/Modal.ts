@@ -77,11 +77,10 @@ class Modal extends Component {
 
     /**
      * Handle overlay click events
-     * @param event {KeyboardEvent}
      */
-    _overlayClicked(event) {
+    _overlayClicked(event: KeyboardEvent): void {
         const modal = this._element.querySelector('.modal');
-        if (!modal.contains(event.target)) {
+        if (!modal.contains(event.target as Node)) {
             this.close();
         }
     }
@@ -89,9 +88,9 @@ class Modal extends Component {
 
     /**
      * Is the event a KeyboardEvent and if yes submit the modal
-     * @param event {KeyboardEvent}
+     * @param event
      */
-    async _isEnter(event) {
+    async _isEnter(event: KeyboardEvent): Promise<void> {
         if (event.key !== 'Enter') return;
         await this.submit();
     }

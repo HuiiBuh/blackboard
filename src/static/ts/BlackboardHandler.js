@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 class BlackboardHandler {
     /**
      * Create a new Blackboard handler which deals with locking, and updating the blackboards
-     * @return {BlackboardHandler}
      */
     constructor() {
         this.apiClient = new APIClient('/api');
@@ -39,8 +38,8 @@ class BlackboardHandler {
     }
     /**
      * Release the current blackboard
-     * @param event {BeforeUnloadEvent|null} Optional if some cleanup has to be done
-     * @return {Promise<void>}
+     * @param event Optional if some cleanup has to be done
+     * @return
      */
     releaseBlackboard(event = null) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -54,9 +53,8 @@ class BlackboardHandler {
     }
     /**
      * Updated the blackboard
-     * @param content {string} The content of the blackboard
-     * @param name {string} The updated name of the blackboard
-     * @return {Promise<void>}
+     * @param content The content of the blackboard
+     * @param name The updated name of the blackboard
      */
     updateBlackboard(content, name) {
         return __awaiter(this, void 0, void 0, function* () {

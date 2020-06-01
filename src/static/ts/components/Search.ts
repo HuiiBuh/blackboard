@@ -94,10 +94,10 @@ class Search {
 
     /**
      * Hide the search overlay
-     * @param event {MouseEvent}
+     * @param event
      */
-    hideSearchOverlay(event) {
-        if (this._input.contains(event.target) || !this._visible) return;
+    hideSearchOverlay(event: MouseEvent): void {
+        if (this._input.contains(event.target as Node) || !this._visible) return;
 
         this._visible = false;
 
@@ -110,9 +110,10 @@ class Search {
 
     /**
      * Search for the search input
-     * @param event {KeyboardEvent}
+     * @param event
      */
-    search(event) {
+    search(event: KeyboardEvent): void {
+        // @ts-ignore
         const searchValue = event.target.value;
 
         if (this._timeout) {
@@ -131,17 +132,18 @@ class Search {
 
     /**
      * Get the search results from the api
-     * @param search {string} The search term
+     * @param search The search term
      */
-    async getSearchResults(search) {
+    async getSearchResults(search: string) {
         if (!search) {
             this._searchPreview.innerHTML = '<h2>Nothing found</h2>';
             return;
         }
 
-        let apiResponse = await this._apiClient.get(`/search?q=${search}`);
+        let apiResponse = await this._apiClient.get<any>(`/search?q=${search}`);
         apiResponse = formatApiData(apiResponse);
 
+        // TODO
         if (apiResponse.blackboard_list.length === 0) {
             this._searchPreview.innerHTML = '<h2>Nothing found</h2>';
             return;
@@ -152,9 +154,9 @@ class Search {
 
     /**
      * Show the search results
-     * @param apiResponse {{}} The api response
+     * @param apiResponse The api response
      */
-    showSearchResults(apiResponse) {
+    showSearchResults(apiResponse: object): void {
         this._parser.insertAt(Search.HTML, apiResponse, '.search-results');
     }
 }

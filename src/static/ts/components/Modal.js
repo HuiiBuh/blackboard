@@ -54,7 +54,6 @@ class Modal extends Component {
     }
     /**
      * Handle overlay click events
-     * @param event {KeyboardEvent}
      */
     _overlayClicked(event) {
         const modal = this._element.querySelector('.modal');
@@ -64,7 +63,7 @@ class Modal extends Component {
     }
     /**
      * Is the event a KeyboardEvent and if yes submit the modal
-     * @param event {KeyboardEvent}
+     * @param event
      */
     _isEnter(event) {
         return __awaiter(this, void 0, void 0, function* () {

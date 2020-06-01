@@ -23,7 +23,6 @@ function removeAll() {
 }
 /**
  * Main entry point
- * @return {Promise<void>}
  */
 function main() {
     return __awaiter(this, void 0, void 0, function* () {

@@ -23,10 +23,7 @@ class OneBlackboard extends Component {
     </div>
     `;
 
-    /**
-     * @type {OneBlackboard}
-     */
-    static INSTANCE;
+    static INSTANCE: OneBlackboard;
 
     private apiResponse: { name: string, content: string, id: string, markdown?: string };
     private root: HTMLElement = document.querySelector('.container');
@@ -124,9 +121,8 @@ class OneBlackboard extends Component {
     /**
      * Get the markdown representation of the string
      * @param value The markdown in html
-     * @return {Promise<string>}
      */
-    async getGithubMarkdown(value) {
+    async getGithubMarkdown(value): Promise<string> {
         const apiClient = new APIClient('', 'text/plain');
 
         let response: string;

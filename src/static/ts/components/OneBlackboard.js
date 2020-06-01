@@ -89,7 +89,6 @@ class OneBlackboard extends Component {
     /**
      * Get the markdown representation of the string
      * @param value The markdown in html
-     * @return {Promise<string>}
      */
     getGithubMarkdown(value) {
         return __awaiter(this, void 0, void 0, function* () {

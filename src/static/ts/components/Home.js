@@ -69,7 +69,6 @@ class Home extends Component {
     }
     /**
      * Create a new blackboard
-     * @return {Promise<void>}
      */
     createNewBlackboard() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -78,7 +77,7 @@ class Home extends Component {
                 new Message('No name provided', 'warn').show();
                 return;
             }
-            yield this.apiClient.post('/blackboards', {}, { name: value });
+            yield this.apiClient.post('/blackboards', null, { name: value });
             this.modal.close();
             new Message(`Created blackboard ${value}`, 'success').show();
             this.remove();
@@ -87,10 +86,9 @@ class Home extends Component {
     }
     /**
      * Delete the blackboard
-     * @param _ {KeyboardEvent}
-     * @param blackboardID {number} The id of the blackboard
-     * @param blackboardName {string} The blackboard name
-     * @return {Promise<void>}
+     * @param _
+     * @param blackboardID The id of the blackboard
+     * @param blackboardName The blackboard name
      */
     deleteBlackboard(_, blackboardID, blackboardName) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -153,8 +151,8 @@ Home.FORM = `
     `;
 /**
  * Format the api response so it can be displayed properly
- * @param apiResponse {object} The api response
- * @return {*}
+ * @param apiResponse The api response
+ * @return The modified api object
  */
 function formatApiData(apiResponse) {
     apiResponse.blackboard_list.forEach(blackboard => {

@@ -1,7 +1,10 @@
 class Timer extends EventEmitter {
 
     static HTML = `
-        <div style="position: fixed; bottom: 0; right: 50%; transform: translateX(50%); background: white">
+        <div style="
+        position: fixed; 
+        bottom: 0; right: 50%; transform: translateX(50%); 
+        ">
             <span>Remaining time</span>
             <span id="{{ randomNumber }}">{{ initialValue }}</span>
         </div>

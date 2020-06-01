@@ -6,8 +6,8 @@ class EventListener {
     /**
      * New event listener
      * @param element The element the listener should be attached to
-     * @param  type The event type
-     * @param {Function} callback The callback function
+     * @param type The event type
+     * @param callback The callback function
      */
     constructor(element, type, callback) {
         this._element = element;

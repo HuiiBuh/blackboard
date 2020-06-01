@@ -1,9 +1,9 @@
 class Message extends Component {
     /**
      * Create a new message
-     * @param {string} message The message string
-     * @param {'error'|'success'|'warn'|'default'} type The message type
-     * @param {number} timeout The timeout after which the message will disappear
+     * @param message The message string
+     * @param type The message type
+     * @param timeout The timeout after which the message will disappear
      */
     constructor(message, type = 'default', timeout = 4000) {
         super();

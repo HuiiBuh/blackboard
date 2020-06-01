@@ -17,9 +17,8 @@ function removeAll() {
 
 /**
  * Main entry point
- * @return {Promise<void>}
  */
-async function main() {
+async function main(): Promise<void> {
 
     const routes: { path: string, view: Function, title?: string }[] = [
         {path: '/blackboard/{board_name}', view: oneBlackboard},

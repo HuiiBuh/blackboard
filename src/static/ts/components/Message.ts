@@ -11,14 +11,19 @@ class Message extends Component {
     </div>
     `;
 
+    private readonly message: any;
+    private readonly type: 'error' | 'success' | 'warn' | 'default';
+    private readonly timeout: number;
+    private root: HTMLElement;
+
 
     /**
      * Create a new message
-     * @param {string} message The message string
-     * @param {'error'|'success'|'warn'|'default'} type The message type
-     * @param {number} timeout The timeout after which the message will disappear
+     * @param message The message string
+     * @param type The message type
+     * @param timeout The timeout after which the message will disappear
      */
-    constructor(message, type = 'default', timeout = 4000) {
+    constructor(message: string, type: 'error' | 'success' | 'warn' | 'default' = 'default', timeout:number = 4000) {
         super();
 
         this.message = message;
@@ -32,7 +37,7 @@ class Message extends Component {
     /**
      * Show the message
      */
-    show() {
+    show(): void {
         this._prepareComponent();
         this.root.appendChild(this._element);
 
@@ -44,16 +49,16 @@ class Message extends Component {
     /**
      * Create the html element
      */
-    _prepareComponent() {
+    _prepareComponent(): void {
         const elementString = this._parser.parseDocument(Message.HTML, {'message': this.message, 'type': this.type});
         this._element = this.createElement(elementString);
-        this._element.querySelector('.material-icons.close').onclick = this.remove.bind(this);
+        this._element.querySelector<HTMLElement>('.material-icons.close').onclick = this.remove.bind(this);
     }
 
     /**
      * Remove the message (is called if the X is clicked)
      */
-    remove() {
+    remove(): void {
         this._element.classList.remove('fade-int');
         this._element.classList.add('fade-out');
 

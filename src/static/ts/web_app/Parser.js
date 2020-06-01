@@ -13,9 +13,8 @@ class Parser {
     }
     /**
      * Take a string and parse is with the variables
-     * @param string {string} The input string
+     * @param string The input string
      * @param variables The variables in the json which can be parsed
-     * @return {string} The parsed string
      */
     parseDocument(string, variables) {
         string = this._replaceForLoop(string, variables);
@@ -23,9 +22,8 @@ class Parser {
     }
     /**
      * Replaces the created for loop
-     * @param string {string}
-     * @param variables {json}
-     * @return {string}
+     * @param string
+     * @param variables
      */
     _replaceForLoop(string, variables) {
         const start = new RegExp('{% +for [a-zA-Z_]+ +in +[a-zA-Z._]+ +%}');
@@ -59,8 +57,7 @@ class Parser {
     }
     /**
      * Extract the variables out of the for loop declaration
-     * @param string {string}
-     * @return {[]}
+     * @param string
      */
     _extractVariables(string) {
         const startIndex = /{%/.exec(string).index + 2;
@@ -69,14 +66,14 @@ class Parser {
         mutatedString = mutatedString.replace('for', '').replace('in', '');
         mutatedString = mutatedString.replace(/ +/g, ' ').trim();
         let [loopName, variableName] = mutatedString.split(' ');
-        variableName = variableName.split('.');
-        return [loopName, variableName, string.slice(endIndex + 2)];
+        const variableNameList = variableName.split('.');
+        return [loopName, variableNameList, string.slice(endIndex + 2)];
     }
     /**
      * Replace the variables in the template string
-     * @param string {string} The template string
-     * @param variables {json} A json with the variable name as key of the json
-     * @returns {string} The parsed string
+     * @param string The template string
+     * @param variables A json with the variable name as key of the json
+     * @returns The parsed string
      */
     _replaceVariables(string, variables) {
         // Regex for the start end end variable expression
@@ -103,10 +100,10 @@ class Parser {
     }
     /**
      * Do the actual replacing of the string
-     * @param replaceJSON {{string: string[], start: number, end: number}} A json which has all the information needed to to the replace action
-     * @param variables {json} The variables
-     * @param string {string} The string which should be parsed
-     * @returns {string} The parsed string
+     * @param replaceJSON A json which has all the information needed to to the replace action
+     * @param variables The variables
+     * @param string The string which should be parsed
+     * @returns The parsed string
      */
     _replace(replaceJSON, variables, string) {
         const value = this._getVariableValue(replaceJSON.string, variables);
@@ -117,8 +114,8 @@ class Parser {
     }
     /**
      * Get the variable value from the variable json
-     * @param stringList {string[]} A string of variable indices
-     * @param variables {json} The variable
+     * @param stringList A string of variable indices
+     * @param variables The variable
      * @returns the variable value
      */
     _getVariableValue(stringList, variables) {

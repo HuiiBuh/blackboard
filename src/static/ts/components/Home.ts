@@ -51,10 +51,7 @@ class Home extends Component {
     </div>
     `;
 
-    /**
-     * @type {Home}
-     */
-    static INSTANCE;
+    static INSTANCE: Home;
     private apiClient: APIClient = new APIClient('/api');
     private modal: Modal;
     private root: HTMLElement;
@@ -124,9 +121,8 @@ class Home extends Component {
 
     /**
      * Create a new blackboard
-     * @return {Promise<void>}
      */
-    async createNewBlackboard() {
+    async createNewBlackboard(): Promise<void> {
         const value = document.querySelector<HTMLInputElement>('#blackboard-name').value;
 
         if (!value) {
@@ -134,7 +130,7 @@ class Home extends Component {
             return;
         }
 
-        await this.apiClient.post('/blackboards', {}, {name: value});
+        await this.apiClient.post('/blackboards', null, {name: value});
         this.modal.close();
 
         new Message(`Created blackboard ${value}`, 'success').show();
@@ -146,12 +142,11 @@ class Home extends Component {
 
     /**
      * Delete the blackboard
-     * @param _ {KeyboardEvent}
-     * @param blackboardID {number} The id of the blackboard
-     * @param blackboardName {string} The blackboard name
-     * @return {Promise<void>}
+     * @param _
+     * @param blackboardID The id of the blackboard
+     * @param blackboardName The blackboard name
      */
-    async deleteBlackboard(_, blackboardID, blackboardName) {
+    async deleteBlackboard(_: KeyboardEvent, blackboardID: string, blackboardName: string): Promise<void> {
         await this.apiClient.delete(`/blackboards/${blackboardID}`);
 
         new Message(`Deleted blackboard ${blackboardName}`, 'success').show();
@@ -163,10 +158,10 @@ class Home extends Component {
 
 /**
  * Format the api response so it can be displayed properly
- * @param apiResponse {object} The api response
- * @return {*}
+ * @param apiResponse The api response
+ * @return The modified api object
  */
-function formatApiData(apiResponse) {
+function formatApiData(apiResponse: any): any {
     apiResponse.blackboard_list.forEach(blackboard => {
         blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
         blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
