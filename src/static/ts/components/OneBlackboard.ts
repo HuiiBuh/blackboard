@@ -46,7 +46,6 @@ class OneBlackboard extends Component {
 
         this._timer.addEventListener('finished', async (): Promise<void> => {
             await this.saveChanges();
-            this._timer.remove();
         });
     }
 
@@ -96,9 +95,10 @@ class OneBlackboard extends Component {
 
     /**
      * Save the changes made to the blackboard
-     * @return {Promise<void>}
      */
-    async saveChanges() {
+    async saveChanges(): Promise<void> {
+        this._timer.remove();
+
 
         // Get the updated values of the blackboard
         const content = document.querySelector('textarea').value;

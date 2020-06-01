@@ -113,7 +113,6 @@ class Timer extends EventEmitter {
     }
 
     public remove(): void {
-        this._time = -1;
         this._element.remove();
     }
 }

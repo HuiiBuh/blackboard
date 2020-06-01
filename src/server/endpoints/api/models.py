@@ -1,4 +1,4 @@
-from typing import Optional, List, Union
+from typing import Optional, List
 
 from pydantic import BaseModel
 
@@ -11,6 +11,7 @@ class CreateBlackboardModel(BaseModel):
 # Acquire
 class TokenModel(BaseModel):
     token: str
+    timeout: Optional[int]
 
 
 # Update
@@ -34,7 +35,7 @@ class BlackboardStatusModel(BaseModel):
     is_empty: bool
     is_edit: bool
     timestamp_edit: float
-    timeout: Union[None, int]
+    timeout: Optional[int]
 
 
 # The status of the blackboard and all the blackboard information

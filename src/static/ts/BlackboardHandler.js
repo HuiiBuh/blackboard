@@ -34,8 +34,7 @@ class BlackboardHandler {
             this.blackboardID = blackboardID;
             const response = yield this.apiClient.get(`/blackboards/${this.blackboardID}/acquire`);
             this.token = response.token;
-            //TODO timeout
-            return 10;
+            return response.timeout;
         });
     }
     /**
@@ -49,9 +48,7 @@ class BlackboardHandler {
                 event.preventDefault();
             if (!this.token)
                 return;
-            yield this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, {
-                token: this.token
-            });
+            yield this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, { token: this.token });
             this.token = null;
         });
     }

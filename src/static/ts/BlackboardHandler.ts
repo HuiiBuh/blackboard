@@ -36,8 +36,7 @@ class BlackboardHandler {
         const response: any = await this.apiClient.get<object>(`/blackboards/${this.blackboardID}/acquire`);
         this.token = response.token;
 
-        //TODO timeout
-        return 10;
+        return response.timeout;
     }
 
     /**
@@ -50,9 +49,7 @@ class BlackboardHandler {
 
         if (!this.token) return;
 
-        await this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, {
-            token: this.token
-        });
+        await this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, {token: this.token});
         this.token = null;
     }
 

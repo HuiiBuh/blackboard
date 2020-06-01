@@ -1,5 +1,4 @@
 import logging
-
 from uuid import uuid1
 
 from fastapi import APIRouter, HTTPException, status
@@ -133,10 +132,12 @@ async def acquire_blackboard(blackboard_id: str):
     if not blackboard.acquire_edit_mode(token):
         raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
 
-    return {
+    response = {
         "token": token,
         "timeout": blackboard.get_timeout_in_sec()
     }
+
+    return response
 
 
 @router.put("/blackboards/{blackboard_id}/update")
@@ -150,6 +151,7 @@ async def update_blackboard(blackboard_id: str, body_data: UpdateBlackboardModal
     :param body_data:
     :return:
     """
+
     if not Blackboard.exists(blackboard_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 

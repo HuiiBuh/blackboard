@@ -21,7 +21,6 @@ class OneBlackboard extends Component {
         OneBlackboard.INSTANCE = this;
         this._timer.addEventListener('finished', () => __awaiter(this, void 0, void 0, function* () {
             yield this.saveChanges();
-            this._timer.remove();
         }));
     }
     /**
@@ -67,10 +66,10 @@ class OneBlackboard extends Component {
     }
     /**
      * Save the changes made to the blackboard
-     * @return {Promise<void>}
      */
     saveChanges() {
         return __awaiter(this, void 0, void 0, function* () {
+            this._timer.remove();
             // Get the updated values of the blackboard
             const content = document.querySelector('textarea').value;
             const name = document.querySelector('input.title').value;
