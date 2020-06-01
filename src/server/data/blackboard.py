@@ -22,6 +22,9 @@ class Blackboard:
     _MIN_CONTENT_LENGTH = 1
     _MAX_CONTENT_LENGTH = 1048576
 
+    # 5 minutes til timeout
+    _TIMEOUT = 60 * 5
+
     def __init__(self, name: str, content: Union[None, str] = None, timestamp_create: float = 0,
                  timestamp_edit: float = 0, blackboard_id: Union[None, str] = None):
         if Blackboard.exists_name(name):
@@ -50,6 +53,8 @@ class Blackboard:
             self._timestamp_edit = time.time()
 
         self._lock = Lock()
+
+        self._timeout = None
 
         self.save()
 
@@ -106,17 +111,28 @@ class Blackboard:
         return {
             "is_empty": self.get_content() is None,
             "is_edit": self.get_edited_by() is not None,
-            "timestamp_edit": self.get_timestamp_edit()
+            "timestamp_edit": self.get_timestamp_edit(),
+            "timeout": self.get_timeout_in_sec() if self.has_timeout() else None
         }
 
     def get_edited_by(self) -> Union[None, str]:
         return self._edited_by
 
+    def get_timeout(self) -> Union[None, float]:
+        return self._timeout
+
+    def has_timeout(self) -> bool:
+        return self._timeout is not None
+
+    def get_timeout_in_sec(self) -> int:
+        return int(self._timeout - time.time())
+
     def acquire_edit_mode(self, edit_by: str) -> bool:
         if self._lock.acquire(blocking=True, timeout=1):
-            if self.get_edited_by() is None:
+            if self.get_edited_by() is None or self.get_edited_by() == edit_by:
                 self._edited_by = edit_by
                 self._lock.release()
+                self._timeout = time.time() + Blackboard._TIMEOUT
                 return True
             else:
                 self._lock.release()
@@ -130,6 +146,7 @@ class Blackboard:
                 self._edited_by = None
                 self.save()
                 self._lock.release()
+                self._timeout = None
                 return True
             else:
                 self._lock.release()
