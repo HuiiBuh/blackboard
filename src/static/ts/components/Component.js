@@ -22,8 +22,7 @@ class Component {
     /**
      * Create a html element from a string
      * @param string The html string
-     * @param styleObject {object} A list of styles which should be added to the base element
-     * @return {Element} An valid html element
+     * @param styleObject A list of styles which should be added to the base element
      */
     createElement(string, styleObject = {}) {
         const temp = document.createElement('div');

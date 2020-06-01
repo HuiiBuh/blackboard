@@ -13,15 +13,19 @@ class OneBlackboard extends Component {
      */
     constructor() {
         super();
+        this.root = document.querySelector('.container');
+        this.blackboardHandler = new BlackboardHandler();
+        this._timer = new Timer();
         if (OneBlackboard.INSTANCE)
             return OneBlackboard.INSTANCE;
         OneBlackboard.INSTANCE = this;
-        this.root = document.querySelector('.container');
-        this.blackboardHandler = new BlackboardHandler();
+        this._timer.addEventListener('finished', () => __awaiter(this, void 0, void 0, function* () {
+            yield this.saveChanges();
+            this._timer.remove();
+        }));
     }
     /**
      * Show the blackboard
-     * @return {Promise<void>}
      */
     show(apiResponse) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,7 +36,6 @@ class OneBlackboard extends Component {
     }
     /**
      * Create the Blackboard
-     * @return {Promise<void>}
      */
     _prepareComponent(apiResponse) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -48,6 +51,7 @@ class OneBlackboard extends Component {
      * Remove the blackboard
      */
     remove() {
+        this._timer.remove();
         this._element.remove();
     }
     /**
@@ -55,7 +59,9 @@ class OneBlackboard extends Component {
      */
     startEditing() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
+            this._timer.time = yield this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
+            // IMPORTANT do not await it
+            this._timer.startCountdown();
             document.querySelector('#editing-wrapper').classList.add('editing');
         });
     }
@@ -89,10 +95,7 @@ class OneBlackboard extends Component {
     getGithubMarkdown(value) {
         return __awaiter(this, void 0, void 0, function* () {
             const apiClient = new APIClient('', 'text/plain');
-            /**
-             * @type {string}
-             */
-            let response = '';
+            let response;
             try {
                 response = yield apiClient.executeRequest('POST', 'https://api.github.com/markdown/raw', value);
             }
@@ -129,5 +132,6 @@ OneBlackboard.HTML = `
         
             <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>
         </div>
+        <div id="timer-wrapper"></div>
     </div>
     `;

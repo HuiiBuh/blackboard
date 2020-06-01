@@ -17,6 +17,7 @@ class NotFound extends Component {
      * @type {NotFound}
      */
     static INSTANCE;
+    private root: HTMLElement;
 
     /**
      * Create the not found Component

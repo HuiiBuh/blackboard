@@ -25,16 +25,19 @@ class BlackboardHandler {
 
     /**
      * Acquire a blackboard and if there is a blackboard locked, release it
-     * @param {number} blackboardID
-     * @return {Promise<void>}
+     * @param blackboardID
+     * @return The timeout
      */
-    async acquireBlackboard(blackboardID) {
+    async acquireBlackboard(blackboardID: string): Promise<number> {
         if (this.token) await this.releaseBlackboard();
 
         this.blackboardID = blackboardID;
 
         const response: any = await this.apiClient.get<object>(`/blackboards/${this.blackboardID}/acquire`);
         this.token = response.token;
+
+        //TODO timeout
+        return 10;
     }
 
     /**

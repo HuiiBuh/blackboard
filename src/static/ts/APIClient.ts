@@ -87,7 +87,7 @@ class APIClient {
      * @param url The url
      * @param body The body json as a string
      */
-    executeRequest(method: string, url: string, body: string): Promise<string | object> {
+    executeRequest(method: string, url: string, body: string): Promise<any> {
         const self = this;
         return new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();

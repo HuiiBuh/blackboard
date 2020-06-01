@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 class Modal extends Component {
     /**
      * Create a new modal
-     * @param {string} header The modal header (HTML supported)
-     * @param {string} body The modal body (HTML supported)
-     * @param {Function} submitCallback The callback function if the submit button is clicked
+     * @param header The modal header (HTML supported)
+     * @param body The modal body (HTML supported)
+     * @param submitCallback The callback function if the submit button is clicked
      */
     constructor(header, body, submitCallback) {
         super();

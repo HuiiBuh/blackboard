@@ -24,8 +24,8 @@ class BlackboardHandler {
     }
     /**
      * Acquire a blackboard and if there is a blackboard locked, release it
-     * @param {number} blackboardID
-     * @return {Promise<void>}
+     * @param blackboardID
+     * @return The timeout
      */
     acquireBlackboard(blackboardID) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,6 +34,8 @@ class BlackboardHandler {
             this.blackboardID = blackboardID;
             const response = yield this.apiClient.get(`/blackboards/${this.blackboardID}/acquire`);
             this.token = response.token;
+            //TODO timeout
+            return 10;
         });
     }
     /**

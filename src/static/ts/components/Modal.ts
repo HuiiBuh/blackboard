@@ -19,14 +19,17 @@ class Modal extends Component {
    
     </div>
     `;
+    private readonly header: string;
+    private readonly body: string;
+    private readonly submit: Function;
 
     /**
      * Create a new modal
-     * @param {string} header The modal header (HTML supported)
-     * @param {string} body The modal body (HTML supported)
-     * @param {Function} submitCallback The callback function if the submit button is clicked
+     * @param header The modal header (HTML supported)
+     * @param body The modal body (HTML supported)
+     * @param submitCallback The callback function if the submit button is clicked
      */
-    constructor(header, body, submitCallback) {
+    constructor(header: string, body: string, submitCallback: Function) {
         super();
 
         this.header = header;

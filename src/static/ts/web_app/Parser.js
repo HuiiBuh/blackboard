@@ -1,14 +1,15 @@
 class Parser {
     /**
      * Take a string, parse is with the variables and insert it at a specific point
-     * @param string {string} The input string
+     * @param string The input string
      * @param variables The variables in a json with the variable name as key
-     * @param querySelector {string} The point the parsed string should be inserted (first element found)
-     * @return {string} The parsed string
+     * @param querySelector The point the parsed string should be inserted (first element found)
+     * @return The html element
      */
     insertAt(string, variables, querySelector) {
         const root = document.querySelector(querySelector);
         root.innerHTML = this.parseDocument(string, variables);
+        return root.firstElementChild;
     }
     /**
      * Take a string and parse is with the variables

@@ -18,10 +18,9 @@ abstract class Component {
     /**
      * Create a html element from a string
      * @param string The html string
-     * @param styleObject {object} A list of styles which should be added to the base element
-     * @return {Element} An valid html element
+     * @param styleObject A list of styles which should be added to the base element
      */
-    protected createElement(string, styleObject = {}) {
+    protected createElement(string: string, styleObject: any = {}): HTMLElement {
         const temp = document.createElement('div');
         temp.innerHTML = string;
 
@@ -56,19 +55,4 @@ abstract class Component {
             });
         }
     }
-
-    /**
-     * Overwrite
-     */
-    abstract _prepareComponent(): void;
-
-    /**
-     * Overwrite
-     */
-    abstract show(): void;
-
-    /**
-     * Overwrite
-     */
-    abstract remove(): void;
 }

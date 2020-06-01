@@ -19,6 +19,7 @@ class OneBlackboard extends Component {
         
             <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>
         </div>
+        <div id="timer-wrapper"></div>
     </div>
     `;
 
@@ -27,10 +28,12 @@ class OneBlackboard extends Component {
      */
     static INSTANCE;
 
-    /**
-     * @type {{name:string, content:string, id:number, markdown?:string}}
-     */
-    apiResponse;
+    private apiResponse: { name: string, content: string, id: string, markdown?: string };
+    private root: HTMLElement = document.querySelector('.container');
+    private blackboardHandler: BlackboardHandler = new BlackboardHandler();
+
+    private _timer = new Timer();
+
 
     /**
      * Show one blackboard
@@ -41,15 +44,16 @@ class OneBlackboard extends Component {
         if (OneBlackboard.INSTANCE) return OneBlackboard.INSTANCE;
         OneBlackboard.INSTANCE = this;
 
-        this.root = document.querySelector('.container');
-        this.blackboardHandler = new BlackboardHandler();
+        this._timer.addEventListener('finished', async (): Promise<void> => {
+            await this.saveChanges();
+            this._timer.remove();
+        });
     }
 
     /**
      * Show the blackboard
-     * @return {Promise<void>}
      */
-    async show(apiResponse) {
+    public async show(apiResponse): Promise<void> {
         document.title = apiResponse.name;
         await this._prepareComponent(apiResponse);
         this.root.appendChild(this._element);
@@ -57,9 +61,8 @@ class OneBlackboard extends Component {
 
     /**
      * Create the Blackboard
-     * @return {Promise<void>}
      */
-    async _prepareComponent(apiResponse) {
+    async _prepareComponent(apiResponse): Promise<void> {
         this.apiResponse = apiResponse;
 
         // Get the github markdown
@@ -75,6 +78,7 @@ class OneBlackboard extends Component {
      * Remove the blackboard
      */
     remove() {
+        this._timer.remove();
         this._element.remove();
     }
 
@@ -82,7 +86,11 @@ class OneBlackboard extends Component {
      * Start the editing
      */
     async startEditing() {
-        await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
+        this._timer.time = await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
+
+        // IMPORTANT do not await it
+        this._timer.startCountdown();
+
         document.querySelector('#editing-wrapper').classList.add('editing');
     }
 
@@ -94,7 +102,7 @@ class OneBlackboard extends Component {
 
         // Get the updated values of the blackboard
         const content = document.querySelector('textarea').value;
-        const name = document.querySelector('input.title').value;
+        const name = document.querySelector<HTMLInputElement>('input.title').value;
 
         // Updated the blackboard
         await this.blackboardHandler.updateBlackboard(content, name);
@@ -102,7 +110,7 @@ class OneBlackboard extends Component {
         document.querySelector('#editing-wrapper').classList.remove('editing');
 
         // Shows the spinner while the markdown gets loaded
-        const spinnerElement = document.querySelector('.spinner');
+        const spinnerElement = document.querySelector<HTMLElement>('.spinner');
         spinnerElement.style.display = 'inline-block';
 
         // Update the preview
@@ -121,10 +129,7 @@ class OneBlackboard extends Component {
     async getGithubMarkdown(value) {
         const apiClient = new APIClient('', 'text/plain');
 
-        /**
-         * @type {string}
-         */
-        let response = '';
+        let response: string;
         try {
             response = await apiClient.executeRequest('POST', 'https://api.github.com/markdown/raw', value);
         } catch (error) {
