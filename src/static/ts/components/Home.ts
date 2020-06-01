@@ -1,5 +1,3 @@
-'use strict';
-
 class Home extends Component {
     static HTML = `
     <h1 class="text-center">Select Blackboard</h1>
@@ -57,17 +55,19 @@ class Home extends Component {
      * @type {Home}
      */
     static INSTANCE;
+    private apiClient: APIClient = new APIClient('/api');
+    private modal: Modal;
+    private root: HTMLElement;
+
 
     /**
      * Create a new home component
      */
     constructor() {
         super();
-
         if (Home.INSTANCE) return Home.INSTANCE;
         Home.INSTANCE = this;
 
-        this.apiClient = new APIClient('/api');
 
         this.modal = new Modal('Create Blackboard', Home.FORM, this.createNewBlackboard.bind(this));
         this.root = document.querySelector('.container');
@@ -78,12 +78,11 @@ class Home extends Component {
      */
     async show() {
         await this._prepareComponent();
-        this.root.appendChild(this._element);
+        this.root.appendChild(this._element as Node);
     }
 
     /**
      * Create the component
-     * @private
      */
     async _prepareComponent() {
         // Get data from the api
@@ -94,8 +93,8 @@ class Home extends Component {
         const elementString = this._parser.parseDocument(Home.HTML, apiResponse);
 
         // Add the created element to the class
-        this._element = this._createElement(elementString);
-        this._addListener();
+        this._element = this.createElement(elementString);
+        this.addListener();
     }
 
 
@@ -128,7 +127,7 @@ class Home extends Component {
      * @return {Promise<void>}
      */
     async createNewBlackboard() {
-        const value = document.querySelector('#blackboard-name').value;
+        const value = document.querySelector<HTMLInputElement>('#blackboard-name').value;
 
         if (!value) {
             new Message('No name provided', 'warn').show();

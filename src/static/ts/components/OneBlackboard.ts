@@ -1,5 +1,3 @@
-'use strict';
-
 class OneBlackboard extends Component {
 
     static HTML = `
@@ -60,7 +58,6 @@ class OneBlackboard extends Component {
     /**
      * Create the Blackboard
      * @return {Promise<void>}
-     * @private
      */
     async _prepareComponent(apiResponse) {
         this.apiResponse = apiResponse;
@@ -69,9 +66,9 @@ class OneBlackboard extends Component {
         this.apiResponse.markdown = await this.getGithubMarkdown(this.apiResponse.content);
 
         const elementString = this._parser.parseDocument(OneBlackboard.HTML, this.apiResponse);
-        this._element = this._createElement(elementString);
+        this._element = this.createElement(elementString);
 
-        this._addListener();
+        this.addListener();
     }
 
     /**

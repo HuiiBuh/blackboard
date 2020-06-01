@@ -11,7 +11,6 @@ class CreateBlackboardModel(BaseModel):
 # Acquire
 class TokenModel(BaseModel):
     token: str
-    timeout: int
 
 
 # Update

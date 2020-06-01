@@ -1,14 +1,15 @@
-'use strict';
-
-class Component {
+abstract class Component {
+    protected _parser: Parser;
+    protected _element: HTMLElement;
 
     /**
-     * Create a new component (an abstract class would be better, but JS does not have such a thing)
+     * Create a new component
      */
-    constructor() {
+    protected constructor() {
         this._parser = new Parser();
 
         // Init the element so the remove call does throw an error
+        // @ts-ignore
         this._element = {
             remove: () => null
         };
@@ -19,9 +20,8 @@ class Component {
      * @param string The html string
      * @param styleObject {object} A list of styles which should be added to the base element
      * @return {Element} An valid html element
-     * @protected
      */
-    _createElement(string, styleObject = {}) {
+    protected createElement(string, styleObject = {}) {
         const temp = document.createElement('div');
         temp.innerHTML = string;
 
@@ -34,11 +34,11 @@ class Component {
 
     /**
      * Add Listener to the element after it was translated to html
-     * @protected
      */
-    _addListener() {
+    protected addListener() {
 
         // Get all declared listener
+        // @ts-ignore
         const listenerList = [...this._element.querySelectorAll('[listener]')];
         for (let listener of listenerList) {
 
@@ -60,18 +60,15 @@ class Component {
     /**
      * Overwrite
      */
-    _prepareComponent() {
-    }
+    abstract _prepareComponent(): void;
 
     /**
      * Overwrite
      */
-    show() {
-    }
+    abstract show(): void;
 
     /**
      * Overwrite
      */
-    remove() {
-    }
+    abstract remove(): void;
 }

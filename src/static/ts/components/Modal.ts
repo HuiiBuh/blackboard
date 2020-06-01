@@ -1,5 +1,3 @@
-'use strict';
-
 class Modal extends Component {
 
     static HTML = `
@@ -50,12 +48,11 @@ class Modal extends Component {
 
     /**
      * Create the html element
-     * @private
      */
     _prepareComponent() {
         const elementString = this._parser.parseDocument(Modal.HTML, {header: this.header, body: this.body});
-        this._element = this._createElement(elementString, {position: 'fixed', 'z-index': 500});
-        this._addListener();
+        this._element = this.createElement(elementString, {position: 'fixed', 'z-index': 500});
+        this.addListener();
     }
 
     /**
@@ -78,7 +75,6 @@ class Modal extends Component {
     /**
      * Handle overlay click events
      * @param event {KeyboardEvent}
-     * @private
      */
     _overlayClicked(event) {
         const modal = this._element.querySelector('.modal');
@@ -91,7 +87,6 @@ class Modal extends Component {
     /**
      * Is the event a KeyboardEvent and if yes submit the modal
      * @param event {KeyboardEvent}
-     * @private
      */
     async _isEnter(event) {
         if (event.key !== 'Enter') return;

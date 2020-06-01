@@ -1,11 +1,13 @@
-'use strict';
-
 class BlackboardHandler {
 
     /**
      * @type {BlackboardHandler}
      */
     static INSTANCE;
+    private apiClient: APIClient = new APIClient('/api');
+
+    private token = '';
+    private blackboardID: string = '';
 
 
     /**
@@ -18,10 +20,6 @@ class BlackboardHandler {
 
         this._removeLockOnNavigation();
         this._addSaveShortcut();
-
-        this.apiCLient = new APIClient('/api');
-        this.token = '';
-        this.blackboardID = -1;
     }
 
 
@@ -35,7 +33,7 @@ class BlackboardHandler {
 
         this.blackboardID = blackboardID;
 
-        const response = await this.apiCLient.get(`/blackboards/${this.blackboardID}/acquire`);
+        const response: any = await this.apiClient.get<object>(`/blackboards/${this.blackboardID}/acquire`);
         this.token = response.token;
     }
 
@@ -49,7 +47,7 @@ class BlackboardHandler {
 
         if (!this.token) return;
 
-        await this.apiCLient.put(`/blackboards/${this.blackboardID}/release`, {}, {
+        await this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, {
             token: this.token
         });
         this.token = null;
@@ -68,13 +66,12 @@ class BlackboardHandler {
             content: content
         };
 
-        await this.apiCLient.put(`/blackboards/${this.blackboardID}/update`, {}, body);
+        await this.apiClient.put(`/blackboards/${this.blackboardID}/update`, null, body);
         await this.releaseBlackboard();
     }
 
     /**
      * Remove the lock on the blackboard if you have
-     * @private
      */
     _removeLockOnNavigation() {
         document.addEventListener('urlchange', this.releaseBlackboard.bind(this));
@@ -83,7 +80,6 @@ class BlackboardHandler {
 
     /**
      * Add a shortcut which saves the page if you press Strg + s
-     * @private
      */
     _addSaveShortcut() {
         document.addEventListener('keydown', async (event) => {

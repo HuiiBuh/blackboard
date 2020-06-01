@@ -1,5 +1,3 @@
-'use strict';
-
 class Message extends Component {
 
     static HTML = `
@@ -45,11 +43,10 @@ class Message extends Component {
 
     /**
      * Create the html element
-     * @private
      */
     _prepareComponent() {
         const elementString = this._parser.parseDocument(Message.HTML, {'message': this.message, 'type': this.type});
-        this._element = this._createElement(elementString);
+        this._element = this.createElement(elementString);
         this._element.querySelector('.material-icons.close').onclick = this.remove.bind(this);
     }
 
