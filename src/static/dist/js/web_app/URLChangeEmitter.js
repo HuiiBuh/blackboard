@@ -1,3 +1,4 @@
+"use strict";
 class URLChangeEmitter extends EventEmitter {
     /**
      * Create a new URLChangeEmitter which fires a event if the url changes

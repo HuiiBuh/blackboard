@@ -1,7 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "strict": false,
+    "alwaysStrict": true,
     "outDir": "dist/js",
     "sourceMap": true,
     "declaration": false,

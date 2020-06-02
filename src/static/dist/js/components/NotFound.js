@@ -1,3 +1,4 @@
+"use strict";
 class NotFound extends Component {
     /**
      * Create the not found Component

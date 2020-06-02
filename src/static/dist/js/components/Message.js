@@ -1,3 +1,4 @@
+"use strict";
 class Message extends Component {
     /**
      * Create a new message

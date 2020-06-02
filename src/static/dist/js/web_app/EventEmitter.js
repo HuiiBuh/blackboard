@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Custom event emitter implementation for event driven communication
  */

@@ -34,7 +34,6 @@ class OneBlackboard extends Component {
     private _timer = new Timer();
     private readonly _bindSaveChanges: Function;
 
-
     /**
      * Create a new blackboard component
      */

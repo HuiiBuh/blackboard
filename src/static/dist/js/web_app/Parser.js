@@ -1,3 +1,4 @@
+"use strict";
 class Parser {
     /**
      * Take a string, parse is with the variables and insert it at a specific point
