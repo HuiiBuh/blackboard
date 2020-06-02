@@ -1,47 +1,19 @@
-'use strict';
-
 class URLChangeEmitter extends EventEmitter {
-
-    /**
-     * @type {URLChangeEmitter}
-     */
-    static INSTANCE;
-
     /**
      * Create a new URLChangeEmitter which fires a event if the url changes
      */
     constructor() {
         super();
-
-        if (URLChangeEmitter.INSTANCE) return URLChangeEmitter.INSTANCE;
-        URLChangeEmitter.INSTANCE = this;
-
-
-        this._monkeyPatchListener();
-
-        /**
-         * Should the Emitter emit values
-         * @type {boolean}
-         */
         this.active = false;
-
-        /**
-         * The last url (before url change)
-         * @type {string}
-         */
-        this.currentURL = location.pathname;
-
-        /**
-         * The timeout for url changes
-         * @type {number}
-         * @private
-         */
         this._changeTimeout = 0;
+        this.currentURL = location.pathname;
+        if (URLChangeEmitter.INSTANCE)
+            return URLChangeEmitter.INSTANCE;
+        URLChangeEmitter.INSTANCE = this;
+        this._monkeyPatchListener();
     }
-
     /**
      * Start the listening
-     * @private
      */
     _monkeyPatchListener() {
         const self = this;
@@ -51,26 +23,20 @@ class URLChangeEmitter extends EventEmitter {
             self._handleRedirects();
             return ret;
         })(history.pushState);
-
         history.replaceState = (f => function replaceState() {
             const ret = f.apply(this, arguments);
             window.dispatchEvent(new Event('replacestate'));
             self._handleRedirects();
             return ret;
         })(history.replaceState);
-
         window.addEventListener('popstate', () => {
             self._handleRedirects();
         });
     }
-
-
     /**
      * Handle redirects
      */
     _handleRedirects() {
-
-
         // Check if event should be emitted
         // Check if the url has changed
         // Check if the timeout has expired
@@ -79,10 +45,8 @@ class URLChangeEmitter extends EventEmitter {
             return;
         }
         this.currentURL = location.pathname;
-
         this.dispatchEvent('urlchange', this.currentURL);
         document.dispatchEvent(new Event('urlchange'));
-
         // Set a timeout for 20ms so a push and pop event does not register twice
         this._changeTimeout = setTimeout(() => this._changeTimeout = 0, 20);
     }

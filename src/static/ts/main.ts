@@ -1,5 +1,3 @@
-'use strict';
-
 // Create all the components and initialize them
 const homeComponent = new Home();
 const oneBlackboardComponent = new OneBlackboard();
@@ -19,14 +17,10 @@ function removeAll() {
 
 /**
  * Main entry point
- * @return {Promise<void>}
  */
-async function main() {
+async function main(): Promise<void> {
 
-    /**
-     * @type {{path: string, view: Function, title?: string}[]}
-     */
-    const routes = [
+    const routes: { path: string, view: Function, title?: string }[] = [
         {path: '/blackboard/{board_name}', view: oneBlackboard},
         {path: '/', view: home, title: 'Select Blackboard'},
         {path: '**', view: notFound, title: 'Not found'}

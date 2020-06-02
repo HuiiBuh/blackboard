@@ -1,5 +1,3 @@
-'use strict';
-
 class NotFound extends Component {
 
     static HTML = `
@@ -15,17 +13,15 @@ class NotFound extends Component {
     </div>
     `;
 
-    /**
-     * @type {NotFound}
-     */
-    static INSTANCE;
+    static INSTANCE: NotFound;
+    private root: HTMLElement;
 
     /**
      * Create the not found Component
      */
     constructor() {
         super();
-        
+
         if (NotFound.INSTANCE) return NotFound.INSTANCE;
         NotFound.INSTANCE = this;
 
@@ -38,7 +34,7 @@ class NotFound extends Component {
      * Show the Component
      */
     show() {
-        this._element = this._createElement(NotFound.HTML);
+        this._element = this.createElement(NotFound.HTML);
         this.root.appendChild(this._element);
     }
 

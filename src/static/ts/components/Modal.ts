@@ -1,5 +1,3 @@
-'use strict';
-
 class Modal extends Component {
 
     static HTML = `
@@ -21,14 +19,17 @@ class Modal extends Component {
    
     </div>
     `;
+    private readonly header: string;
+    private readonly body: string;
+    private readonly submit: Function;
 
     /**
      * Create a new modal
-     * @param {string} header The modal header (HTML supported)
-     * @param {string} body The modal body (HTML supported)
-     * @param {Function} submitCallback The callback function if the submit button is clicked
+     * @param header The modal header (HTML supported)
+     * @param body The modal body (HTML supported)
+     * @param submitCallback The callback function if the submit button is clicked
      */
-    constructor(header, body, submitCallback) {
+    constructor(header: string, body: string, submitCallback: Function) {
         super();
 
         this.header = header;
@@ -50,12 +51,11 @@ class Modal extends Component {
 
     /**
      * Create the html element
-     * @private
      */
     _prepareComponent() {
         const elementString = this._parser.parseDocument(Modal.HTML, {header: this.header, body: this.body});
-        this._element = this._createElement(elementString, {position: 'fixed', 'z-index': 500});
-        this._addListener();
+        this._element = this.createElement(elementString, {position: 'fixed', 'z-index': 500});
+        this.addListener();
     }
 
     /**
@@ -77,12 +77,10 @@ class Modal extends Component {
 
     /**
      * Handle overlay click events
-     * @param event {KeyboardEvent}
-     * @private
      */
-    _overlayClicked(event) {
+    _overlayClicked(event: KeyboardEvent): void {
         const modal = this._element.querySelector('.modal');
-        if (!modal.contains(event.target)) {
+        if (!modal.contains(event.target as Node)) {
             this.close();
         }
     }
@@ -90,10 +88,9 @@ class Modal extends Component {
 
     /**
      * Is the event a KeyboardEvent and if yes submit the modal
-     * @param event {KeyboardEvent}
-     * @private
+     * @param event
      */
-    async _isEnter(event) {
+    async _isEnter(event: KeyboardEvent): Promise<void> {
         if (event.key !== 'Enter') return;
         await this.submit();
     }

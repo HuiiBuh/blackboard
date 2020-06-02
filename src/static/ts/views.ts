@@ -1,5 +1,3 @@
-'use strict';
-
 const apiClient = new APIClient('/api');
 
 
@@ -18,7 +16,7 @@ async function oneBlackboard() {
     let apiResponse;
     try {
         const url = `/api/blackboards/${location.pathname.split('/').pop()}`;
-        apiResponse = await apiClient.executeRequest('GET', url, {});
+        apiResponse = await apiClient.executeRequest('GET', url, '');
     } catch (e) {
         console.error(e);
         if (e.status === 404) return notFound();

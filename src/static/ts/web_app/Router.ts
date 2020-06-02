@@ -1,27 +1,31 @@
-'use strict';
-
 /**
  * Custom implementation of a client side router
  */
 class Router {
 
+    private _config: { subtree: boolean; attributes: boolean; childList: boolean; characterData: boolean } = {
+        attributes: true,
+        childList: true,
+        characterData: true,
+        subtree: true
+    };
+
+    private _observer: MutationObserver;
+    private readonly _preRouteFunction: Function;
+
+    private _urlChangeEmitter: URLChangeEmitter = new URLChangeEmitter();
+    private _routeList: any[] = [];
+
 
     /**
      * Create a new router
-     * @param preRouteFunction {Function} Function which will be called before the route function is executed
+     * @param preRouteFunction Function which will be called before the route function is executed
      */
-    constructor(preRouteFunction) {
-        this._config = {attributes: true, childList: true, characterData: true, subtree: true};
+    constructor(preRouteFunction: Function) {
         this._observer = new MutationObserver(this._addRouterLinks.bind(this));
 
         this._preRouteFunction = preRouteFunction;
 
-        /**
-         * @type  {{path: string, view: Function, title?: string}[]}
-         */
-        this._routeList = [];
-
-        this._urlChangeEmitter = new URLChangeEmitter();
         this._urlChangeEmitter.addEventListener('urlchange', this._urlChange.bind(this));
     }
 
@@ -29,7 +33,7 @@ class Router {
     /**
      * Start the observation of the rout change
      */
-    async startObservation() {
+    public async startObservation() {
 
         // Look for new router links
         this._observer.observe(document.body, this._config);
@@ -48,16 +52,16 @@ class Router {
     /**
      * End the observation of the route
      */
-    endObservation() {
+    public endObservation() {
         this._observer.disconnect();
         this._urlChangeEmitter.active = false;
     }
 
     /**
      * React to the body changes and add the router links
-     * @private
      */
-    _addRouterLinks() {
+    private _addRouterLinks() {
+        // @ts-ignore
         const linkElements = [...document.querySelectorAll('[routerLink]')];
 
         for (let link of linkElements) {
@@ -73,24 +77,20 @@ class Router {
 
     /**
      * Handle the url changes and call the function which is associated with the url
-     * @param currentURL {string}
-     * @private
+     * @param currentURL
      */
-    async _urlChange(currentURL) {
+    async _urlChange(currentURL: string) {
 
         // Execute the pre route function
         this._preRouteFunction();
 
-        /**
-         * @type  {{path: string, view: Function, title?: string}}
-         */
-        let route;
+        let route: { path: string, view: Function, title?: string };
         for (route of this._routeList) {
 
             const routeRegex = new RegExp(route.path);
             if (routeRegex.test(currentURL)) {
 
-                // Set the title if defined else title = undefinded
+                // Set the title if defined else title = undefined
                 document.title = route.title;
 
                 // Show the loading animation during the page loading
@@ -107,11 +107,9 @@ class Router {
     /**
      * Handle the redirect to another page
      * @param linkElement The element which links the new page
-     * @returns {function(...[*]=)}
-     * @private
      */
-    _handleRedirect(linkElement) {
-        return () => {
+    _handleRedirect(linkElement: HTMLElement): () => void {
+        return (): void => {
 
             const route = linkElement.getAttribute('routerLink');
 
@@ -125,17 +123,15 @@ class Router {
 
     /**
      * Set the routes
-     * @param value  {{path: string, view: Function, title?: string}[]}
      */
-    set routeList(value) {
+    set routeList(value: { path: string, view: Function, title?: string }[]) {
         this._routeList = value;
     }
 
     /**
      * Get the currently active routes
-     * @returns  {{path: string, view: Function, title?: string}[]}
      */
-    get routeList() {
+    get routeList(): { path: string, view: Function, title?: string }[] {
         return this._routeList;
     }
 }

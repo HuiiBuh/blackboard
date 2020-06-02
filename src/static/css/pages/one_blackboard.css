@@ -16,7 +16,8 @@
 .blackboard-wrapper textarea {
     resize: none;
     width: 100%;
-    height: 80%;
+    /* Nav bar, nav padding, input height, input margin, bottom margin */
+    height: calc(100vh - 55px  - 15px - 40px - 1.5rem - 2rem);
 
     border: none;
     outline: none;
@@ -66,7 +67,7 @@ input.title,
 }
 
 .save {
-    bottom: 20%;
+    bottom: calc(2rem + 8px);
     right: 0;
 }
 

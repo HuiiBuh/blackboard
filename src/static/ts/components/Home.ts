@@ -1,5 +1,3 @@
-'use strict';
-
 class Home extends Component {
     static HTML = `
     <h1 class="text-center">Select Blackboard</h1>
@@ -53,21 +51,20 @@ class Home extends Component {
     </div>
     `;
 
-    /**
-     * @type {Home}
-     */
-    static INSTANCE;
+    static INSTANCE: Home;
+    private apiClient: APIClient = new APIClient('/api');
+    private modal: Modal;
+    private root: HTMLElement;
+
 
     /**
      * Create a new home component
      */
     constructor() {
         super();
-
         if (Home.INSTANCE) return Home.INSTANCE;
         Home.INSTANCE = this;
 
-        this.apiClient = new APIClient('/api');
 
         this.modal = new Modal('Create Blackboard', Home.FORM, this.createNewBlackboard.bind(this));
         this.root = document.querySelector('.container');
@@ -78,12 +75,11 @@ class Home extends Component {
      */
     async show() {
         await this._prepareComponent();
-        this.root.appendChild(this._element);
+        this.root.appendChild(this._element as Node);
     }
 
     /**
      * Create the component
-     * @private
      */
     async _prepareComponent() {
         // Get data from the api
@@ -94,8 +90,8 @@ class Home extends Component {
         const elementString = this._parser.parseDocument(Home.HTML, apiResponse);
 
         // Add the created element to the class
-        this._element = this._createElement(elementString);
-        this._addListener();
+        this._element = this.createElement(elementString);
+        this.addListener();
     }
 
 
@@ -125,17 +121,16 @@ class Home extends Component {
 
     /**
      * Create a new blackboard
-     * @return {Promise<void>}
      */
-    async createNewBlackboard() {
-        const value = document.querySelector('#blackboard-name').value;
+    async createNewBlackboard(): Promise<void> {
+        const value = document.querySelector<HTMLInputElement>('#blackboard-name').value;
 
         if (!value) {
             new Message('No name provided', 'warn').show();
             return;
         }
 
-        await this.apiClient.post('/blackboards', {}, {name: value});
+        await this.apiClient.post('/blackboards', null, {name: value});
         this.modal.close();
 
         new Message(`Created blackboard ${value}`, 'success').show();
@@ -147,12 +142,11 @@ class Home extends Component {
 
     /**
      * Delete the blackboard
-     * @param _ {KeyboardEvent}
-     * @param blackboardID {number} The id of the blackboard
-     * @param blackboardName {string} The blackboard name
-     * @return {Promise<void>}
+     * @param _
+     * @param blackboardID The id of the blackboard
+     * @param blackboardName The blackboard name
      */
-    async deleteBlackboard(_, blackboardID, blackboardName) {
+    async deleteBlackboard(_: KeyboardEvent, blackboardID: string, blackboardName: string): Promise<void> {
         await this.apiClient.delete(`/blackboards/${blackboardID}`);
 
         new Message(`Deleted blackboard ${blackboardName}`, 'success').show();
@@ -164,10 +158,10 @@ class Home extends Component {
 
 /**
  * Format the api response so it can be displayed properly
- * @param apiResponse {object} The api response
- * @return {*}
+ * @param apiResponse The api response
+ * @return The modified api object
  */
-function formatApiData(apiResponse) {
+function formatApiData(apiResponse: any): any {
     apiResponse.blackboard_list.forEach(blackboard => {
         blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
         blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
