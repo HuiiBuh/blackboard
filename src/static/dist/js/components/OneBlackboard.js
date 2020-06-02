@@ -15,29 +15,30 @@ class OneBlackboard extends Component {
         super();
         this.root = document.querySelector('.container');
         this.blackboardHandler = new BlackboardHandler();
+        this.apiClient = new APIClient('/api');
         this._timer = new Timer();
         if (OneBlackboard.INSTANCE)
             return OneBlackboard.INSTANCE;
         OneBlackboard.INSTANCE = this;
-        this._bindSaveChanges = this._saveChanges.bind(this);
+        this._bindSaveChanges = this.saveChanges.bind(this);
     }
     /**
      * Show the blackboard
      */
     show(apiResponse) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.apiResponse = apiResponse;
             this.blackboardHandler.addSaveShortcut();
-            document.title = apiResponse.name;
-            yield this._prepareComponent(apiResponse);
+            document.title = this.apiResponse.name;
+            yield this._prepareComponent();
             this.root.appendChild(this._element);
         });
     }
     /**
      * Create the Blackboard
      */
-    _prepareComponent(apiResponse) {
+    _prepareComponent() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.apiResponse = apiResponse;
             // Get the github markdown
             this.apiResponse.markdown = yield OneBlackboard._getGithubMarkdown(this.apiResponse.content);
             const elementString = this._parser.parseDocument(OneBlackboard.HTML, this.apiResponse);
@@ -58,6 +59,7 @@ class OneBlackboard extends Component {
      */
     _startEditing() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this._reloadContent();
             this._timer.time = yield this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
             // IMPORTANT do not await it
             this._timer.startCountdown();
@@ -66,9 +68,20 @@ class OneBlackboard extends Component {
         });
     }
     /**
+     * Reload the content to ensure that the newest data is shown
+     */
+    _reloadContent() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.apiClient.get(`/blackboards/${this.apiResponse.id}`);
+            this.apiResponse = response;
+            document.querySelector('.custom-input.text-center.title').value = response.name;
+            document.querySelector('textarea').innerText = response.content;
+        });
+    }
+    /**
      * Save the changes made to the blackboard
      */
-    _saveChanges() {
+    saveChanges() {
         return __awaiter(this, void 0, void 0, function* () {
             this._timer.unsubscribe(this._bindSaveChanges);
             this._timer.remove();

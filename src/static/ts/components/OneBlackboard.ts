@@ -29,6 +29,7 @@ class OneBlackboard extends Component {
 
     private apiResponse: { name: string, content: string, id: string, markdown?: string };
     private blackboardHandler: BlackboardHandler = new BlackboardHandler();
+    private apiClient: APIClient = new APIClient('/api');
 
     private _timer = new Timer();
     private readonly _bindSaveChanges: Function;
@@ -43,26 +44,26 @@ class OneBlackboard extends Component {
         if (OneBlackboard.INSTANCE) return OneBlackboard.INSTANCE;
         OneBlackboard.INSTANCE = this;
 
-        this._bindSaveChanges = this._saveChanges.bind(this);
+        this._bindSaveChanges = this.saveChanges.bind(this);
     }
 
     /**
      * Show the blackboard
      */
     public async show(apiResponse): Promise<void> {
+        this.apiResponse = apiResponse;
+
         this.blackboardHandler.addSaveShortcut();
 
-        document.title = apiResponse.name;
-        await this._prepareComponent(apiResponse);
+        document.title = this.apiResponse.name;
+        await this._prepareComponent();
         this.root.appendChild(this._element);
     }
 
     /**
      * Create the Blackboard
      */
-    private async _prepareComponent(apiResponse): Promise<void> {
-        this.apiResponse = apiResponse;
-
+    private async _prepareComponent(): Promise<void> {
         // Get the github markdown
         this.apiResponse.markdown = await OneBlackboard._getGithubMarkdown(this.apiResponse.content);
 
@@ -85,6 +86,7 @@ class OneBlackboard extends Component {
      * Start the editing
      */
     private async _startEditing() {
+        await this._reloadContent();
         this._timer.time = await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
 
         // IMPORTANT do not await it
@@ -95,9 +97,20 @@ class OneBlackboard extends Component {
     }
 
     /**
+     * Reload the content to ensure that the newest data is shown
+     */
+    private async _reloadContent(): Promise<void> {
+        const response = await this.apiClient.get<any>(`/blackboards/${this.apiResponse.id}`);
+        this.apiResponse = response;
+
+        document.querySelector<HTMLInputElement>('.custom-input.text-center.title').value = response.name;
+        document.querySelector<HTMLTextAreaElement>('textarea').innerText = response.content;
+    }
+
+    /**
      * Save the changes made to the blackboard
      */
-    private async _saveChanges(): Promise<void> {
+    private async saveChanges(): Promise<void> {
         this._timer.unsubscribe(this._bindSaveChanges);
         this._timer.remove();
 
