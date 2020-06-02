@@ -109,7 +109,7 @@ class Timer extends EventEmitter {
         value += '';
         return value.length >= width ? value : new Array(width - value.length + 1).join(characters) + value;
     }
-
+    
 
     /**
      * Set the time to a specific value
