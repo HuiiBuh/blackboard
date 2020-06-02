@@ -10,6 +10,7 @@ class URLChangeEmitter extends EventEmitter {
      */
     constructor() {
         super();
+
         if (URLChangeEmitter.INSTANCE) return URLChangeEmitter.INSTANCE;
         URLChangeEmitter.INSTANCE = this;
 
@@ -17,7 +18,7 @@ class URLChangeEmitter extends EventEmitter {
     }
 
     /**
-     * Start the listening
+     * Monkey patch the hostory and window to get notified if the url changes
      */
     private _monkeyPatchListener(): void {
         const self = this;
@@ -56,7 +57,7 @@ class URLChangeEmitter extends EventEmitter {
         }
         this.currentURL = location.pathname;
 
-        this.dispatchEvent('urlchange', this.currentURL);
+        this.emit(this.currentURL);
         document.dispatchEvent(new Event('urlchange'));
 
         // Set a timeout for 20ms so a push and pop event does not register twice

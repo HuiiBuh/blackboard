@@ -22,14 +22,14 @@ class EventListener {
         // @ts-ignore
         this._element.addEventListener(this._type, this._callback);
 
-        this.removeListenerFunction = this.removeListener.bind(this);
+        this.removeListenerFunction = this.remove.bind(this);
         document.addEventListener('urlchange', this.removeListenerFunction);
     }
 
     /**
      * Remove the event listener and the beforeunload listener
      */
-    removeListener(): void {
+    public remove(): void {
         // @ts-ignore
         this._element.removeEventListener(this._type, this._callback);
         document.removeEventListener('urlchange', this.removeListenerFunction);

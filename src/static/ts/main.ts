@@ -7,13 +7,31 @@ const notFoundComponent = new NotFound();
 new Search();
 
 /**
- * Remove all current components
+ * Remove all current components (gets called after every url change)
  */
 function removeAll() {
     homeComponent.remove();
     oneBlackboardComponent.remove();
     notFoundComponent.remove();
 }
+
+
+/**
+ * Format the api response so it can be displayed properly
+ * @param apiResponse The api response
+ * @return The modified api object
+ */
+function formatApiData(apiResponse: any): any {
+    apiResponse.blackboard_list.forEach(blackboard => {
+        blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
+        blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
+        blackboard.timestamp_create = new Date(blackboard.timestamp_create * 1000).toLocaleString();
+        blackboard.timestamp_edit = new Date(blackboard.timestamp_edit * 1000).toLocaleString();
+    });
+
+    return apiResponse;
+}
+
 
 /**
  * Main entry point

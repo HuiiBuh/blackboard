@@ -3,9 +3,9 @@ class APIClient {
     private readonly _header: string;
 
     /**
-     * A new async base client
+     * A new async api client which converts callbacks to promises
      * @param baseURL The base url of the server
-     * @param header The headers which should be sent with the app
+     * @param header The headers which should be sent with every request
      */
     constructor(baseURL = '', header = 'application/json') {
         this._baseURL = baseURL;
@@ -13,7 +13,7 @@ class APIClient {
     }
 
     /**
-     * Put request (Exceptions get handled)
+     * Put request (Errors get handled)
      * @param url The url (relative to the base url)
      * @param urlParams A json object which will be used to create the url params
      * @param body The body as a json
@@ -23,7 +23,7 @@ class APIClient {
     }
 
     /**
-     * Get request (Exceptions get handled)
+     * Get request (Errors get handled)
      * @param url The url (relative to the base url)
      * @param urlParams A json object which will be used to create the url params
      * @param body The body as a json
@@ -33,7 +33,7 @@ class APIClient {
     }
 
     /**
-     * Post request (Exceptions get handled)
+     * Post request (Errors get handled)
      * @param url The url (relative to the base url)
      * @param urlParams A json object which will be used to create the url params
      * @param body The body as a json
@@ -43,7 +43,7 @@ class APIClient {
     }
 
     /**
-     * Delete request (Exceptions get handled)
+     * Delete request (Errors get handled)
      * @param url The url (relative to the base url)
      * @param urlParams A json object which will be used to create the url params
      * @param body The body as a json
@@ -53,8 +53,8 @@ class APIClient {
     }
 
     /**
-     * Standard request request
-     * @param method
+     * Start the request (Errors get handled)
+     * @param method The method which should be used for the request
      * @param url The url (relative to the base url)
      * @param urlParams A json object which will be used to create the url params
      * @param body The body as a json
@@ -73,19 +73,17 @@ class APIClient {
             body = JSON.stringify(body);
         }
 
-        try {
-            // @ts-ignore
-            return await this.executeRequest(method, url, body);
-        } catch (e) {
-            this._handleError(e);
-        }
+        // @ts-ignore
+        return await this.executeRequest(method, url, body).catch(error => {
+            this._handleError(error);
+        });
     }
 
     /**
-     * Make the available request
-     * @param method The method
-     * @param url The url
-     * @param body The body json as a string
+     * Make the available request (No error handling)
+     * @param method The request method
+     * @param url The complete request url
+     * @param body The body json as a json string
      */
     executeRequest(method: string, url: string, body: string): Promise<any> {
         const self = this;
@@ -111,7 +109,7 @@ class APIClient {
     }
 
     /**
-     * Extract the response based on the4 content type
+     * Extract the response based on the content type
      * @param request The request object
      */
     _extractResponse(request): string | object {
@@ -124,7 +122,7 @@ class APIClient {
     }
 
     /**
-     * Handle error
+     * Handle possible errors which happened during the request
      */
     _handleError(error): void {
 
@@ -142,4 +140,3 @@ class APIClient {
         throw new Error('See the object above for more details');
     }
 }
-

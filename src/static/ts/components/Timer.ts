@@ -14,10 +14,14 @@ class Timer extends EventEmitter {
     private _parser = new Parser();
     private readonly _initialValue: number;
     private readonly _selector: string;
-    private _element: HTMLElement | any = {
-        remove: () => null
-    };
 
+    private _element: HTMLElement | any = {remove: () => null};
+
+    /**
+     * Create a new timer which displays the remaining editing time
+     * @param time The remaining time
+     * @param selector The selector for the timers root element
+     */
     constructor(time: number = 0, selector: string = '#timer-wrapper') {
         super();
 
@@ -53,7 +57,7 @@ class Timer extends EventEmitter {
             --this._time;
         }
 
-        this.dispatchEvent('finished');
+        this.emit();
     }
 
     /**
@@ -115,6 +119,9 @@ class Timer extends EventEmitter {
         this._time = value;
     }
 
+    /**
+     * Remove the timer
+     */
     public remove(): void {
         this._element.remove();
     }

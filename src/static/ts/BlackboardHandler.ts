@@ -6,25 +6,27 @@ class BlackboardHandler {
     private token = '';
     private blackboardID: string = '';
 
+    private _shortcutListener: EventListener;
+
 
     /**
-     * Create a new Blackboard handler which deals with locking, and updating the blackboards
+     * Create a new Blackboard handler which deals with locking, unlocking, and updating the blackboards
      */
     constructor() {
         if (BlackboardHandler.INSTANCE) return BlackboardHandler.INSTANCE;
         BlackboardHandler.INSTANCE = this;
 
+        this.addSaveShortcut();
         this._removeLockOnNavigation();
-        this._addSaveShortcut();
     }
 
 
     /**
      * Acquire a blackboard and if there is a blackboard locked, release it
-     * @param blackboardID
-     * @return The timeout
+     * @param blackboardID The  id of the blackboard you want to acquire
+     * @return A timeout for limiting the editing time
      */
-    async acquireBlackboard(blackboardID: string): Promise<number> {
+    public async acquireBlackboard(blackboardID: string): Promise<number> {
         if (this.token) await this.releaseBlackboard();
 
         this.blackboardID = blackboardID;
@@ -37,10 +39,9 @@ class BlackboardHandler {
 
     /**
      * Release the current blackboard
-     * @param event Optional if some cleanup has to be done
-     * @return
+     * @param event Optional if you try to leave the page without saving
      */
-    async releaseBlackboard(event: BeforeUnloadEvent | null = null): Promise<void> {
+    public async releaseBlackboard(event: BeforeUnloadEvent | null = null): Promise<void> {
         if (event && this.token) event.preventDefault();
 
         if (!this.token) return;
@@ -52,9 +53,9 @@ class BlackboardHandler {
     /**
      * Updated the blackboard
      * @param content The content of the blackboard
-     * @param name The updated name of the blackboard
+     * @param name The current (updated?) name of the blackboard
      */
-    async updateBlackboard(content: string, name: string): Promise<void> {
+    public async updateBlackboard(content: string, name: string): Promise<void> {
         const body = {
             token: this.token,
             name: name,
@@ -66,18 +67,21 @@ class BlackboardHandler {
     }
 
     /**
-     * Remove the lock on the blackboard if you have
+     * Remove the lock on the blackboard if you have it and navigate away
      */
-    _removeLockOnNavigation(): void {
+    private _removeLockOnNavigation(): void {
         document.addEventListener('urlchange', this.releaseBlackboard.bind(this));
         window.addEventListener('beforeunload', this.releaseBlackboard.bind(this));
     }
 
+
     /**
      * Add a shortcut which saves the page if you press Strg + s
      */
-    _addSaveShortcut(): void {
-        document.addEventListener('keydown', async (event) => {
+    public addSaveShortcut(): void {
+        if (this._shortcutListener) this._shortcutListener.remove();
+
+        this._shortcutListener = new EventListener(document, 'keydown', async (event: KeyboardEvent) => {
             if (event.key.toLowerCase() === 's' && event.ctrlKey) {
                 event.preventDefault();
                 event.stopPropagation();

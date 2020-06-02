@@ -6,7 +6,7 @@ class OneBlackboard extends Component {
         <h1 class="text-center title">{{ name }}</h1>
     
         <div class="blackboard-wrapper">
-            <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'startEditing'}">edit</i>
+            <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'_startEditing'}">edit</i>
         
             <div class="blackboard-preview">
                 <div class="spinner"></div>
@@ -17,7 +17,7 @@ class OneBlackboard extends Component {
                 <textarea placeholder="Markdown supported">{{ content }}</textarea>
             </div>
         
-            <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>
+            <i class="material-icons save pointer" listener="{'type':'click', 'handler':'_saveChanges'}">save</i>
         </div>
         <div id="timer-wrapper"></div>
     </div>
@@ -25,15 +25,17 @@ class OneBlackboard extends Component {
 
     static INSTANCE: OneBlackboard;
 
-    private apiResponse: { name: string, content: string, id: string, markdown?: string };
     private root: HTMLElement = document.querySelector('.container');
+
+    private apiResponse: { name: string, content: string, id: string, markdown?: string };
     private blackboardHandler: BlackboardHandler = new BlackboardHandler();
 
     private _timer = new Timer();
+    private readonly _bindSaveChanges: Function;
 
 
     /**
-     * Show one blackboard
+     * Create a new blackboard component
      */
     constructor() {
         super();
@@ -41,15 +43,15 @@ class OneBlackboard extends Component {
         if (OneBlackboard.INSTANCE) return OneBlackboard.INSTANCE;
         OneBlackboard.INSTANCE = this;
 
-        this._timer.addEventListener('finished', async (): Promise<void> => {
-            await this.saveChanges();
-        });
+        this._bindSaveChanges = this._saveChanges.bind(this);
     }
 
     /**
      * Show the blackboard
      */
     public async show(apiResponse): Promise<void> {
+        this.blackboardHandler.addSaveShortcut();
+
         document.title = apiResponse.name;
         await this._prepareComponent(apiResponse);
         this.root.appendChild(this._element);
@@ -58,11 +60,11 @@ class OneBlackboard extends Component {
     /**
      * Create the Blackboard
      */
-    async _prepareComponent(apiResponse): Promise<void> {
+    private async _prepareComponent(apiResponse): Promise<void> {
         this.apiResponse = apiResponse;
 
         // Get the github markdown
-        this.apiResponse.markdown = await this.getGithubMarkdown(this.apiResponse.content);
+        this.apiResponse.markdown = await OneBlackboard._getGithubMarkdown(this.apiResponse.content);
 
         const elementString = this._parser.parseDocument(OneBlackboard.HTML, this.apiResponse);
         this._element = this.createElement(elementString);
@@ -71,9 +73,10 @@ class OneBlackboard extends Component {
     }
 
     /**
-     * Remove the blackboard
+     * Remove the blackboard from the page
      */
-    remove() {
+    public remove() {
+        this._timer.unsubscribe(this._bindSaveChanges);
         this._timer.remove();
         this._element.remove();
     }
@@ -81,11 +84,12 @@ class OneBlackboard extends Component {
     /**
      * Start the editing
      */
-    async startEditing() {
+    private async _startEditing() {
         this._timer.time = await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
 
         // IMPORTANT do not await it
         this._timer.startCountdown();
+        this._timer.subscribe(this._bindSaveChanges);
 
         document.querySelector('#editing-wrapper').classList.add('editing');
     }
@@ -93,7 +97,8 @@ class OneBlackboard extends Component {
     /**
      * Save the changes made to the blackboard
      */
-    async saveChanges(): Promise<void> {
+    private async _saveChanges(): Promise<void> {
+        this._timer.unsubscribe(this._bindSaveChanges);
         this._timer.remove();
 
 
@@ -111,7 +116,7 @@ class OneBlackboard extends Component {
         spinnerElement.style.display = 'inline-block';
 
         // Update the preview
-        document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = await this.getGithubMarkdown(content);
+        document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = await OneBlackboard._getGithubMarkdown(content);
         document.querySelector('h1.title').innerHTML = name;
         document.title = name;
 
@@ -122,7 +127,7 @@ class OneBlackboard extends Component {
      * Get the markdown representation of the string
      * @param value The markdown in html
      */
-    async getGithubMarkdown(value): Promise<string> {
+    private static async _getGithubMarkdown(value): Promise<string> {
         const apiClient = new APIClient('', 'text/plain');
 
         let response: string;

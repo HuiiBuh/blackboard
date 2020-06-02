@@ -65,7 +65,6 @@ class Home extends Component {
         if (Home.INSTANCE) return Home.INSTANCE;
         Home.INSTANCE = this;
 
-
         this.modal = new Modal('Create Blackboard', Home.FORM, this.createNewBlackboard.bind(this));
         this.root = document.querySelector('.container');
     }
@@ -142,7 +141,7 @@ class Home extends Component {
 
     /**
      * Delete the blackboard
-     * @param _
+     * @param _ Ignore the keyboard event
      * @param blackboardID The id of the blackboard
      * @param blackboardName The blackboard name
      */
@@ -154,20 +153,4 @@ class Home extends Component {
         this.remove();
         await this.show();
     }
-}
-
-/**
- * Format the api response so it can be displayed properly
- * @param apiResponse The api response
- * @return The modified api object
- */
-function formatApiData(apiResponse: any): any {
-    apiResponse.blackboard_list.forEach(blackboard => {
-        blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
-        blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
-        blackboard.timestamp_create = new Date(blackboard.timestamp_create * 1000).toLocaleString();
-        blackboard.timestamp_edit = new Date(blackboard.timestamp_edit * 1000).toLocaleString();
-    });
-
-    return apiResponse;
 }

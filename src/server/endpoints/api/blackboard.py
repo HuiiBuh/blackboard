@@ -129,9 +129,10 @@ async def acquire_blackboard(blackboard_id: str):
     if not blackboard.acquire_edit_mode(token):
         raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
 
+    # Add a margin of error of 10 seconds
     return {
         "token": token,
-        "timeout": blackboard.get_timeout_in_sec()
+        "timeout": blackboard.get_timeout_in_sec() - 10
     }
 
 

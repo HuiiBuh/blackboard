@@ -2,8 +2,8 @@ class WebApp {
     private _router: Router;
 
     /**
-     * Create a new web app
-     * @param routes
+     * Create a new web app which handles the webapp
+     * @param routes A list of routes and the functions which should be executed if the route is called
      * @param preRouteFunction Function which will be called before the route function is executed
      */
     constructor(routes: { path: string, view: Function, title?: string }[], preRouteFunction: Function = () => null) {
@@ -41,7 +41,7 @@ class WebApp {
 
     /**
      * Set the routes of the web app
-     * @param value
+     * @param value a list of routes
      */
     set routes(value: { path: string, view: Function, title?: string }[]) {
 

@@ -5,7 +5,7 @@ class Parser {
      * @param string The input string
      * @param variables The variables in a json with the variable name as key
      * @param querySelector The point the parsed string should be inserted (first element found)
-     * @return The html element
+     * @return The created html element
      */
     insertAt(string: string, variables: object, querySelector: string): HTMLElement {
         const root: HTMLElement = document.querySelector(querySelector);
@@ -17,6 +17,7 @@ class Parser {
      * Take a string and parse is with the variables
      * @param string The input string
      * @param variables The variables in the json which can be parsed
+     * @return The parsed string
      */
     parseDocument(string: string, variables): string {
         string = this._replaceForLoop(string, variables);
@@ -24,12 +25,13 @@ class Parser {
     }
 
     /**
-     * Replaces the created for loop
-     * @param string
-     * @param variables
+     * Replaces for loops
+     * @param string The input string
+     * @param variables The variables in the json which can be parsed
      */
     _replaceForLoop(string: string, variables: object): string {
 
+        // Declare the for loop start and end regex
         const start = new RegExp('{% +for [a-zA-Z_]+ +in +[a-zA-Z._]+ +%}');
         const end = new RegExp('{% +endfor +%}');
 
@@ -38,6 +40,7 @@ class Parser {
             startIndex = start.exec(string);
             endIndex = end.exec(string);
 
+            // Stop looking for for loops if there are no for loops
             if (!startIndex || !endIndex) {
                 break;
             }

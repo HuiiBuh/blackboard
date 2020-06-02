@@ -2,55 +2,37 @@
  * Custom event emitter implementation for event driven communication
  */
 class EventEmitter {
-    private _listeners: object = {};
+    private _listeners: Function[] = [];
 
     /**
      * Add a listener to the emitter
-     * @param type The type of the event
      * @param callback The callback function which will be executed
      */
-    addEventListener(type: string, callback: Function): void {
-        if (!(type in this._listeners)) {
-            this._listeners[type] = [];
-        }
-        this._listeners[type].push(callback);
+    subscribe(callback: Function): void {
+        this._listeners.push(callback);
     };
 
     /**
      * Remove the event listener
-     * @param type The type of the event listener which has been added
-     * @param callback The callback function of event listener
+     * @param callback The callback function which was added
      */
-    removeEventListener(type: string, callback: Function): void {
-        if (!(type in this._listeners)) {
-            return;
-        }
-
-        const stackList = this._listeners[type].slice();
-        stackList.forEach((stack, index) => {
+    unsubscribe(callback: Function): void {
+        this._listeners.forEach((stack: Function, index: number) => {
             if (stack === callback) {
-                stack.splice(index, 1);
+                this._listeners.splice(index, 1);
             }
         });
-
     }
 
 
     /**
      * Dispatch an event to the right listeners event
-     * @param eventType  The event type
      * @param eventInformation Some additional information to the event
      */
-    dispatchEvent(eventType: string, eventInformation: object | string = undefined): void {
-        if (!(eventType in this._listeners)) {
-            return;
-        }
-
-        const stackList = this._listeners[eventType].slice();
-        for (let stack of stackList) {
+    emit(eventInformation: object | string | null = null): void {
+        for (let stack of this._listeners) {
             stack.call(this, eventInformation);
         }
-
     };
 
 }

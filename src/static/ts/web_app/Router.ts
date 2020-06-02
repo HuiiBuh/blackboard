@@ -3,6 +3,9 @@
  */
 class Router {
 
+    /**
+     * The config for the mutation observer
+     */
     private _config: { subtree: boolean; attributes: boolean; childList: boolean; characterData: boolean } = {
         attributes: true,
         childList: true,
@@ -22,11 +25,12 @@ class Router {
      * @param preRouteFunction Function which will be called before the route function is executed
      */
     constructor(preRouteFunction: Function) {
+        // Add router links to the element if the DOM changes
         this._observer = new MutationObserver(this._addRouterLinks.bind(this));
 
         this._preRouteFunction = preRouteFunction;
 
-        this._urlChangeEmitter.addEventListener('urlchange', this._urlChange.bind(this));
+        this._urlChangeEmitter.subscribe(this._urlChange.bind(this));
     }
 
 
@@ -77,7 +81,7 @@ class Router {
 
     /**
      * Handle the url changes and call the function which is associated with the url
-     * @param currentURL
+     * @param currentURL The current url without any parameters
      */
     async _urlChange(currentURL: string) {
 

@@ -29,13 +29,14 @@ class Search {
 
     static INSTANCE: Search;
 
-    private _searchContainer: HTMLElement;
-    private _searchOverlay: HTMLElement;
-    private _closeButton: HTMLElement;
-    private _navigationBar: HTMLElement;
-    private _input: HTMLInputElement;
+    private _searchContainer: HTMLElement = document.querySelector('.search-container');
+    private _searchOverlay: HTMLElement = document.querySelector('.search-overlay');
+    private _closeButton: HTMLElement = this._searchOverlay.querySelector('.top-right');
+    private _navigationBar: HTMLElement = document.querySelector('.navigation-bar');
+    private _input: HTMLInputElement = this._navigationBar.querySelector('input');
+    private _searchPreview: HTMLElement = document.querySelector('.search-results');
+
     private _visible: boolean;
-    private _searchPreview: HTMLElement;
 
     private _timeout: number;
 
@@ -52,17 +53,7 @@ class Search {
         this._visible = false;
         this._timeout = 10;
 
-        this._getElements();
         this._addListener();
-    }
-
-    _getElements(): void {
-        this._searchContainer = document.querySelector('.search-container');
-        this._searchOverlay = document.querySelector('.search-overlay');
-        this._closeButton = this._searchOverlay.querySelector('.top-right');
-        this._navigationBar = document.querySelector('.navigation-bar');
-        this._input = this._navigationBar.querySelector('input');
-        this._searchPreview = document.querySelector('.search-results');
     }
 
     /**
@@ -94,7 +85,7 @@ class Search {
 
     /**
      * Hide the search overlay
-     * @param event
+     * @param event The mouse event which triggered the hiding
      */
     hideSearchOverlay(event: MouseEvent): void {
         if (this._input.contains(event.target as Node) || !this._visible) return;
@@ -110,7 +101,7 @@ class Search {
 
     /**
      * Search for the search input
-     * @param event
+     * @param event The keyboard event which triggered the search
      */
     search(event: KeyboardEvent): void {
         // @ts-ignore

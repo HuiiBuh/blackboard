@@ -88,7 +88,7 @@ class Modal extends Component {
 
     /**
      * Is the event a KeyboardEvent and if yes submit the modal
-     * @param event
+     * @param event The keyboard event
      */
     async _isEnter(event: KeyboardEvent): Promise<void> {
         if (event.key !== 'Enter') return;
