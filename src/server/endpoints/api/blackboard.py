@@ -82,7 +82,7 @@ async def delete_blackboard(blackboard_id: str):
     blackboard: Blackboard = Blackboard.get(blackboard_id)
     if not blackboard.acquire_edit_mode("master_token"):
         # TODO return timeout time
-        raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
+        raise HTTPException(status.HTTP_423_LOCKED, "Could not delete blackboard. Currently in use!")
 
     Blackboard.delete(blackboard_id)
 
