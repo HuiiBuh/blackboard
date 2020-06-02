@@ -144,7 +144,7 @@ OneBlackboard.HTML = `
                 <textarea placeholder="Markdown supported">{{ content }}</textarea>
             </div>
         
-            <i class="material-icons save pointer" listener="{'type':'click', 'handler':'_saveChanges'}">save</i>
+            <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>
         </div>
         <div id="timer-wrapper"></div>
     </div>
