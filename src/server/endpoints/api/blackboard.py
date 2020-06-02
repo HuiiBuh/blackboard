@@ -127,12 +127,11 @@ async def acquire_blackboard(blackboard_id: str):
     token = uuid1().hex
     # Try to acquire blackboard
     if not blackboard.acquire_edit_mode(token):
-        # todo return timeout time
         raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
 
-    # todo return timeout
     return {
-        "token": token
+        "token": token,
+        "timeout": blackboard.get_timeout_in_sec()
     }
 
 

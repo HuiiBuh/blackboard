@@ -1,6 +1,7 @@
 from .blackboard import Blackboard
 from threading import Thread
 import time
+
 # Load all existing blackboards
 Blackboard.load_all()
 
