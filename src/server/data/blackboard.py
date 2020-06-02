@@ -91,7 +91,7 @@ class Blackboard:
 
         if content is not None and not Blackboard._MIN_CONTENT_LENGTH < len(content) < Blackboard._MAX_CONTENT_LENGTH:
             raise ValueError(f"Content size should be: "
-                             f"{Blackboard._MIN_CONTENT_LENGTH} < length < {Blackboard._MAX_CONTENT_LENGTH}")
+                             f"{Blackboard._MIN_CONTENT_LENGTH} <= length <= {Blackboard._MAX_CONTENT_LENGTH}")
 
         self._content = content
         self._timestamp_edit = time.time()

@@ -1,4 +1,4 @@
-import logging
+from logging import getLogger
 from uuid import uuid1
 
 from fastapi import APIRouter, HTTPException, status
@@ -8,11 +8,8 @@ from ...data.blackboard import Blackboard
 
 router = APIRouter()
 
-Logger = logging.getLogger("uvicorn")
+Logger = getLogger("uvicorn")
 
-
-# ==========================================================
-# Vorbild für eine REST konforme API https://developer.spotify.com/documentation/web-api/reference/playlists/
 
 @router.get("/blackboards", response_model=BlackboardListModel)
 async def get_all_blackboards():
@@ -85,7 +82,7 @@ async def delete_blackboard(blackboard_id: str):
     blackboard: Blackboard = Blackboard.get(blackboard_id)
     if not blackboard.acquire_edit_mode("master_token"):
         # TODO return timeout time
-        raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
+        raise HTTPException(status.HTTP_423_LOCKED, "Could not delete blackboard. Currently in use!")
 
     Blackboard.delete(blackboard_id)
 
@@ -132,12 +129,10 @@ async def acquire_blackboard(blackboard_id: str):
     if not blackboard.acquire_edit_mode(token):
         raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
 
-    response = {
+    return {
         "token": token,
         "timeout": blackboard.get_timeout_in_sec()
     }
-
-    return response
 
 
 @router.put("/blackboards/{blackboard_id}/update")
@@ -151,7 +146,6 @@ async def update_blackboard(blackboard_id: str, body_data: UpdateBlackboardModal
     :param body_data:
     :return:
     """
-
     if not Blackboard.exists(blackboard_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 
