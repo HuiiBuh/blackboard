@@ -3,7 +3,7 @@
 ## Run the server
 
 + Install the *requirements.txt*
-+ run the script in the *_manual_start.py*
++ run the script *stc/start.py*
 
 This will automatically serve the html and static files. 
 

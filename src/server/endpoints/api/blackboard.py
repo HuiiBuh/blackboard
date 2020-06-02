@@ -1,5 +1,4 @@
-import logging
-
+from logging import getLogger
 from uuid import uuid1
 
 from fastapi import APIRouter, HTTPException, status
@@ -9,11 +8,8 @@ from ...data.blackboard import Blackboard
 
 router = APIRouter()
 
-Logger = logging.getLogger("uvicorn")
+Logger = getLogger("uvicorn")
 
-
-# ==========================================================
-# Vorbild für eine REST konforme API https://developer.spotify.com/documentation/web-api/reference/playlists/
 
 @router.get("/blackboards", response_model=BlackboardListModel)
 async def get_all_blackboards():
