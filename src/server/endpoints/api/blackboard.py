@@ -132,7 +132,7 @@ async def acquire_blackboard(blackboard_id: str, token: str = None):
         }
 
     # Generate user_token
-    token = uuid1().hex
+    token = token or uuid1().hex
     # Try to acquire blackboard
     if not blackboard.acquire_edit_mode(token):
         raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
