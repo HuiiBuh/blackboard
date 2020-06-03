@@ -3,6 +3,8 @@ services:
 
   blackboard_fastapi:
     container_name: blackboard_fastapi
+    environment:
+      environment: "production"
     expose:
       - 8000
     build: fastapi

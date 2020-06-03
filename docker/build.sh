@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 cp -r ../src/static/ nginx/
 cp -r ../src/ fastapi/
 cp ../requirements.txt fastapi/

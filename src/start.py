@@ -1,9 +1,11 @@
-import uvicorn
-from uvicorn.config import LOGGING_CONFIG
+import os
 from os.path import join
 
-LOGGING_CONFIG["formatters"]["default"]["fmt"] = "[%(asctime)s] - "+LOGGING_CONFIG["formatters"]["default"]["fmt"]
-LOGGING_CONFIG["formatters"]["access"]["fmt"] = "[%(asctime)s] - "+LOGGING_CONFIG["formatters"]["access"]["fmt"]
+import uvicorn
+from uvicorn.config import LOGGING_CONFIG
+
+LOGGING_CONFIG["formatters"]["default"]["fmt"] = "[%(asctime)s] - " + LOGGING_CONFIG["formatters"]["default"]["fmt"]
+LOGGING_CONFIG["formatters"]["access"]["fmt"] = "[%(asctime)s] - " + LOGGING_CONFIG["formatters"]["access"]["fmt"]
 
 LOGGING_CONFIG["handlers"]["file_default"] = {
     "formatter": "default",
@@ -21,5 +23,10 @@ LOGGING_CONFIG["loggers"][""]["handlers"].append("file_default")
 LOGGING_CONFIG["loggers"]["uvicorn.access"]["handlers"].append("file_access")
 
 if __name__ == "__main__":
-    # Import string, but with : instead of '.'
-    uvicorn.run("server:app", host="0.0.0.0", reload=True, log_config=LOGGING_CONFIG)
+    environment = os.environ.get('environment', 'development')
+
+    if environment == 'production':
+        uvicorn.run("server:app", host="0.0.0.0", port=80, log_config=LOGGING_CONFIG)
+    else:
+        # Import string, but with : instead of '.'
+        uvicorn.run("server:app", host="0.0.0.0", reload=True, log_config=LOGGING_CONFIG)
