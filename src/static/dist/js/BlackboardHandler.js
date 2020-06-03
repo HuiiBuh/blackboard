@@ -34,7 +34,8 @@ class BlackboardHandler {
             this.blackboardID = blackboardID;
             const response = yield this.apiClient.get(`/blackboards/${this.blackboardID}/acquire`);
             this.token = response.token;
-            return response.timeout;
+            // Add some margin
+            return response.timeout - 10;
         });
     }
     /**
@@ -65,6 +66,16 @@ class BlackboardHandler {
             };
             yield this.apiClient.put(`/blackboards/${this.blackboardID}/update`, null, body);
             yield this.releaseBlackboard();
+        });
+    }
+    /**
+     * Reset the blackboard timeout
+     */
+    resetBlackboardTimer() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const urlParams = new URLSearchParams([['token', this.token]]);
+            const response = yield this.apiClient.get(`/blackboards/${this.blackboardID}/acquire`, urlParams);
+            return response.timeout - 10;
         });
     }
     /**

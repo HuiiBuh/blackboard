@@ -12,14 +12,16 @@ class Timer extends EventEmitter {
     /**
      * Create a new timer which displays the remaining editing time
      * @param time The remaining time
+     * @param resetFunction A function which should be called if the reset button is called
      * @param selector The selector for the timers root element
      */
-    constructor(time = 0, selector = '#timer-wrapper') {
+    constructor(time = 0, resetFunction = () => null, selector = '#timer-wrapper') {
         super();
         this._parser = new Parser();
         this._element = { remove: () => null };
         this._selector = selector;
         this._initialValue = time;
+        this._customResetFunction = resetFunction;
     }
     /**
      * Reset the countdown to the original value
@@ -37,7 +39,10 @@ class Timer extends EventEmitter {
                 randomNumber: id,
                 initialValue: Timer._secondsToHumanReadable(this._time)
             };
-            this._element = this._parser.insertAt(Timer.HTML, variables, this._selector);
+            const elementString = this._parser.parseDocument(Timer.HTML, variables);
+            this._element = this._createElement(elementString);
+            this._addListener();
+            document.querySelector(this._selector).appendChild(this._element);
             const countdown = document.getElementById(id);
             while (this._time >= 0) {
                 yield Timer._sleep(1000);
@@ -46,6 +51,40 @@ class Timer extends EventEmitter {
             }
             this.emit();
         });
+    }
+    /**
+     * Add Listener to the element after it was translated to html
+     * Because multiple inheritance is not a thing in js I have to copy paste
+     */
+    _addListener() {
+        // Get all declared listener
+        // @ts-ignore
+        const listenerList = [...this._element.querySelectorAll('[listener]')];
+        for (let listener of listenerList) {
+            let attribute = listener.getAttribute('listener').replace(/'/g, '"');
+            attribute = JSON.parse(attribute);
+            let args = [];
+            if (typeof attribute.args !== 'undefined') {
+                args = attribute.args.split(',').map(value => value.trim());
+            }
+            // Add the event listener
+            listener.addEventListener(attribute.type, (event) => __awaiter(this, void 0, void 0, function* () {
+                yield this[attribute.handler].bind(this)(event, ...args);
+            }));
+        }
+    }
+    /**
+     * Create a html element from a string
+     * @param string The html string
+     * @param styleObject A list of styles which should be added to the base element
+     */
+    _createElement(string, styleObject = {}) {
+        const temp = document.createElement('div');
+        temp.innerHTML = string;
+        for (let style in styleObject) {
+            temp.style[style] = styleObject[style];
+        }
+        return temp;
     }
     /**
      * Convert seconds to hh:mm:ss
@@ -104,12 +143,23 @@ class Timer extends EventEmitter {
     }
 }
 Timer.HTML = `
-        <div style="
-        position: fixed; 
-        bottom: 0; right: 50%; transform: translateX(50%); 
-        ">
+        <style>
+        .timer{
+            position: fixed; 
+            bottom: 0; right: 50%; 
+            transform: translateX(50%); 
+            display: flex;
+            justify-content:space-between;
+        }
+        .timer > * { 
+            margin:0 .2rem ;
+        }
+        </style>
+
+        <div class="timer">
             <span>Remaining time</span>
             <span id="{{ randomNumber }}">{{ initialValue }}</span>
+            <span class="material-icons pointer" listener="{'type':'click', 'handler':'_customResetFunction'}">restore</span>
         </div>
     `;
 //# sourceMappingURL=Timer.js.map

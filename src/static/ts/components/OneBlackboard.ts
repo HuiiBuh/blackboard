@@ -31,7 +31,7 @@ class OneBlackboard extends Component {
     private blackboardHandler: BlackboardHandler = new BlackboardHandler();
     private apiClient: APIClient = new APIClient('/api');
 
-    private _timer = new Timer();
+    private _timer: Timer;
     private readonly _bindSaveChanges: Function;
 
     /**
@@ -44,6 +44,7 @@ class OneBlackboard extends Component {
         OneBlackboard.INSTANCE = this;
 
         this._bindSaveChanges = this.saveChanges.bind(this);
+        this._timer = new Timer(0, this._resetCountdown.bind(this));
     }
 
     /**
@@ -96,6 +97,14 @@ class OneBlackboard extends Component {
     }
 
     /**
+     * Reset the timeout for the blackboard
+     */
+    private async _resetCountdown(): Promise<void> {
+        this._timer.time = await this.blackboardHandler.resetBlackboardTimer();
+        new Message('Timeout was reset successfully', 'default', 2000).show();
+    }
+
+    /**
      * Reload the content to ensure that the newest data is shown
      */
     private async _reloadContent(): Promise<void> {
@@ -109,7 +118,7 @@ class OneBlackboard extends Component {
     /**
      * Save the changes made to the blackboard
      */
-    private async saveChanges(): Promise<void> {
+    public async saveChanges(): Promise<void> {
         this._timer.unsubscribe(this._bindSaveChanges);
         this._timer.remove();
 

@@ -74,7 +74,7 @@ class APIClient {
             // Add url params
             url = this._baseURL + url;
             if (urlParams) {
-                url += new URLSearchParams(urlParams).toString();
+                url += '?' + new URLSearchParams(urlParams).toString();
             }
             // Parse the json object to string
             if (typeof body === 'object') {

@@ -17,11 +17,11 @@ class OneBlackboard extends Component {
         this.root = document.querySelector('.container');
         this.blackboardHandler = new BlackboardHandler();
         this.apiClient = new APIClient('/api');
-        this._timer = new Timer();
         if (OneBlackboard.INSTANCE)
             return OneBlackboard.INSTANCE;
         OneBlackboard.INSTANCE = this;
         this._bindSaveChanges = this.saveChanges.bind(this);
+        this._timer = new Timer(0, this._resetCountdown.bind(this));
     }
     /**
      * Show the blackboard
@@ -66,6 +66,15 @@ class OneBlackboard extends Component {
             this._timer.startCountdown();
             this._timer.subscribe(this._bindSaveChanges);
             document.querySelector('#editing-wrapper').classList.add('editing');
+        });
+    }
+    /**
+     * Reset the timeout for the blackboard
+     */
+    _resetCountdown() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._timer.time = yield this.blackboardHandler.resetBlackboardTimer();
+            new Message('Timeout was reset successfully', 'default', 2000).show();
         });
     }
     /**

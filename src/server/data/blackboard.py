@@ -23,7 +23,7 @@ class Blackboard:
     _MAX_CONTENT_LENGTH = 1048576
 
     # 5 minutes til timeout
-    _TIMEOUT = 60 * 5
+    _TIMEOUT = 60 * 5 + 10
 
     def __init__(self, name: str, content: Union[None, str] = None, timestamp_create: float = 0,
                  timestamp_edit: float = 0, blackboard_id: Union[None, str] = None):
@@ -126,6 +126,9 @@ class Blackboard:
 
     def get_timeout_in_sec(self) -> int:
         return int(self._timeout - time.time())
+
+    def reset_timeout(self) -> None:
+        self._timeout = time.time() + Blackboard._TIMEOUT
 
     def acquire_edit_mode(self, edit_by: str) -> bool:
         if self._lock.acquire(blocking=True, timeout=1):

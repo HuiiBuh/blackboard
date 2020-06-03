@@ -23,7 +23,6 @@ async def get_all_blackboards():
     :return:
     """
     blackboards: List[Blackboard] = Blackboard.get_all()
-    Logger.info("Test")
     return {
         "blackboard_list": [b.get_overview() for b in blackboards]
     }
@@ -110,11 +109,12 @@ async def get_blackboard_status(blackboard_id: str):
 
 @router.get("/blackboards/{blackboard_id}/acquire", status_code=status.HTTP_202_ACCEPTED,
             response_model=TokenModel)
-async def acquire_blackboard(blackboard_id: str):
+async def acquire_blackboard(blackboard_id: str, token: str = None):
     """
     Requests a lock for the given blackboard. The blackboard will be acquired if the it hasn't already been acquired by
     someone else. The user is only able to edit the board (change to edit page), if the blackboard could be acquired.
     :param blackboard_id: ID of blackboard.
+    :param token: Optional the editing token to reset the timeout
     :return:
     """
 
@@ -123,16 +123,23 @@ async def acquire_blackboard(blackboard_id: str):
 
     blackboard: Blackboard = Blackboard.get(blackboard_id)
 
+    # Reset the timout if a token is submitted
+    if token and blackboard.get_edited_by() == token:
+        blackboard.reset_timeout()
+        return {
+            "token": token,
+            "timeout": blackboard.get_timeout_in_sec()
+        }
+
     # Generate user_token
     token = uuid1().hex
     # Try to acquire blackboard
     if not blackboard.acquire_edit_mode(token):
         raise HTTPException(status.HTTP_423_LOCKED, "Could not acquire edit mode. Already in use!")
 
-    # Add a margin of error of 10 seconds
     return {
         "token": token,
-        "timeout": blackboard.get_timeout_in_sec() - 10
+        "timeout": blackboard.get_timeout_in_sec()
     }
 
 

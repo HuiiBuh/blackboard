@@ -34,7 +34,8 @@ class BlackboardHandler {
         const response: any = await this.apiClient.get<object>(`/blackboards/${this.blackboardID}/acquire`);
         this.token = response.token;
 
-        return response.timeout;
+        // Add some margin
+        return response.timeout - 10;
     }
 
     /**
@@ -64,6 +65,16 @@ class BlackboardHandler {
 
         await this.apiClient.put(`/blackboards/${this.blackboardID}/update`, null, body);
         await this.releaseBlackboard();
+    }
+
+
+    /**
+     * Reset the blackboard timeout
+     */
+    public async resetBlackboardTimer(): Promise<number> {
+        const urlParams: URLSearchParams = new URLSearchParams([['token', this.token]]);
+        const response: any = await this.apiClient.get<object>(`/blackboards/${this.blackboardID}/acquire`, urlParams);
+        return response.timeout - 10;
     }
 
     /**
