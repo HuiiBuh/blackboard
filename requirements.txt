@@ -6,5 +6,4 @@ aiofiles==0.5.0
 
 html-testRunner==1.2.1
 
-#TODO remove
-requests
+requests==2.23.0
