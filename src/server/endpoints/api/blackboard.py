@@ -78,8 +78,7 @@ async def delete_blackboard(blackboard_id: str):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 
     blackboard: Blackboard = Blackboard.get(blackboard_id)
-    if not blackboard.acquire_edit_mode("master_token"):
-        # TODO return timeout time
+    if blackboard.get_edited_by() is not None:
         raise HTTPException(status.HTTP_423_LOCKED, "Could not delete blackboard. Currently in use!")
 
     Blackboard.delete(blackboard_id)
