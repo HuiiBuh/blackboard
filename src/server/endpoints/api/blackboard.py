@@ -15,12 +15,11 @@ Logger = getLogger("uvicorn")
 async def get_all_blackboards():
     """
     Return a list containing all blackboards with the following information:
-    - name
-    - timestamp_create
-    - timestamp_edit
-    - is_empty
-    - is_edit
-    :return:
+    - `name`: Name of blackboard
+    - `timestamp_create`: Timestamp of creation
+    - `timestamp_edit`: Timestamp of the last change
+    - `is_empty`: True if content is null else False
+    - `is_edit`: True if someone edits the blackboard else False
     """
     blackboards: List[Blackboard] = Blackboard.get_all()
     return {
@@ -32,8 +31,9 @@ async def get_all_blackboards():
 async def create_blackboard(body_data: CreateBlackboardModel):
     """
     Create blackboard with the given name. Names that already exit are invalid.
-    :param body_data: contains the name
-    :return:
+
+    Body parameter:
+     - `name`: Name of blackboard.
     """
     try:
         Blackboard(body_data.name)
@@ -55,7 +55,6 @@ async def get_blackboard(blackboard_id: str):
      - `content`: Content of blackboard
      - `timestamp_edit`: Timestamp of the last change
      - `timestamp_create`: Timestamp of creation
-    :return:
     """
     if not Blackboard.exists(blackboard_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
@@ -89,13 +88,15 @@ async def delete_blackboard(blackboard_id: str):
 @router.get("/blackboards/{blackboard_id}/status", response_model=BlackboardStatusModel)
 async def get_blackboard_status(blackboard_id: str):
     """
+    Get the status of the blackboard containing several information.
+
+    Query param
+     - `blackboard_id`: ID of blackboard.
+
     Return status of blackboard containing
      - `is_empty`: Has content or not
      - `is_edit`: A user edits the blackboard right now or not
      - `timestamp_edit`: Timestamp of the last change
-
-    Query param
-     - `blackboard_id`: ID of blackboard.
     """
     if not Blackboard.exists(blackboard_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
@@ -113,23 +114,20 @@ async def acquire_blackboard(blackboard_id: str, token: str = None):
     """
     Requests a lock for the given blackboard. The blackboard will be acquired if the it hasn't already been acquired by
     someone else. The user is only able to edit the board (change to edit page), if the blackboard could be acquired.
-    :param blackboard_id: ID of blackboard.
-    :param token: Optional the editing token to reset the timeout
-    :return:
+
+    Query parameter:
+    - `blackboard_id`: ID of blackboard.
+    - `token`: Optional the editing token to reset the timeout
+
+    Return status of lock containing
+    - `token`: Edit token, which is required for all further operations
+    - `timeout`: Time in seconds until the blackboard times out and is released again
     """
 
     if not Blackboard.exists(blackboard_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
 
     blackboard: Blackboard = Blackboard.get(blackboard_id)
-
-    # Reset the timout if a token is submitted
-    if token and blackboard.get_edited_by() == token:
-        blackboard.reset_timeout()
-        return {
-            "token": token,
-            "timeout": blackboard.get_timeout_in_sec()
-        }
 
     # Generate user_token
     token = token or uuid1().hex
@@ -150,9 +148,15 @@ async def update_blackboard(blackboard_id: str, body_data: UpdateBlackboardModal
     acquire_update() first. Additionally he must have the user_token transmitted, which was used for acquiring the
     blackboard.
     After the update, the lock of the blackboard will automatically be released.
-    :param blackboard_id: ID of blackboard.
-    :param body_data:
-    :return:
+
+    Query parameter:
+    - `blackboard_id`: ID of blackboard.
+
+    Body parameter:
+    - `token`: Edit token which is required to edit the blackboard
+    - `name`: (new or old) Name of blackboard.
+    - `content`:  (new or old) Content of blackboard.
+
     """
     if not Blackboard.exists(blackboard_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
@@ -182,9 +186,12 @@ async def update_blackboard(blackboard_id: str, body_data: UpdateBlackboardModal
 async def release_blackboard(blackboard_id: str, body_data: TokenModel):
     """
     Releases the lock for the given blackboard.
-    :param blackboard_id: ID of blackboard.
-    :param body_data: Contains token necessary for releasing blackboard.
-    :return:
+
+    Query parameter:
+    - `blackboard_id`: ID of blackboard.
+
+    Body parameter:
+    - `token`: Edit token which is required to release edit mode of the blackboard.
     """
     if not Blackboard.exists(blackboard_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Could not find blackboard!")
