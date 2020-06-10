@@ -115,6 +115,13 @@ class OneBlackboard extends Component {
         document.querySelector<HTMLTextAreaElement>('textarea').innerHTML = response.content;
     }
 
+    public async discardChanges(): Promise<void> {
+        await this.blackboardHandler.releaseBlackboard();
+        this._timer.unsubscribe(this._bindSaveChanges);
+        this._timer.remove();
+        document.querySelector('#editing-wrapper').classList.remove('editing');
+    }
+
     /**
      * Save the changes made to the blackboard
      */

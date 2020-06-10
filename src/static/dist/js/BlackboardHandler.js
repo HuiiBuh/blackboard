@@ -44,8 +44,10 @@ class BlackboardHandler {
      */
     releaseBlackboard(event = null) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (event && this.token)
+            if (event && this.token) {
                 event.preventDefault();
+                yield new OneBlackboard().discardChanges();
+            }
             if (!this.token)
                 return;
             yield this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, { token: this.token });

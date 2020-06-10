@@ -43,7 +43,10 @@ class BlackboardHandler {
      * @param event Optional if you try to leave the page without saving
      */
     public async releaseBlackboard(event: BeforeUnloadEvent | null = null): Promise<void> {
-        if (event && this.token) event.preventDefault();
+        if (event && this.token) {
+            event.preventDefault();
+            await new OneBlackboard().discardChanges();
+        }
 
         if (!this.token) return;
 

@@ -88,6 +88,14 @@ class OneBlackboard extends Component {
             document.querySelector('textarea').innerHTML = response.content;
         });
     }
+    discardChanges() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.blackboardHandler.releaseBlackboard();
+            this._timer.unsubscribe(this._bindSaveChanges);
+            this._timer.remove();
+            document.querySelector('#editing-wrapper').classList.remove('editing');
+        });
+    }
     /**
      * Save the changes made to the blackboard
      */
