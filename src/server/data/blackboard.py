@@ -297,7 +297,13 @@ class Blackboard:
             del Blackboard._BLACKBOARDS[blackboard_id]
 
     @staticmethod
-    def load(filename: str, path: str = PATH):
+    def load(filename: str, path: str = PATH) -> None:
+        """
+        Load specific JSON-File to retrieve saved blackboard.
+        :param filename: Name of the JSON-File
+        :param path: Path of the JSON-File
+        :return: None
+        """
         file = open(join(path, filename), "r")
         json_str: str = file.read()
         data: dict = json.loads(json_str)
@@ -305,12 +311,22 @@ class Blackboard:
         Blackboard(data["name"], data["content"], data["timestamp_create"], data["timestamp_edit"], data["id"])
 
     @staticmethod
-    def save_all(path: str = PATH):
+    def save_all(path: str = PATH) -> None:
+        """
+        Save all blackboards in JSON-Files.
+        :param path: Path for the JSON-Files
+        :return: None
+        """
         for blackboard in Blackboard._BLACKBOARDS:
             blackboard.save(path)
 
     @staticmethod
-    def load_all(path: str = PATH):
+    def load_all(path: str = PATH) -> None:
+        """
+        Load all existing JSON-Files to retrieve all saved blackboard.
+        :param path: Path of the JSON-Files
+        :return: None
+        """
         # reset internal storage
         Blackboard._BLACKBOARDS = {}
         files = [f for f in listdir(path) if isfile(join(path, f))]
@@ -320,14 +336,29 @@ class Blackboard:
 
     @staticmethod
     def exists(blackboard_id: str) -> bool:
+        """
+        Check if blackboard with the given ID exists.
+        :param blackboard_id: ID of the blackboard
+        :return: bool
+        """
         return blackboard_id in Blackboard._BLACKBOARDS.keys()
 
     @staticmethod
     def get(blackboard_id: str) -> 'Blackboard':
+        """
+        Return blackboard object for the given ID.
+        :param blackboard_id: ID of the blackboard
+        :return: Blackboard object
+        """
         return Blackboard._BLACKBOARDS[blackboard_id]
 
     @staticmethod
     def get_by_name(name: str) -> Union['Blackboard', None]:
+        """
+        Return blackboard object for the given name.
+        :param name: Name of the blackboard
+        :return: Blackboard object or None
+        """
         for blackboard in Blackboard._BLACKBOARDS.values():
             if blackboard.get_name() == name:
                 return blackboard
@@ -335,10 +366,19 @@ class Blackboard:
 
     @staticmethod
     def get_all() -> List['Blackboard']:
+        """
+        Return a list of all blackboard objects.
+        :return: List of Blackboard objects
+        """
         return list(Blackboard._BLACKBOARDS.values())
 
     @staticmethod
-    def search(q: str):
+    def search(q: str) -> List['Blackboard']:
+        """
+        Return blackboards where q is part of their names.
+        :param q: String to search for in the blackboard names
+        :return: List of Blackboard objects
+        """
         blackboard_list: List[Blackboard] = []
 
         for blackboard in Blackboard._BLACKBOARDS.values():
