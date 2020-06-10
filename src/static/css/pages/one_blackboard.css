@@ -17,7 +17,7 @@
     resize: none;
     width: 100%;
     /* Nav bar, nav padding, input height, input margin, bottom margin */
-    height: calc(100vh - 55px  - 15px - 40px - 1.5rem - 2rem);
+    height: calc(100vh - 55px - 15px - 40px - 1.5rem - 2rem);
 
     border: none;
     outline: none;
@@ -41,27 +41,28 @@
 
 .editing input.title,
 .editing .blackboard-wrapper > .textarea,
-.editing .blackboard-wrapper > .save {
+.editing .blackboard-wrapper > .save,
+.editing .blackboard-wrapper > .close {
     display: block !important;
 }
 
 input.title,
 .editing h1.title,
 .editing .edit,
-.save,
+.save, .close,
 .editing .blackboard-wrapper > .blackboard-preview {
     display: none !important;
 }
 
 
-.edit, .save {
+.edit, .save, .close {
     background: white;
     z-index: 1;
     padding: 5px;
     position: absolute;
 }
 
-.edit {
+.edit, .close {
     top: 0;
     right: 0;
 }

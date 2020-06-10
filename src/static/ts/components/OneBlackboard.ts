@@ -7,6 +7,7 @@ class OneBlackboard extends Component {
     
         <div class="blackboard-wrapper">
             <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'_startEditing'}">edit</i>
+            <i class="material-icons close pointer" listener="{'type':'click', 'handler':'discardChanges'}">close</i>
         
             <div class="blackboard-preview">
                 <div class="spinner"></div>

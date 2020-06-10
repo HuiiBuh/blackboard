@@ -43,12 +43,13 @@ class BlackboardHandler {
      * @param event Optional if you try to leave the page without saving
      */
     public async releaseBlackboard(event: BeforeUnloadEvent | null = null): Promise<void> {
+        if (!this.token) return;
+
         if (event && this.token) {
             event.preventDefault();
             await new OneBlackboard().discardChanges();
         }
 
-        if (!this.token) return;
 
         await this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, {token: this.token});
         this.token = null;
@@ -60,6 +61,8 @@ class BlackboardHandler {
      * @param name The current (updated?) name of the blackboard
      */
     public async updateBlackboard(content: string, name: string): Promise<void> {
+        if (!this.token) return;
+
         const body = {
             token: this.token,
             name: name,

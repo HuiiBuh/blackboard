@@ -44,12 +44,12 @@ class BlackboardHandler {
      */
     releaseBlackboard(event = null) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.token)
+                return;
             if (event && this.token) {
                 event.preventDefault();
                 yield new OneBlackboard().discardChanges();
             }
-            if (!this.token)
-                return;
             yield this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, { token: this.token });
             this.token = null;
         });
@@ -61,6 +61,8 @@ class BlackboardHandler {
      */
     updateBlackboard(content, name) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.token)
+                return;
             const body = {
                 token: this.token,
                 name: name,
