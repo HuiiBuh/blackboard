@@ -18,7 +18,7 @@ class Blackboard:
     # RegEx for finding any character which is not(^) a-z or A-Z or 0-9 or '-' or '_' or space
     _NAME_PATTERN = re.compile("[^ a-zA-Z0-9_-]")
     _MIN_NAME_LENGTH = 3
-    _MAX_NAME_LENGTH = 32
+    _MAX_NAME_LENGTH = 64
 
     _MIN_CONTENT_LENGTH = 1
     _MAX_CONTENT_LENGTH = 1048576
