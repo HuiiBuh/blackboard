@@ -1,5 +1,10 @@
 fastapi==0.55.1
 uvicorn==0.11.5
+
+# Only for development to server the static files with FastAPI
 aiofiles==0.5.0
-jinja2==2.11.2
+
 html-testRunner==1.2.1
+
+#TODO remove
+requests

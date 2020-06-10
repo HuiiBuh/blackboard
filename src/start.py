@@ -29,4 +29,4 @@ if __name__ == "__main__":
         uvicorn.run("server:app", host="0.0.0.0", port=80, log_config=LOGGING_CONFIG)
     else:
         # Import string, but with : instead of '.'
-        uvicorn.run("server:app", host="0.0.0.0", reload=True, log_config=LOGGING_CONFIG)
+        uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True, log_config=LOGGING_CONFIG)
