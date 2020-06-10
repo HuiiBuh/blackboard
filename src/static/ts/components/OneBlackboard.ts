@@ -10,11 +10,11 @@ class OneBlackboard extends Component {
         
             <div class="blackboard-preview">
                 <div class="spinner"></div>
-                <div>{{ markdown }}</div>
+                <div class="markdown-body">{{ markdown }}</div>
             </div>
         
             <div class="textarea">
-                <textarea placeholder="Markdown supported">{{ content }}</textarea>
+                <textarea placeholder="Markdown supported"></textarea>
             </div>
         
             <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>
@@ -112,7 +112,7 @@ class OneBlackboard extends Component {
         this.apiResponse = response;
 
         document.querySelector<HTMLInputElement>('.custom-input.text-center.title').value = response.name;
-        document.querySelector<HTMLTextAreaElement>('textarea').innerText = response.content;
+        document.querySelector<HTMLTextAreaElement>('textarea').innerHTML = response.content;
     }
 
     /**

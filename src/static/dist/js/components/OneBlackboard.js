@@ -85,7 +85,7 @@ class OneBlackboard extends Component {
             const response = yield this.apiClient.get(`/blackboards/${this.apiResponse.id}`);
             this.apiResponse = response;
             document.querySelector('.custom-input.text-center.title').value = response.name;
-            document.querySelector('textarea').innerText = response.content;
+            document.querySelector('textarea').innerHTML = response.content;
         });
     }
     /**
@@ -146,11 +146,11 @@ OneBlackboard.HTML = `
         
             <div class="blackboard-preview">
                 <div class="spinner"></div>
-                <div>{{ markdown }}</div>
+                <div class="markdown-body">{{ markdown }}</div>
             </div>
         
             <div class="textarea">
-                <textarea placeholder="Markdown supported">{{ content }}</textarea>
+                <textarea placeholder="Markdown supported"></textarea>
             </div>
         
             <i class="material-icons save pointer" listener="{'type':'click', 'handler':'saveChanges'}">save</i>

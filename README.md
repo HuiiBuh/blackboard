@@ -26,3 +26,4 @@ The **index.html** is at `localhost:8000/*` except at `/static` and `/api`
 ## Credits
 
 - Favicon from [Freeicons](https://freeicons.io/essential-web-4/blackboard-data-summary-annual-report-icon-40372)
+- The github markdown css which makes the markdown preview look nicer by [sindresorhus](https://github.com/sindresorhus/github-markdown-css)

@@ -85,10 +85,8 @@ class Router {
                 if (routeRegex.test(currentURL)) {
                     // Set the title if defined else title = undefined
                     document.title = route.title;
-                    // Show the loading animation during the page loading
-                    document.body.classList.add('loading');
+                    // Call the attached method
                     yield route.view.call(this);
-                    document.body.classList.remove('loading');
                     break;
                 }
             }
