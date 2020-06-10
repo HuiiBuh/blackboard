@@ -10,6 +10,7 @@ from uuid import uuid1
 
 
 class Blackboard:
+    # Dictionary containing all Blackboard objects.
     _BLACKBOARDS = {}
 
     PATH = join(join(".", "server"), "db")
