@@ -20,18 +20,18 @@ class Router {
         /**
          * The config for the mutation observer
          */
-        this._config = {
+        this.config = {
             attributes: true,
             childList: true,
             characterData: true,
             subtree: true
         };
-        this._urlChangeEmitter = new URLChangeEmitter();
+        this.urlChangeEmitter = new URLChangeEmitter();
         this._routeList = [];
         // Add router links to the element if the DOM changes
-        this._observer = new MutationObserver(this._addRouterLinks.bind(this));
+        this.observer = new MutationObserver(this._addRouterLinks.bind(this));
         this._preRouteFunction = preRouteFunction;
-        this._urlChangeEmitter.subscribe(this._urlChange.bind(this));
+        this.urlChangeEmitter.subscribe(this.urlChange.bind(this));
     }
     /**
      * Start the observation of the rout change
@@ -39,22 +39,22 @@ class Router {
     startObservation() {
         return __awaiter(this, void 0, void 0, function* () {
             // Look for new router links
-            this._observer.observe(document.body, this._config);
+            this.observer.observe(document.body, this.config);
             // Add the router links the first time
             this._addRouterLinks();
             // Start emitting url events
-            this._urlChangeEmitter.active = true;
+            this.urlChangeEmitter.active = true;
             // Call the first url change manually
-            this._urlChangeEmitter.currentURL = location.pathname;
-            yield this._urlChange(location.pathname);
+            this.urlChangeEmitter.currentURL = location.pathname;
+            yield this.urlChange(location.pathname);
         });
     }
     /**
      * End the observation of the route
      */
     endObservation() {
-        this._observer.disconnect();
-        this._urlChangeEmitter.active = false;
+        this.observer.disconnect();
+        this.urlChangeEmitter.active = false;
     }
     /**
      * React to the body changes and add the router links
@@ -63,10 +63,10 @@ class Router {
         // @ts-ignore
         const linkElements = [...document.querySelectorAll('[routerLink]')];
         for (let link of linkElements) {
-            link.addEventListener('click', this._handleRedirect(link).bind(this));
+            link.addEventListener('click', this.handleRedirect(link).bind(this));
             link.addEventListener('keypress', (event) => {
                 if (event.key === 'Enter') {
-                    this._handleRedirect(event.currentTarget);
+                    this.handleRedirect(event.currentTarget);
                 }
             });
         }
@@ -75,7 +75,7 @@ class Router {
      * Handle the url changes and call the function which is associated with the url
      * @param currentURL The current url without any parameters
      */
-    _urlChange(currentURL) {
+    urlChange(currentURL) {
         return __awaiter(this, void 0, void 0, function* () {
             // Execute the pre route function
             this._preRouteFunction();
@@ -96,11 +96,11 @@ class Router {
      * Handle the redirect to another page
      * @param linkElement The element which links the new page
      */
-    _handleRedirect(linkElement) {
+    handleRedirect(linkElement) {
         return () => {
             const route = linkElement.getAttribute('routerLink');
             // Ignore redirects which point to the same route
-            if (encodeURI(route) === this._urlChangeEmitter.currentURL)
+            if (encodeURI(route) === this.urlChangeEmitter.currentURL)
                 return;
             history.pushState({}, '', route);
         };

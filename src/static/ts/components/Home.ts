@@ -1,5 +1,5 @@
 class Home extends Component {
-    static HTML = `
+    private static HTML = `
     <h1 class="text-center">Select Blackboard</h1>
     
     <div class="align-right">
@@ -45,13 +45,13 @@ class Home extends Component {
     </a>
     `;
 
-    static FORM = `
+    private static FORM = `
     <div style="min-width: 100%;">
         <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="31"> 
     </div>
     `;
 
-    static INSTANCE: Home;
+    private static INSTANCE: Home;
     private apiClient: APIClient = new APIClient('/api');
     private modal: Modal;
     private root: HTMLElement;
@@ -72,24 +72,24 @@ class Home extends Component {
     /**
      * Show the component
      */
-    async show() {
-        await this._prepareComponent();
-        this.root.appendChild(this._element as Node);
+    public async show() {
+        await this.prepareComponent();
+        this.root.appendChild(this.element as Node);
     }
 
     /**
      * Create the component
      */
-    async _prepareComponent() {
+    private async prepareComponent() {
         // Get data from the api
         let apiResponse = await this.apiClient.get('/blackboards');
         apiResponse = formatApiData(apiResponse);
 
         // Parse the api data
-        const elementString = this._parser.parseDocument(Home.HTML, apiResponse);
+        const elementString = this.parser.parseDocument(Home.HTML, apiResponse);
 
         // Add the created element to the class
-        this._element = this.createElement(elementString);
+        this.element = this.createElement(elementString);
         this.addListener();
     }
 
@@ -97,15 +97,15 @@ class Home extends Component {
     /**
      * Remove the component
      */
-    remove() {
-        this._element.remove();
+    public remove() {
+        this.element.remove();
         this.modal.remove();
     }
 
     /**
      * Refresh the home page
      */
-    async refresh() {
+    public async refresh() {
         this.remove();
         await this.show();
         new Message('Reload finished').show();
@@ -114,14 +114,14 @@ class Home extends Component {
     /**
      * Open the modal
      */
-    openModal() {
+    private openModal() {
         this.modal.show();
     }
 
     /**
      * Create a new blackboard
      */
-    async createNewBlackboard(): Promise<void> {
+    private async createNewBlackboard(): Promise<void> {
         const value = document.querySelector<HTMLInputElement>('#blackboard-name').value;
 
         if (!value) {
@@ -145,7 +145,7 @@ class Home extends Component {
      * @param blackboardID The id of the blackboard
      * @param blackboardName The blackboard name
      */
-    async deleteBlackboard(_: KeyboardEvent, blackboardID: string, blackboardName: string): Promise<void> {
+    private async deleteBlackboard(_: KeyboardEvent, blackboardID: string, blackboardName: string): Promise<void> {
         await this.apiClient.delete(`/blackboards/${blackboardID}`);
 
         new Message(`Deleted blackboard ${blackboardName}`, 'success').show();

@@ -7,7 +7,7 @@ class Parser {
      * @param querySelector The point the parsed string should be inserted (first element found)
      * @return The created html element
      */
-    insertAt(string: string, variables: object, querySelector: string): HTMLElement {
+    public insertAt(string: string, variables: object, querySelector: string): HTMLElement {
         const root: HTMLElement = document.querySelector(querySelector);
         root.innerHTML = this.parseDocument(string, variables);
         return <HTMLElement>root.firstElementChild;
@@ -19,9 +19,9 @@ class Parser {
      * @param variables The variables in the json which can be parsed
      * @return The parsed string
      */
-    parseDocument(string: string, variables): string {
-        string = this._replaceForLoop(string, variables);
-        return this._replaceVariables(string, variables);
+    public parseDocument(string: string, variables): string {
+        string = Parser.replaceForLoop(string, variables);
+        return Parser.replaceVariables(string, variables);
     }
 
     /**
@@ -29,7 +29,7 @@ class Parser {
      * @param string The input string
      * @param variables The variables in the json which can be parsed
      */
-    _replaceForLoop(string: string, variables: object): string {
+    private static replaceForLoop(string: string, variables: object): string {
 
         // Declare the for loop start and end regex
         const start = new RegExp('{% +for [a-zA-Z_]+ +in +[a-zA-Z._]+ +%}');
@@ -49,10 +49,10 @@ class Parser {
             let loopString = string.substring(startIndex.index, endIndex.index);
 
             // Extract the variables from the for loop
-            const [loopName, variable, relevantString] = this._extractVariables(loopString);
+            const [loopName, variable, relevantString] = Parser.extractVariables(loopString);
 
             // Get the value of the variable out of the for loop
-            const variableValue = this._getVariableValue(variable, variables) as any;
+            const variableValue = Parser.getVariableValue(variable, variables) as any;
 
             // Construct the updated variables json
             const vJSON = {...variables,};
@@ -61,7 +61,7 @@ class Parser {
             for (let v of variableValue) {
                 // Update the for loop variable in the json
                 vJSON['' + loopName] = v;
-                updatedLoopString += this._replaceVariables(relevantString, vJSON);
+                updatedLoopString += Parser.replaceVariables(relevantString, vJSON);
             }
 
             const s = string.substring(0, startIndex.index);
@@ -76,7 +76,7 @@ class Parser {
      * Extract the variables out of the for loop declaration
      * @param string
      */
-    _extractVariables(string: string): any[] {
+    private static extractVariables(string: string): any[] {
         const startIndex = /{%/.exec(string).index + 2;
         const endIndex = /%}/.exec(string).index;
 
@@ -97,7 +97,7 @@ class Parser {
      * @param variables A json with the variable name as key of the json
      * @returns The parsed string
      */
-    _replaceVariables(string: string, variables: object): string {
+    private static replaceVariables(string: string, variables: object): string {
 
         // Regex for the start end end variable expression
         const start = new RegExp('{{', 'gi');
@@ -122,7 +122,7 @@ class Parser {
                 end: endIndex + 2,
             };
 
-            string = this._replace(replaceJSON, variables, string);
+            string = Parser.replace(replaceJSON, variables, string);
         }
 
         return string;
@@ -135,8 +135,8 @@ class Parser {
      * @param string The string which should be parsed
      * @returns The parsed string
      */
-    _replace(replaceJSON: { string: string[], start: number, end: number }, variables: object, string: string): string {
-        const value = this._getVariableValue(replaceJSON.string, variables);
+    private static replace(replaceJSON: { string: string[], start: number, end: number }, variables: object, string: string): string {
+        const value = Parser.getVariableValue(replaceJSON.string, variables);
 
         const s = string.substring(0, replaceJSON.start);
         const e = string.slice(replaceJSON.end);
@@ -151,7 +151,7 @@ class Parser {
      * @param variables The variable
      * @returns the variable value
      */
-    _getVariableValue(stringList: string[], variables: object): object {
+    private static getVariableValue(stringList: string[], variables: object): object {
         let returnValue = variables;
         for (let stringIndex of stringList) {
             try {

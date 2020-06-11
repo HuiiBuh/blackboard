@@ -26,22 +26,22 @@ class Home extends Component {
      */
     show() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this._prepareComponent();
-            this.root.appendChild(this._element);
+            yield this.prepareComponent();
+            this.root.appendChild(this.element);
         });
     }
     /**
      * Create the component
      */
-    _prepareComponent() {
+    prepareComponent() {
         return __awaiter(this, void 0, void 0, function* () {
             // Get data from the api
             let apiResponse = yield this.apiClient.get('/blackboards');
             apiResponse = formatApiData(apiResponse);
             // Parse the api data
-            const elementString = this._parser.parseDocument(Home.HTML, apiResponse);
+            const elementString = this.parser.parseDocument(Home.HTML, apiResponse);
             // Add the created element to the class
-            this._element = this.createElement(elementString);
+            this.element = this.createElement(elementString);
             this.addListener();
         });
     }
@@ -49,7 +49,7 @@ class Home extends Component {
      * Remove the component
      */
     remove() {
-        this._element.remove();
+        this.element.remove();
         this.modal.remove();
     }
     /**

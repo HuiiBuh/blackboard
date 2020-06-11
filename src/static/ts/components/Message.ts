@@ -1,6 +1,6 @@
 class Message extends Component {
 
-    static HTML = `
+    private static HTML = `
     <div class="message {{ type }} fade-in">
         <i class="material-icons close">close</i>
         <div class="message-body">
@@ -37,9 +37,9 @@ class Message extends Component {
     /**
      * Show the message
      */
-    show(): void {
-        this._prepareComponent();
-        this.root.appendChild(this._element);
+    public show(): void {
+        this.prepareComponent();
+        this.root.appendChild(this.element);
 
         setTimeout(() => {
             this.remove();
@@ -49,21 +49,21 @@ class Message extends Component {
     /**
      * Create the html element
      */
-    _prepareComponent(): void {
-        const elementString = this._parser.parseDocument(Message.HTML, {'message': this.message, 'type': this.type});
-        this._element = this.createElement(elementString);
-        this._element.querySelector<HTMLElement>('.material-icons.close').onclick = this.remove.bind(this);
+    private prepareComponent(): void {
+        const elementString = this.parser.parseDocument(Message.HTML, {'message': this.message, 'type': this.type});
+        this.element = this.createElement(elementString);
+        this.element.querySelector<HTMLElement>('.material-icons.close').onclick = this.remove.bind(this);
     }
 
     /**
      * Remove the message (is called if the X is clicked)
      */
-    remove(): void {
-        this._element.classList.remove('fade-int');
-        this._element.classList.add('fade-out');
+    public remove(): void {
+        this.element.classList.remove('fade-int');
+        this.element.classList.add('fade-out');
 
         setTimeout(() => {
-            this._element.remove();
+            this.element.remove();
         }, 300);
     }
 

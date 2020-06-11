@@ -16,7 +16,7 @@ class WebApp {
      * @param path The url path with wildcards
      * @returns The regex string
      */
-    _pathToRegex(path: string): string {
+    private static pathToRegex(path: string): string {
 
         // Add the optional trailing slash to the url
         if (path[path.length - 1] !== '/') {
@@ -50,7 +50,7 @@ class WebApp {
                 route.path = '.*';
             }
 
-            route.path = this._pathToRegex(route.path);
+            route.path = WebApp.pathToRegex(route.path);
         }
 
         this._router.routeList = value;
@@ -66,14 +66,14 @@ class WebApp {
     /**
      * Start the lifecycle of the app
      */
-    async init(): Promise<void> {
+    public async init(): Promise<void> {
         await this._router.startObservation();
     }
 
     /**
      * Pause the observation of paths and other events
      */
-    pause(): void {
+    public pause(): void {
         this._router.endObservation();
     }
 }

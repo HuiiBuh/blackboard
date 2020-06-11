@@ -1,16 +1,16 @@
 abstract class Component {
-    protected _parser: Parser;
-    protected _element: HTMLElement;
+    protected parser: Parser;
+    protected element: HTMLElement;
 
     /**
      * Create a new component
      */
     protected constructor() {
-        this._parser = new Parser();
+        this.parser = new Parser();
 
         // Init the element so the remove call does throw an error
         // @ts-ignore
-        this._element = {
+        this.element = {
             remove: () => null
         };
     }
@@ -38,7 +38,7 @@ abstract class Component {
 
         // Get all declared listener
         // @ts-ignore
-        const listenerList = [...this._element.querySelectorAll('[listener]')];
+        const listenerList = [...this.element.querySelectorAll('[listener]')];
         for (let listener of listenerList) {
 
             let attribute = listener.getAttribute('listener').replace(/'/g, '"');

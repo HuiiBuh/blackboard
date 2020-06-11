@@ -1,12 +1,12 @@
 class BlackboardHandler {
 
-    static INSTANCE: BlackboardHandler;
+    private static INSTANCE: BlackboardHandler;
     private apiClient: APIClient = new APIClient('/api');
 
     private token = '';
     private blackboardID: string = '';
 
-    private _shortcutListener: EventListener;
+    private shortcutListener: EventListener;
 
 
     /**
@@ -17,7 +17,7 @@ class BlackboardHandler {
         BlackboardHandler.INSTANCE = this;
 
         this.addSaveShortcut();
-        this._removeLockOnNavigation();
+        this.removeLockOnNavigation();
     }
 
 
@@ -86,7 +86,7 @@ class BlackboardHandler {
     /**
      * Remove the lock on the blackboard if you have it and navigate away
      */
-    private _removeLockOnNavigation(): void {
+    private removeLockOnNavigation(): void {
         document.addEventListener('urlchange', this.releaseBlackboard.bind(this));
         window.addEventListener('beforeunload', this.releaseBlackboard.bind(this));
     }
@@ -96,9 +96,9 @@ class BlackboardHandler {
      * Add a shortcut which saves the page if you press Strg + s
      */
     public addSaveShortcut(): void {
-        if (this._shortcutListener) this._shortcutListener.remove();
+        if (this.shortcutListener) this.shortcutListener.remove();
 
-        this._shortcutListener = new EventListener(document, 'keydown', async (event: KeyboardEvent) => {
+        this.shortcutListener = new EventListener(document, 'keydown', async (event: KeyboardEvent) => {
             if (event.key.toLowerCase() === 's' && event.ctrlKey) {
                 event.preventDefault();
                 event.stopPropagation();

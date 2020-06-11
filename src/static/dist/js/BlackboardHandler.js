@@ -20,7 +20,7 @@ class BlackboardHandler {
             return BlackboardHandler.INSTANCE;
         BlackboardHandler.INSTANCE = this;
         this.addSaveShortcut();
-        this._removeLockOnNavigation();
+        this.removeLockOnNavigation();
     }
     /**
      * Acquire a blackboard and if there is a blackboard locked, release it
@@ -85,7 +85,7 @@ class BlackboardHandler {
     /**
      * Remove the lock on the blackboard if you have it and navigate away
      */
-    _removeLockOnNavigation() {
+    removeLockOnNavigation() {
         document.addEventListener('urlchange', this.releaseBlackboard.bind(this));
         window.addEventListener('beforeunload', this.releaseBlackboard.bind(this));
     }
@@ -93,9 +93,9 @@ class BlackboardHandler {
      * Add a shortcut which saves the page if you press Strg + s
      */
     addSaveShortcut() {
-        if (this._shortcutListener)
-            this._shortcutListener.remove();
-        this._shortcutListener = new EventListener(document, 'keydown', (event) => __awaiter(this, void 0, void 0, function* () {
+        if (this.shortcutListener)
+            this.shortcutListener.remove();
+        this.shortcutListener = new EventListener(document, 'keydown', (event) => __awaiter(this, void 0, void 0, function* () {
             if (event.key.toLowerCase() === 's' && event.ctrlKey) {
                 event.preventDefault();
                 event.stopPropagation();

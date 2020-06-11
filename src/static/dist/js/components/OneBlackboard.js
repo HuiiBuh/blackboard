@@ -21,7 +21,7 @@ class OneBlackboard extends Component {
             return OneBlackboard.INSTANCE;
         OneBlackboard.INSTANCE = this;
         this._bindSaveChanges = this.saveChanges.bind(this);
-        this._timer = new Timer(0, this._resetCountdown.bind(this));
+        this.timer = new Timer(0, this.resetCountdown.bind(this));
     }
     /**
      * Show the blackboard
@@ -31,19 +31,19 @@ class OneBlackboard extends Component {
             this.apiResponse = apiResponse;
             this.blackboardHandler.addSaveShortcut();
             document.title = this.apiResponse.name;
-            yield this._prepareComponent();
-            this.root.appendChild(this._element);
+            yield this.prepareComponent();
+            this.root.appendChild(this.element);
         });
     }
     /**
      * Create the Blackboard
      */
-    _prepareComponent() {
+    prepareComponent() {
         return __awaiter(this, void 0, void 0, function* () {
             // Get the github markdown
-            this.apiResponse.markdown = yield OneBlackboard._getGithubMarkdown(this.apiResponse.content);
-            const elementString = this._parser.parseDocument(OneBlackboard.HTML, this.apiResponse);
-            this._element = this.createElement(elementString);
+            this.apiResponse.markdown = yield OneBlackboard.getGithubMarkdown(this.apiResponse.content);
+            const elementString = this.parser.parseDocument(OneBlackboard.HTML, this.apiResponse);
+            this.element = this.createElement(elementString);
             this.addListener();
         });
     }
@@ -51,36 +51,36 @@ class OneBlackboard extends Component {
      * Remove the blackboard from the page
      */
     remove() {
-        this._timer.unsubscribe(this._bindSaveChanges);
-        this._timer.remove();
-        this._element.remove();
+        this.timer.unsubscribe(this._bindSaveChanges);
+        this.timer.remove();
+        this.element.remove();
     }
     /**
      * Start the editing
      */
-    _startEditing() {
+    startEditing() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this._reloadContent();
-            this._timer.time = yield this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
+            yield this.reloadContent();
+            this.timer.time = yield this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
             // IMPORTANT do not await it
-            this._timer.startCountdown();
-            this._timer.subscribe(this._bindSaveChanges);
+            this.timer.startCountdown();
+            this.timer.subscribe(this._bindSaveChanges);
             document.querySelector('#editing-wrapper').classList.add('editing');
         });
     }
     /**
      * Reset the timeout for the blackboard
      */
-    _resetCountdown() {
+    resetCountdown() {
         return __awaiter(this, void 0, void 0, function* () {
-            this._timer.time = yield this.blackboardHandler.resetBlackboardTimer();
+            this.timer.time = yield this.blackboardHandler.resetBlackboardTimer();
             new Message('Timeout was reset successfully', 'default', 2000).show();
         });
     }
     /**
      * Reload the content to ensure that the newest data is shown
      */
-    _reloadContent() {
+    reloadContent() {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.apiClient.get(`/blackboards/${this.apiResponse.id}`);
             this.apiResponse = response;
@@ -88,11 +88,14 @@ class OneBlackboard extends Component {
             document.querySelector('textarea').innerHTML = response.content;
         });
     }
+    /**
+     * Discard the changes made to the blackboard and lock it again
+     */
     discardChanges() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.blackboardHandler.releaseBlackboard();
-            this._timer.unsubscribe(this._bindSaveChanges);
-            this._timer.remove();
+            this.timer.unsubscribe(this._bindSaveChanges);
+            this.timer.remove();
             document.querySelector('#editing-wrapper').classList.remove('editing');
         });
     }
@@ -101,8 +104,8 @@ class OneBlackboard extends Component {
      */
     saveChanges() {
         return __awaiter(this, void 0, void 0, function* () {
-            this._timer.unsubscribe(this._bindSaveChanges);
-            this._timer.remove();
+            this.timer.unsubscribe(this._bindSaveChanges);
+            this.timer.remove();
             // Get the updated values of the blackboard
             const content = document.querySelector('textarea').value;
             const name = document.querySelector('input.title').value;
@@ -113,7 +116,7 @@ class OneBlackboard extends Component {
             const spinnerElement = document.querySelector('.spinner');
             spinnerElement.style.display = 'inline-block';
             // Update the preview
-            document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = yield OneBlackboard._getGithubMarkdown(content);
+            document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = yield OneBlackboard.getGithubMarkdown(content);
             document.querySelector('h1.title').innerHTML = name;
             document.title = name;
             spinnerElement.style.display = 'none';
@@ -123,7 +126,7 @@ class OneBlackboard extends Component {
      * Get the markdown representation of the string
      * @param value The markdown in html
      */
-    static _getGithubMarkdown(value) {
+    static getGithubMarkdown(value) {
         return __awaiter(this, void 0, void 0, function* () {
             const apiClient = new APIClient('', 'text/plain');
             let response;
@@ -150,7 +153,7 @@ OneBlackboard.HTML = `
         <h1 class="text-center title">{{ name }}</h1>
     
         <div class="blackboard-wrapper">
-            <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'_startEditing'}">edit</i>
+            <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'startEditing'}">edit</i>
             <i class="material-icons close pointer" listener="{'type':'click', 'handler':'discardChanges'}">close</i>
         
             <div class="blackboard-preview">

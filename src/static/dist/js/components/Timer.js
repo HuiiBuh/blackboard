@@ -17,17 +17,17 @@ class Timer extends EventEmitter {
      */
     constructor(time = 0, resetFunction = () => null, selector = '#timer-wrapper') {
         super();
-        this._parser = new Parser();
-        this._element = { remove: () => null };
-        this._selector = selector;
-        this._initialValue = time;
-        this._customResetFunction = resetFunction;
+        this.parser = new Parser();
+        this.element = { remove: () => null };
+        this.selector = selector;
+        this.initialValue = time;
+        this.customResetFunction = resetFunction;
     }
     /**
      * Reset the countdown to the original value
      */
     resetCountdown() {
-        this._time = this._initialValue;
+        this._time = this.initialValue;
     }
     /**
      * Start the countdown
@@ -39,13 +39,13 @@ class Timer extends EventEmitter {
                 randomNumber: id,
                 initialValue: Timer._secondsToHumanReadable(this._time)
             };
-            const elementString = this._parser.parseDocument(Timer.HTML, variables);
-            this._element = this._createElement(elementString);
-            this._addListener();
-            document.querySelector(this._selector).appendChild(this._element);
+            const elementString = this.parser.parseDocument(Timer.HTML, variables);
+            this.element = Timer.createElement(elementString);
+            this.addListener();
+            document.querySelector(this.selector).appendChild(this.element);
             const countdown = document.getElementById(id);
             while (this._time >= 0) {
-                yield Timer._sleep(1000);
+                yield Timer.sleep(1000);
                 countdown.innerText = Timer._secondsToHumanReadable(this._time);
                 --this._time;
             }
@@ -56,10 +56,10 @@ class Timer extends EventEmitter {
      * Add Listener to the element after it was translated to html
      * Because multiple inheritance is not a thing in js I have to copy paste
      */
-    _addListener() {
+    addListener() {
         // Get all declared listener
         // @ts-ignore
-        const listenerList = [...this._element.querySelectorAll('[listener]')];
+        const listenerList = [...this.element.querySelectorAll('[listener]')];
         for (let listener of listenerList) {
             let attribute = listener.getAttribute('listener').replace(/'/g, '"');
             attribute = JSON.parse(attribute);
@@ -76,14 +76,10 @@ class Timer extends EventEmitter {
     /**
      * Create a html element from a string
      * @param string The html string
-     * @param styleObject A list of styles which should be added to the base element
      */
-    _createElement(string, styleObject = {}) {
+    static createElement(string) {
         const temp = document.createElement('div');
         temp.innerHTML = string;
-        for (let style in styleObject) {
-            temp.style[style] = styleObject[style];
-        }
         return temp;
     }
     /**
@@ -95,17 +91,17 @@ class Timer extends EventEmitter {
         let hDuration = '';
         //Get the seconds and fill the missing 0s
         let seconds = (value % 60).toString();
-        seconds = Timer._pad(seconds, 2);
+        seconds = Timer.pad(seconds, 2);
         let minutes = Math.floor((value / 60) % 60).toString();
         let hours = Math.floor((value / (60 * 60)) % 60).toString();
         //Pad leading 0s if the hour is not 0
         if (hours !== '0') {
-            hours = Timer._pad(hours, 2);
+            hours = Timer.pad(hours, 2);
             hDuration += hours + ':';
         }
         //pad 0s if the hour and minute of a song is 0
         if (hours !== '0' || minutes !== '0') {
-            minutes = Timer._pad(minutes, 2);
+            minutes = Timer.pad(minutes, 2);
             hDuration += minutes + ':';
         }
         hDuration += seconds;
@@ -115,7 +111,7 @@ class Timer extends EventEmitter {
      * Sleep for a given amount of time
      * @param ms The ms the function sleeps
      */
-    static _sleep(ms) {
+    static sleep(ms) {
         return new Promise(resolve => setTimeout(() => resolve(null), ms));
     }
     /**
@@ -124,7 +120,7 @@ class Timer extends EventEmitter {
      * @param width The number of pads
      * @param characters What character should pad
      */
-    static _pad(value, width, characters = '0') {
+    static pad(value, width, characters = '0') {
         value += '';
         return value.length >= width ? value : new Array(width - value.length + 1).join(characters) + value;
     }
@@ -139,27 +135,27 @@ class Timer extends EventEmitter {
      * Remove the timer
      */
     remove() {
-        this._element.remove();
+        this.element.remove();
     }
 }
 Timer.HTML = `
         <style>
-        .timer{
-            position: fixed; 
-            bottom: 0; right: 50%; 
-            transform: translateX(50%); 
-            display: flex;
-            justify-content:space-between;
-        }
-        .timer > * { 
-            margin:0 .2rem ;
-        }
+            .timer{
+                position: fixed; 
+                bottom: 0; right: 50%; 
+                transform: translateX(50%); 
+                display: flex;
+                justify-content:space-between;
+            }
+            .timer > * { 
+                margin:0 .2rem ;
+            }
         </style>
 
         <div class="timer">
             <span>Remaining time</span>
             <span id="{{ randomNumber }}">{{ initialValue }}</span>
-            <span class="material-icons pointer" listener="{'type':'click', 'handler':'_customResetFunction'}">restore</span>
+            <span class="material-icons pointer" listener="{'type':'click', 'handler':'customResetFunction'}">restore</span>
         </div>
     `;
 //# sourceMappingURL=Timer.js.map
