@@ -74,7 +74,6 @@ class OneBlackboard extends Component {
     resetCountdown() {
         return __awaiter(this, void 0, void 0, function* () {
             this.timer.time = yield this.blackboardHandler.resetBlackboardTimer();
-            new Message('Timeout was reset successfully', 'default', 2000).show();
         });
     }
     /**
@@ -94,6 +93,7 @@ class OneBlackboard extends Component {
     discardChanges() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.blackboardHandler.releaseBlackboard();
+            new Message('Changes have been discarded', 'default', 2000).show();
             this.timer.unsubscribe(this._bindSaveChanges);
             this.timer.remove();
             document.querySelector('#editing-wrapper').classList.remove('editing');

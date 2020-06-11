@@ -45,11 +45,11 @@ class BlackboardHandler {
     public async releaseBlackboard(event: BeforeUnloadEvent | null = null): Promise<void> {
         if (!this.token) return;
 
-        if (event && this.token) {
+        if (event) {
             event.preventDefault();
             await new OneBlackboard().discardChanges();
+            return;
         }
-
 
         await this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, {token: this.token});
         this.token = null;
@@ -70,6 +70,9 @@ class BlackboardHandler {
         };
 
         await this.apiClient.put(`/blackboards/${this.blackboardID}/update`, null, body);
+
+        new Message('Blackboard saved', 'default', 2000).show();
+
         await this.releaseBlackboard();
     }
 
@@ -78,8 +81,13 @@ class BlackboardHandler {
      * Reset the blackboard timeout
      */
     public async resetBlackboardTimer(): Promise<number> {
+        if (!this.token) return;
+
         const urlParams: URLSearchParams = new URLSearchParams([['token', this.token]]);
         const response: any = await this.apiClient.get<object>(`/blackboards/${this.blackboardID}/acquire`, urlParams);
+
+        new Message('Timeout was reset successfully', 'default', 2000).show();
+
         return response.timeout - 10;
     }
 

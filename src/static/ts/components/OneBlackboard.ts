@@ -102,7 +102,6 @@ class OneBlackboard extends Component {
      */
     private async resetCountdown(): Promise<void> {
         this.timer.time = await this.blackboardHandler.resetBlackboardTimer();
-        new Message('Timeout was reset successfully', 'default', 2000).show();
     }
 
     /**
@@ -121,6 +120,7 @@ class OneBlackboard extends Component {
      */
     public async discardChanges(): Promise<void> {
         await this.blackboardHandler.releaseBlackboard();
+        new Message('Changes have been discarded', 'default', 2000).show();
         this.timer.unsubscribe(this._bindSaveChanges);
         this.timer.remove();
         document.querySelector('#editing-wrapper').classList.remove('editing');

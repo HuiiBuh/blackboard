@@ -73,13 +73,15 @@ class Home extends Component {
      */
     createNewBlackboard() {
         return __awaiter(this, void 0, void 0, function* () {
-            const value = document.querySelector('#blackboard-name').value;
+            const input = document.querySelector('#blackboard-name');
+            const value = input.value;
             if (!value) {
                 new Message('No name provided', 'warn').show();
                 return;
             }
             yield this.apiClient.post('/blackboards', null, { name: value });
             this.modal.close();
+            input.value = '';
             new Message(`Created blackboard ${value}`, 'success').show();
             this.remove();
             yield this.show();
@@ -139,6 +141,14 @@ Home.HTML = `
             </tbody>
         
         </table>
+        
+        {% for placeholder in placeholder_list %}
+            
+            <div>
+                <h3 class="text-center">There is no blackboard in the database</h3>
+            </div>
+            
+        {% endfor %}
     </div>
     
     <a class="fab primary-btn" listener="{'type':'click', 'handler': 'openModal'}">
@@ -147,7 +157,7 @@ Home.HTML = `
     `;
 Home.FORM = `
     <div style="min-width: 100%;">
-        <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="31"> 
+        <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="63"> 
     </div>
     `;
 //# sourceMappingURL=Home.js.map

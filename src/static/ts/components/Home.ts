@@ -38,6 +38,14 @@ class Home extends Component {
             </tbody>
         
         </table>
+        
+        {% for placeholder in placeholder_list %}
+            
+            <div>
+                <h3 class="text-center">There is no blackboard in the database</h3>
+            </div>
+            
+        {% endfor %}
     </div>
     
     <a class="fab primary-btn" listener="{'type':'click', 'handler': 'openModal'}">
@@ -47,7 +55,7 @@ class Home extends Component {
 
     private static FORM = `
     <div style="min-width: 100%;">
-        <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="31"> 
+        <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="63"> 
     </div>
     `;
 
@@ -82,7 +90,7 @@ class Home extends Component {
      */
     private async prepareComponent() {
         // Get data from the api
-        let apiResponse = await this.apiClient.get('/blackboards');
+        let apiResponse: any = await this.apiClient.get('/blackboards');
         apiResponse = formatApiData(apiResponse);
 
         // Parse the api data
@@ -122,7 +130,8 @@ class Home extends Component {
      * Create a new blackboard
      */
     private async createNewBlackboard(): Promise<void> {
-        const value = document.querySelector<HTMLInputElement>('#blackboard-name').value;
+        const input = document.querySelector<HTMLInputElement>('#blackboard-name');
+        const value = input.value;
 
         if (!value) {
             new Message('No name provided', 'warn').show();
@@ -131,6 +140,7 @@ class Home extends Component {
 
         await this.apiClient.post('/blackboards', null, {name: value});
         this.modal.close();
+        input.value = '';
 
         new Message(`Created blackboard ${value}`, 'success').show();
 

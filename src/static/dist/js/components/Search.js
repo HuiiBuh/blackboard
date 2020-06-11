@@ -48,7 +48,7 @@ class Search {
             this.searchOverlay.classList.add('fade-enlarge-in');
             this.searchOverlay.classList.remove('none');
             this.searchOverlay.classList.remove('fade-enlarge-out');
-            const value = document.querySelector('.search-container > input').value;
+            const value = document.querySelector('.search-container input').value;
             yield this.getSearchResults(value);
         });
     }

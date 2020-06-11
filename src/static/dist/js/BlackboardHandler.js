@@ -46,9 +46,10 @@ class BlackboardHandler {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.token)
                 return;
-            if (event && this.token) {
+            if (event) {
                 event.preventDefault();
                 yield new OneBlackboard().discardChanges();
+                return;
             }
             yield this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, { token: this.token });
             this.token = null;
@@ -69,6 +70,7 @@ class BlackboardHandler {
                 content: content
             };
             yield this.apiClient.put(`/blackboards/${this.blackboardID}/update`, null, body);
+            new Message('Blackboard saved', 'default', 2000).show();
             yield this.releaseBlackboard();
         });
     }
@@ -77,8 +79,11 @@ class BlackboardHandler {
      */
     resetBlackboardTimer() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.token)
+                return;
             const urlParams = new URLSearchParams([['token', this.token]]);
             const response = yield this.apiClient.get(`/blackboards/${this.blackboardID}/acquire`, urlParams);
+            new Message('Timeout was reset successfully', 'default', 2000).show();
             return response.timeout - 10;
         });
     }

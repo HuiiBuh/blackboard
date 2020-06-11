@@ -79,7 +79,7 @@ class Search {
         this.searchOverlay.classList.remove('none');
         this.searchOverlay.classList.remove('fade-enlarge-out');
 
-        const value = document.querySelector<HTMLInputElement>('.search-container > input').value;
+        const value = document.querySelector<HTMLInputElement>('.search-container input').value;
         await this.getSearchResults(value);
     }
 
