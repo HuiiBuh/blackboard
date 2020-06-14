@@ -1,12 +1,12 @@
 class BlackboardHandler {
 
-    static INSTANCE: BlackboardHandler;
+    private static INSTANCE: BlackboardHandler;
     private apiClient: APIClient = new APIClient('/api');
 
     private token = '';
     private blackboardID: string = '';
 
-    private _shortcutListener: EventListener;
+    private shortcutListener: EventListener;
 
 
     /**
@@ -17,7 +17,7 @@ class BlackboardHandler {
         BlackboardHandler.INSTANCE = this;
 
         this.addSaveShortcut();
-        this._removeLockOnNavigation();
+        this.removeLockOnNavigation();
     }
 
 
@@ -43,9 +43,13 @@ class BlackboardHandler {
      * @param event Optional if you try to leave the page without saving
      */
     public async releaseBlackboard(event: BeforeUnloadEvent | null = null): Promise<void> {
-        if (event && this.token) event.preventDefault();
-
         if (!this.token) return;
+
+        if (event) {
+            event.preventDefault();
+            await new OneBlackboard().discardChanges();
+            return;
+        }
 
         await this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, {token: this.token});
         this.token = null;
@@ -57,6 +61,8 @@ class BlackboardHandler {
      * @param name The current (updated?) name of the blackboard
      */
     public async updateBlackboard(content: string, name: string): Promise<void> {
+        if (!this.token) return;
+
         const body = {
             token: this.token,
             name: name,
@@ -64,6 +70,9 @@ class BlackboardHandler {
         };
 
         await this.apiClient.put(`/blackboards/${this.blackboardID}/update`, null, body);
+
+        new Message('Blackboard saved', 'default', 2000).show();
+
         await this.releaseBlackboard();
     }
 
@@ -72,15 +81,20 @@ class BlackboardHandler {
      * Reset the blackboard timeout
      */
     public async resetBlackboardTimer(): Promise<number> {
+        if (!this.token) return;
+
         const urlParams: URLSearchParams = new URLSearchParams([['token', this.token]]);
         const response: any = await this.apiClient.get<object>(`/blackboards/${this.blackboardID}/acquire`, urlParams);
+
+        new Message('Timeout was reset successfully', 'default', 2000).show();
+
         return response.timeout - 10;
     }
 
     /**
      * Remove the lock on the blackboard if you have it and navigate away
      */
-    private _removeLockOnNavigation(): void {
+    private removeLockOnNavigation(): void {
         document.addEventListener('urlchange', this.releaseBlackboard.bind(this));
         window.addEventListener('beforeunload', this.releaseBlackboard.bind(this));
     }
@@ -90,9 +104,9 @@ class BlackboardHandler {
      * Add a shortcut which saves the page if you press Strg + s
      */
     public addSaveShortcut(): void {
-        if (this._shortcutListener) this._shortcutListener.remove();
+        if (this.shortcutListener) this.shortcutListener.remove();
 
-        this._shortcutListener = new EventListener(document, 'keydown', async (event: KeyboardEvent) => {
+        this.shortcutListener = new EventListener(document, 'keydown', async (event: KeyboardEvent) => {
             if (event.key.toLowerCase() === 's' && event.ctrlKey) {
                 event.preventDefault();
                 event.stopPropagation();

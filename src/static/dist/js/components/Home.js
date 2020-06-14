@@ -26,22 +26,22 @@ class Home extends Component {
      */
     show() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this._prepareComponent();
-            this.root.appendChild(this._element);
+            yield this.prepareComponent();
+            this.root.appendChild(this.element);
         });
     }
     /**
      * Create the component
      */
-    _prepareComponent() {
+    prepareComponent() {
         return __awaiter(this, void 0, void 0, function* () {
             // Get data from the api
             let apiResponse = yield this.apiClient.get('/blackboards');
             apiResponse = formatApiData(apiResponse);
             // Parse the api data
-            const elementString = this._parser.parseDocument(Home.HTML, apiResponse);
+            const elementString = this.parser.parseDocument(Home.HTML, apiResponse);
             // Add the created element to the class
-            this._element = this.createElement(elementString);
+            this.element = this.createElement(elementString);
             this.addListener();
         });
     }
@@ -49,7 +49,7 @@ class Home extends Component {
      * Remove the component
      */
     remove() {
-        this._element.remove();
+        this.element.remove();
         this.modal.remove();
     }
     /**
@@ -73,13 +73,15 @@ class Home extends Component {
      */
     createNewBlackboard() {
         return __awaiter(this, void 0, void 0, function* () {
-            const value = document.querySelector('#blackboard-name').value;
+            const input = document.querySelector('#blackboard-name');
+            const value = input.value;
             if (!value) {
                 new Message('No name provided', 'warn').show();
                 return;
             }
             yield this.apiClient.post('/blackboards', null, { name: value });
             this.modal.close();
+            input.value = '';
             new Message(`Created blackboard ${value}`, 'success').show();
             this.remove();
             yield this.show();
@@ -139,6 +141,14 @@ Home.HTML = `
             </tbody>
         
         </table>
+        
+        {% for placeholder in placeholder_list %}
+            
+            <div>
+                <h3 class="text-center">There is no blackboard in the database</h3>
+            </div>
+            
+        {% endfor %}
     </div>
     
     <a class="fab primary-btn" listener="{'type':'click', 'handler': 'openModal'}">
@@ -147,7 +157,7 @@ Home.HTML = `
     `;
 Home.FORM = `
     <div style="min-width: 100%;">
-        <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="31"> 
+        <input class="custom-input" placeholder="Blackboard name" id="blackboard-name" minlength="4" maxlength="63"> 
     </div>
     `;
 //# sourceMappingURL=Home.js.map

@@ -1,12 +1,13 @@
 class OneBlackboard extends Component {
 
-    static HTML = `
+    private static HTML = `
     <div id="editing-wrapper">
         <input class="custom-input text-center title" value="{{ name }}">
         <h1 class="text-center title">{{ name }}</h1>
     
         <div class="blackboard-wrapper">
-            <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'_startEditing'}">edit</i>
+            <i class="material-icons edit pointer" listener="{'type':'click', 'handler':'startEditing'}">edit</i>
+            <i class="material-icons close pointer" listener="{'type':'click', 'handler':'discardChanges'}">close</i>
         
             <div class="blackboard-preview">
                 <div class="spinner"></div>
@@ -23,7 +24,7 @@ class OneBlackboard extends Component {
     </div>
     `;
 
-    static INSTANCE: OneBlackboard;
+    private static INSTANCE: OneBlackboard;
 
     private root: HTMLElement = document.querySelector('.container');
 
@@ -31,7 +32,7 @@ class OneBlackboard extends Component {
     private blackboardHandler: BlackboardHandler = new BlackboardHandler();
     private apiClient: APIClient = new APIClient('/api');
 
-    private _timer: Timer;
+    private timer: Timer;
     private readonly _bindSaveChanges: Function;
 
     /**
@@ -44,7 +45,7 @@ class OneBlackboard extends Component {
         OneBlackboard.INSTANCE = this;
 
         this._bindSaveChanges = this.saveChanges.bind(this);
-        this._timer = new Timer(0, this._resetCountdown.bind(this));
+        this.timer = new Timer(0, this.resetCountdown.bind(this));
     }
 
     /**
@@ -56,19 +57,19 @@ class OneBlackboard extends Component {
         this.blackboardHandler.addSaveShortcut();
 
         document.title = this.apiResponse.name;
-        await this._prepareComponent();
-        this.root.appendChild(this._element);
+        await this.prepareComponent();
+        this.root.appendChild(this.element);
     }
 
     /**
      * Create the Blackboard
      */
-    private async _prepareComponent(): Promise<void> {
+    private async prepareComponent(): Promise<void> {
         // Get the github markdown
-        this.apiResponse.markdown = await OneBlackboard._getGithubMarkdown(this.apiResponse.content);
+        this.apiResponse.markdown = await OneBlackboard.getGithubMarkdown(this.apiResponse.content);
 
-        const elementString = this._parser.parseDocument(OneBlackboard.HTML, this.apiResponse);
-        this._element = this.createElement(elementString);
+        const elementString = this.parser.parseDocument(OneBlackboard.HTML, this.apiResponse);
+        this.element = this.createElement(elementString);
 
         this.addListener();
     }
@@ -77,21 +78,21 @@ class OneBlackboard extends Component {
      * Remove the blackboard from the page
      */
     public remove() {
-        this._timer.unsubscribe(this._bindSaveChanges);
-        this._timer.remove();
-        this._element.remove();
+        this.timer.unsubscribe(this._bindSaveChanges);
+        this.timer.remove();
+        this.element.remove();
     }
 
     /**
      * Start the editing
      */
-    private async _startEditing() {
-        await this._reloadContent();
-        this._timer.time = await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
+    private async startEditing() {
+        await this.reloadContent();
+        this.timer.time = await this.blackboardHandler.acquireBlackboard(this.apiResponse.id);
 
         // IMPORTANT do not await it
-        this._timer.startCountdown();
-        this._timer.subscribe(this._bindSaveChanges);
+        this.timer.startCountdown();
+        this.timer.subscribe(this._bindSaveChanges);
 
         document.querySelector('#editing-wrapper').classList.add('editing');
     }
@@ -99,15 +100,14 @@ class OneBlackboard extends Component {
     /**
      * Reset the timeout for the blackboard
      */
-    private async _resetCountdown(): Promise<void> {
-        this._timer.time = await this.blackboardHandler.resetBlackboardTimer();
-        new Message('Timeout was reset successfully', 'default', 2000).show();
+    private async resetCountdown(): Promise<void> {
+        this.timer.time = await this.blackboardHandler.resetBlackboardTimer();
     }
 
     /**
      * Reload the content to ensure that the newest data is shown
      */
-    private async _reloadContent(): Promise<void> {
+    private async reloadContent(): Promise<void> {
         const response = await this.apiClient.get<any>(`/blackboards/${this.apiResponse.id}`);
         this.apiResponse = response;
 
@@ -116,11 +116,22 @@ class OneBlackboard extends Component {
     }
 
     /**
+     * Discard the changes made to the blackboard and lock it again
+     */
+    public async discardChanges(): Promise<void> {
+        await this.blackboardHandler.releaseBlackboard();
+        new Message('Changes have been discarded', 'default', 2000).show();
+        this.timer.unsubscribe(this._bindSaveChanges);
+        this.timer.remove();
+        document.querySelector('#editing-wrapper').classList.remove('editing');
+    }
+
+    /**
      * Save the changes made to the blackboard
      */
     public async saveChanges(): Promise<void> {
-        this._timer.unsubscribe(this._bindSaveChanges);
-        this._timer.remove();
+        this.timer.unsubscribe(this._bindSaveChanges);
+        this.timer.remove();
 
 
         // Get the updated values of the blackboard
@@ -137,7 +148,7 @@ class OneBlackboard extends Component {
         spinnerElement.style.display = 'inline-block';
 
         // Update the preview
-        document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = await OneBlackboard._getGithubMarkdown(content);
+        document.querySelector('.blackboard-preview > div:not(.spinner)').innerHTML = await OneBlackboard.getGithubMarkdown(content);
         document.querySelector('h1.title').innerHTML = name;
         document.title = name;
 
@@ -148,7 +159,7 @@ class OneBlackboard extends Component {
      * Get the markdown representation of the string
      * @param value The markdown in html
      */
-    private static async _getGithubMarkdown(value): Promise<string> {
+    private static async getGithubMarkdown(value): Promise<string> {
         const apiClient = new APIClient('', 'text/plain');
 
         let response: string;

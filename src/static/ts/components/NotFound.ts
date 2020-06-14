@@ -1,6 +1,6 @@
 class NotFound extends Component {
 
-    static HTML = `
+    private static HTML = `
     <div class="text-center not-found-position">
 
         <div>
@@ -13,7 +13,7 @@ class NotFound extends Component {
     </div>
     `;
 
-    static INSTANCE: NotFound;
+    private static INSTANCE: NotFound;
     private root: HTMLElement;
 
     /**
@@ -33,15 +33,15 @@ class NotFound extends Component {
     /**
      * Show the Component
      */
-    show() {
-        this._element = this.createElement(NotFound.HTML);
-        this.root.appendChild(this._element);
+    public show() {
+        this.element = this.createElement(NotFound.HTML);
+        this.root.appendChild(this.element);
     }
 
     /**
      * Remove the Component
      */
-    remove() {
-        this._element.remove();
+    public remove() {
+        this.element.remove();
     }
 }

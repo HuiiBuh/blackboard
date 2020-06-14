@@ -15,14 +15,14 @@ class NotFound extends Component {
      * Show the Component
      */
     show() {
-        this._element = this.createElement(NotFound.HTML);
-        this.root.appendChild(this._element);
+        this.element = this.createElement(NotFound.HTML);
+        this.root.appendChild(this.element);
     }
     /**
      * Remove the Component
      */
     remove() {
-        this._element.remove();
+        this.element.remove();
     }
 }
 NotFound.HTML = `

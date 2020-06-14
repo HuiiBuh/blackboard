@@ -20,7 +20,7 @@ class BlackboardHandler {
             return BlackboardHandler.INSTANCE;
         BlackboardHandler.INSTANCE = this;
         this.addSaveShortcut();
-        this._removeLockOnNavigation();
+        this.removeLockOnNavigation();
     }
     /**
      * Acquire a blackboard and if there is a blackboard locked, release it
@@ -44,10 +44,13 @@ class BlackboardHandler {
      */
     releaseBlackboard(event = null) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (event && this.token)
-                event.preventDefault();
             if (!this.token)
                 return;
+            if (event) {
+                event.preventDefault();
+                yield new OneBlackboard().discardChanges();
+                return;
+            }
             yield this.apiClient.put(`/blackboards/${this.blackboardID}/release`, null, { token: this.token });
             this.token = null;
         });
@@ -59,12 +62,15 @@ class BlackboardHandler {
      */
     updateBlackboard(content, name) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.token)
+                return;
             const body = {
                 token: this.token,
                 name: name,
                 content: content
             };
             yield this.apiClient.put(`/blackboards/${this.blackboardID}/update`, null, body);
+            new Message('Blackboard saved', 'default', 2000).show();
             yield this.releaseBlackboard();
         });
     }
@@ -73,15 +79,18 @@ class BlackboardHandler {
      */
     resetBlackboardTimer() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.token)
+                return;
             const urlParams = new URLSearchParams([['token', this.token]]);
             const response = yield this.apiClient.get(`/blackboards/${this.blackboardID}/acquire`, urlParams);
+            new Message('Timeout was reset successfully', 'default', 2000).show();
             return response.timeout - 10;
         });
     }
     /**
      * Remove the lock on the blackboard if you have it and navigate away
      */
-    _removeLockOnNavigation() {
+    removeLockOnNavigation() {
         document.addEventListener('urlchange', this.releaseBlackboard.bind(this));
         window.addEventListener('beforeunload', this.releaseBlackboard.bind(this));
     }
@@ -89,9 +98,9 @@ class BlackboardHandler {
      * Add a shortcut which saves the page if you press Strg + s
      */
     addSaveShortcut() {
-        if (this._shortcutListener)
-            this._shortcutListener.remove();
-        this._shortcutListener = new EventListener(document, 'keydown', (event) => __awaiter(this, void 0, void 0, function* () {
+        if (this.shortcutListener)
+            this.shortcutListener.remove();
+        this.shortcutListener = new EventListener(document, 'keydown', (event) => __awaiter(this, void 0, void 0, function* () {
             if (event.key.toLowerCase() === 's' && event.ctrlKey) {
                 event.preventDefault();
                 event.stopPropagation();

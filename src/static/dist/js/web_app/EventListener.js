@@ -11,11 +11,11 @@ class EventListener {
      * @param callback The callback function
      */
     constructor(element, type, callback) {
-        this._element = element;
-        this._type = type;
-        this._callback = callback;
+        this.element = element;
+        this.type = type;
+        this.callback = callback;
         // @ts-ignore
-        this._element.addEventListener(this._type, this._callback);
+        this.element.addEventListener(this.type, this.callback);
         this.removeListenerFunction = this.remove.bind(this);
         document.addEventListener('urlchange', this.removeListenerFunction);
     }
@@ -24,7 +24,7 @@ class EventListener {
      */
     remove() {
         // @ts-ignore
-        this._element.removeEventListener(this._type, this._callback);
+        this.element.removeEventListener(this.type, this.callback);
         document.removeEventListener('urlchange', this.removeListenerFunction);
     }
 }

@@ -83,7 +83,7 @@ class APIClient {
             }
             // @ts-ignore
             return yield this.executeRequest(method, url, body).catch(error => {
-                this._handleError(error);
+                APIClient.handleError(error);
             });
         });
     }
@@ -94,17 +94,16 @@ class APIClient {
      * @param body The body json as a json string
      */
     executeRequest(method, url, body) {
-        const self = this;
         return new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
             request.onreadystatechange = function () {
                 if (this.readyState === this.DONE && this.status >= 200 && this.status < 300) {
-                    resolve(self._extractResponse(this));
+                    resolve(APIClient.extractResponse(this));
                 }
                 else if (this.readyState === this.DONE) {
                     reject({
                         status: this.status,
-                        message: self._extractResponse(this),
+                        message: APIClient.extractResponse(this),
                     });
                 }
             };
@@ -117,7 +116,7 @@ class APIClient {
      * Extract the response based on the content type
      * @param request The request object
      */
-    _extractResponse(request) {
+    static extractResponse(request) {
         const contentType = request.getResponseHeader('Content-Type');
         if (contentType && contentType.toLowerCase() === 'application/json') {
             return JSON.parse(request.responseText);
@@ -127,7 +126,7 @@ class APIClient {
     /**
      * Handle possible errors which happened during the request
      */
-    _handleError(error) {
+    static handleError(error) {
         if (error.status === 422) {
             new Message('There was a type error in your response or you did not submit a required input value', 'warn').show();
         }

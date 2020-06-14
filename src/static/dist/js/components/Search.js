@@ -13,29 +13,29 @@ class Search {
      * Create a new search class which handles the search requests
      */
     constructor() {
-        this._searchContainer = document.querySelector('.search-container');
-        this._searchOverlay = document.querySelector('.search-overlay');
-        this._closeButton = this._searchOverlay.querySelector('.top-right');
-        this._navigationBar = document.querySelector('.navigation-bar');
-        this._input = this._navigationBar.querySelector('input');
-        this._searchPreview = document.querySelector('.search-results');
-        this._apiClient = new APIClient('/api');
-        this._parser = new Parser();
+        this.searchContainer = document.querySelector('.search-container');
+        this.searchOverlay = document.querySelector('.search-overlay');
+        this.closeButton = this.searchOverlay.querySelector('.top-right');
+        this.navigationBar = document.querySelector('.navigation-bar');
+        this.input = this.navigationBar.querySelector('input');
+        this.searchPreview = document.querySelector('.search-results');
+        this.apiClient = new APIClient('/api');
+        this.parser = new Parser();
         if (Search.INSTANCE)
             return Search.INSTANCE;
         Search.INSTANCE = this;
-        this._visible = false;
-        this._timeout = 10;
-        this._addListener();
+        this.visible = false;
+        this.timeout = 10;
+        this.addListener();
     }
     /**
      * Add listeners to the elements
      */
-    _addListener() {
-        this._searchContainer.onclick = this.showSearchOverlay.bind(this);
-        this._input.onkeyup = this.search.bind(this);
-        this._closeButton.onclick = this.hideSearchOverlay.bind(this);
-        this._navigationBar.onclick = this.hideSearchOverlay.bind(this);
+    addListener() {
+        this.searchContainer.onclick = this.showSearchOverlay.bind(this);
+        this.input.onkeyup = this.search.bind(this);
+        this.closeButton.onclick = this.hideSearchOverlay.bind(this);
+        this.navigationBar.onclick = this.hideSearchOverlay.bind(this);
         document.addEventListener('urlchange', this.hideSearchOverlay.bind(this));
         document.addEventListener('suppressed_urlchange', this.hideSearchOverlay.bind(this));
     }
@@ -44,11 +44,11 @@ class Search {
      */
     showSearchOverlay() {
         return __awaiter(this, void 0, void 0, function* () {
-            this._visible = true;
-            this._searchOverlay.classList.add('fade-enlarge-in');
-            this._searchOverlay.classList.remove('none');
-            this._searchOverlay.classList.remove('fade-enlarge-out');
-            const value = document.querySelector('.search-container > input').value;
+            this.visible = true;
+            this.searchOverlay.classList.add('fade-enlarge-in');
+            this.searchOverlay.classList.remove('none');
+            this.searchOverlay.classList.remove('fade-enlarge-out');
+            const value = document.querySelector('.search-container input').value;
             yield this.getSearchResults(value);
         });
     }
@@ -57,13 +57,13 @@ class Search {
      * @param event The mouse event which triggered the hiding
      */
     hideSearchOverlay(event) {
-        if (this._input.contains(event.target) || !this._visible)
+        if (this.input.contains(event.target) || !this.visible)
             return;
-        this._visible = false;
-        this._searchOverlay.classList.add('fade-enlarge-out');
-        this._searchOverlay.classList.remove('fade-enlarge-in');
+        this.visible = false;
+        this.searchOverlay.classList.add('fade-enlarge-out');
+        this.searchOverlay.classList.remove('fade-enlarge-in');
         setTimeout(() => {
-            this._searchOverlay.classList.add('none');
+            this.searchOverlay.classList.add('none');
         }, 300);
     }
     /**
@@ -73,14 +73,14 @@ class Search {
     search(event) {
         // @ts-ignore
         const searchValue = event.target.value;
-        if (this._timeout) {
-            clearTimeout(this._timeout);
+        if (this.timeout) {
+            clearTimeout(this.timeout);
         }
         if (!searchValue) {
-            this._searchPreview.innerHTML = '<h2>Nothing found</h2>';
+            this.searchPreview.innerHTML = '<h2>Nothing found</h2>';
             return;
         }
-        this._timeout = setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+        this.timeout = setTimeout(() => __awaiter(this, void 0, void 0, function* () {
             yield this.getSearchResults(searchValue);
         }), 300);
     }
@@ -91,14 +91,14 @@ class Search {
     getSearchResults(search) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!search) {
-                this._searchPreview.innerHTML = '<h2>Nothing found</h2>';
+                this.searchPreview.innerHTML = '<h2>Nothing found</h2>';
                 return;
             }
-            let apiResponse = yield this._apiClient.get(`/search?q=${search}`);
+            let apiResponse = yield this.apiClient.get(`/search?q=${search}`);
             apiResponse = formatApiData(apiResponse);
             // TODO
             if (apiResponse.blackboard_list.length === 0) {
-                this._searchPreview.innerHTML = '<h2>Nothing found</h2>';
+                this.searchPreview.innerHTML = '<h2>Nothing found</h2>';
                 return;
             }
             this.showSearchResults(apiResponse);
@@ -109,7 +109,7 @@ class Search {
      * @param apiResponse The api response
      */
     showSearchResults(apiResponse) {
-        this._parser.insertAt(Search.HTML, apiResponse, '.search-results');
+        this.parser.insertAt(Search.HTML, apiResponse, '.search-results');
     }
 }
 Search.HTML = `

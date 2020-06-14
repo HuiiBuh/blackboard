@@ -1,14 +1,14 @@
 class Modal extends Component {
 
-    static HTML = `
-    <div class="modal-overlay" listener="{'type':'click', 'handler': '_overlayClicked'}">
+    private static HTML = `
+    <div class="modal-overlay" listener="{'type':'click', 'handler': 'overlayClicked'}">
     
         <div class="modal">
         
             <div class="modal-header">
                 <h1>{{ header }}</h1>
             </div>
-            <div class="modal-body" listener="{'type':'keydown', 'handler': '_isEnter'}">{{ body }}</div>
+            <div class="modal-body" listener="{'type':'keydown', 'handler': 'isEnter'}">{{ body }}</div>
             
             <div class="modal-footer">
                 <button class="default-btn" listener="{'type':'click', 'handler': 'close'}">Close</button>
@@ -36,50 +36,50 @@ class Modal extends Component {
         this.body = body;
         this.submit = submitCallback;
 
-        this._prepareComponent();
+        this.prepareComponent();
     }
 
 
     /**
      * Show the modal
      */
-    show() {
-        document.body.appendChild(this._element);
-        this._element.classList.remove('fade-out');
-        this._element.classList.add('fade-in');
+    public show() {
+        document.body.appendChild(this.element);
+        this.element.classList.remove('fade-out');
+        this.element.classList.add('fade-in');
     }
 
     /**
      * Create the html element
      */
-    _prepareComponent() {
-        const elementString = this._parser.parseDocument(Modal.HTML, {header: this.header, body: this.body});
-        this._element = this.createElement(elementString, {position: 'fixed', 'z-index': 500});
+    private prepareComponent() {
+        const elementString = this.parser.parseDocument(Modal.HTML, {header: this.header, body: this.body});
+        this.element = this.createElement(elementString, {position: 'fixed', 'z-index': 500});
         this.addListener();
     }
 
     /**
      * Remove the modal from the page
      */
-    remove() {
-        this._element.classList.add('fade-out');
+    public remove() {
+        this.element.classList.add('fade-out');
         setTimeout(() => {
-            this._element.remove();
+            this.element.remove();
         }, 300);
     }
 
     /**
      * Close the current modal
      */
-    close() {
-        this._element.classList.add('fade-out');
+    public close() {
+        this.element.classList.add('fade-out');
     }
 
     /**
      * Handle overlay click events
      */
-    _overlayClicked(event: KeyboardEvent): void {
-        const modal = this._element.querySelector('.modal');
+    private overlayClicked(event: KeyboardEvent): void {
+        const modal = this.element.querySelector('.modal');
         if (!modal.contains(event.target as Node)) {
             this.close();
         }
@@ -90,7 +90,7 @@ class Modal extends Component {
      * Is the event a KeyboardEvent and if yes submit the modal
      * @param event The keyboard event
      */
-    async _isEnter(event: KeyboardEvent): Promise<void> {
+    private async isEnter(event: KeyboardEvent): Promise<void> {
         if (event.key !== 'Enter') return;
         await this.submit();
     }

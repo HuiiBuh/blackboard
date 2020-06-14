@@ -23,7 +23,7 @@ class WebApp {
      * @param path The url path with wildcards
      * @returns The regex string
      */
-    _pathToRegex(path) {
+    static pathToRegex(path) {
         // Add the optional trailing slash to the url
         if (path[path.length - 1] !== '/') {
             path += '/?';
@@ -51,7 +51,7 @@ class WebApp {
             if (route.path === '**') {
                 route.path = '.*';
             }
-            route.path = this._pathToRegex(route.path);
+            route.path = WebApp.pathToRegex(route.path);
         }
         this._router.routeList = value;
     }

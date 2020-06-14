@@ -22,6 +22,14 @@ function removeAll() {
  * @return The modified api object
  */
 function formatApiData(apiResponse: any): any {
+
+    // Show the placeholder if no blackboard is in the database
+    if (apiResponse.blackboard_list.length === 0) {
+        apiResponse.placeholder_list = [1];
+    } else {
+        apiResponse.placeholder_list = [];
+    }
+
     apiResponse.blackboard_list.forEach(blackboard => {
         blackboard.editedIcon = blackboard.is_edit ? 'check' : 'close';
         blackboard.emptyIcon = blackboard.is_empty ? 'close' : 'check';
