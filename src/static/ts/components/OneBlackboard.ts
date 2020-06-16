@@ -123,7 +123,11 @@ class OneBlackboard extends Component {
         new Message('Changes have been discarded', 'default', 2000).show();
         this.timer.unsubscribe(this._bindSaveChanges);
         this.timer.remove();
-        document.querySelector('#editing-wrapper').classList.remove('editing');
+        try {
+            document.querySelector('#editing-wrapper').classList.remove('editing');
+        } catch (e) {
+            // Object was remove from dom
+        }
     }
 
     /**

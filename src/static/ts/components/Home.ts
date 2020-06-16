@@ -113,7 +113,7 @@ class Home extends Component {
     /**
      * Refresh the home page
      */
-    public async refresh() {
+    public async refresh(): Promise<void> {
         this.remove();
         await this.show();
         new Message('Reload finished').show();
