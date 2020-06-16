@@ -20,7 +20,7 @@ class Blackboard:
     _MIN_NAME_LENGTH = 3
     _MAX_NAME_LENGTH = 64
 
-    _MIN_CONTENT_LENGTH = 1
+    _MIN_CONTENT_LENGTH = 0
     _MAX_CONTENT_LENGTH = 1048576
 
     # 5 minutes til timeout
