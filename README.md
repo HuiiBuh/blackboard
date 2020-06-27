@@ -2,6 +2,19 @@
 
 ![Docker Continuous Integration](https://github.com/HuiiBuh/blackboard/workflows/Docker%20Continuous%20Integration/badge.svg)
 
+Server and client which together let you edit blackboards in markdown.
+
+**This was a project for university. Is not intended to be used in production. There are XSS vulnerabilities and a bunch of other security related issues!This was a project for university. Is not intended to be used in production. There are XSS vulnerabilities and a bunch of other security related issues!**
+
+
+## Preview
+
+All blackboad overview
+![Preview](https://i.imgur.com/jaNTRdF.png)
+
+One blackboard markdown preview
+![Blackboad](https://i.imgur.com/IWC66mn.png)
+
 ## Run the server
 
 This will automatically serve the html and static files.
