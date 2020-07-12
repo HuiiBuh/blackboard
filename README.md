@@ -4,7 +4,7 @@
 
 Server and client which together let you edit blackboards in markdown.
 
-**This was a project for university. Is not intended to be used in production. There are XSS vulnerabilities and a bunch of other security related issues!This was a project for university. Is not intended to be used in production. There are XSS vulnerabilities and a bunch of other security related issues!**
+**This was a project for university. Is not intended to be used in production. There are XSS vulnerabilities and a bunch of other security related issues!**
 
 
 ## Preview
